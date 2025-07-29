@@ -1,8 +1,10 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Video } from 'expo-av';
 import { useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Boton from '../components/ui/Boton';
+import Footer from '../components/layout/Footer';
+import styles from './Welcome.styles';
 import colors from '../constants/colors';
 
 export default function Welcome() {
@@ -14,74 +16,37 @@ export default function Welcome() {
       <Video
         ref={video}
         source={require('../assets/videos/fondo.mp4')}
-        style={StyleSheet.absoluteFill}
+        style={styles.video}
         shouldPlay
         isLooping
         resizeMode="cover"
       />
 
       <View style={styles.overlay}>
-        <Text style={styles.textTop}>Te damos la bienvenida a</Text>
-        <Text style={styles.textBold}>la app de zoco</Text>
+        <View style={styles.textWrapper}>
+          <Text style={styles.textLine1}>Te damos</Text>
+          <Text style={styles.textLine2}>la Bienvenida a</Text>
+          <Text style={styles.textLine3}>la app de zoco</Text>
+        </View>
 
-        {/* Imagen de la Z */}
         <Image
           source={require('../assets/img/Z-Welcome.png')}
           style={styles.logoImage}
           resizeMode="contain"
         />
 
-        {/* Footer con botón */}
-        <View style={styles.footer}>
-          <Boton text="Inicia sesión" onPress={() => navigation.navigate('Login')} />
-          <Text style={styles.legal}>Condiciones de uso y política de privacidad</Text>
+        {/* Fondo verde */}
+        <View style={styles.footerSection}>
+          <View style={styles.buttonWrapper}>
+            <Boton text="Inicia sesión" onPress={() => navigation.navigate('Login')} />
+          </View>
+        </View>
+
+        {/* Footer al fondo */}
+        <View style={styles.footerAbsolute}>
+          <Footer text="Condiciones de uso y política de privacidad" />
         </View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  textTop: {
-    position: 'absolute',
-    top: 100,
-    left: 30,
-    fontSize: 18,
-    color: colors.blanco,
-    fontWeight: '300',
-  },
-  textBold: {
-    position: 'absolute',
-    top: 125,
-    left: 30,
-    fontSize: 24,
-    color: colors.blanco,
-    fontWeight: 'bold',
-  },
-  logoImage: {
-    width: 70,
-    height: 70,
-    marginBottom: 20,
-  },
-  footer: {
-    backgroundColor: colors.verdeZoco,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingTop: 50,
-    paddingHorizontal: 30,
-    paddingBottom: 40,
-    width: '100%',
-    alignItems: 'center',
-  },
-  legal: {
-    color: '#666',
-    fontSize: 12,
-    marginTop: 10,
-  },
-});
