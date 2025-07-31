@@ -32,6 +32,10 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
+
+# 🛡️ Archivos sensibles personalizados
+src/services/api.ts
