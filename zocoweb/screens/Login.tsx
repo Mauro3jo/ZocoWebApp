@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Login.styles';
 import Footer from '../components/layout/Footer';
 import colors from '../constants/colors';
-import { loginUsuario } from '@services/api';
+import { loginUsuario } from '../src/services/api';
 
 export default function Login() {
   const navigation = useNavigation<any>();
