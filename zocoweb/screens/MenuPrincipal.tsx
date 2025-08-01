@@ -70,12 +70,18 @@ export default function MenuPrincipal({ navigation }) {
       </ScrollView>
 
       {/* BOTÓN SALIR SIEMPRE ARRIBA DEL MENÚ INFERIOR */}
-      <View style={styles.exitButtonContainer}>
-        <TouchableOpacity style={styles.exitButton} onPress={() => handleNavigation('salir')}>
-          <Image source={icons.salir} style={styles.exitIcon} />
-          <Text style={styles.exitLabel}>Salir</Text>
-        </TouchableOpacity>
-      </View>
+  <View style={styles.exitButtonContainer}>
+     <TouchableOpacity
+       style={styles.exitButton}
+       onPress={() => {
+         // Limpiá token, sesión, etc. si querés
+         navigation.replace('Welcome');
+       }}
+     >
+       <Image source={icons.salir} style={styles.exitIcon} />
+       <Text style={styles.exitLabel}>Salir</Text>
+     </TouchableOpacity>
+   </View>
 
       {/* MENÚ INFERIOR */}
       <MainView />

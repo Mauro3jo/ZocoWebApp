@@ -1,6 +1,6 @@
-import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Login.styles';
@@ -13,6 +13,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [cuit, setCuit] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -21,28 +22,26 @@ export default function Login() {
     setCuit(numericOnly.length <= 11 ? numericOnly : cuit);
   };
 
-const handleLogin = async () => {
-  try {
-    const data = await loginUsuario(cuit, password);
+  const handleLogin = async () => {
+    setError(null); // Limpia errores viejos al intentar loguear
+    try {
+      const data = await loginUsuario(cuit, password);
 
-    if (data.rol === 0) {
-      await AsyncStorage.setItem('token', data.token);
-      navigation.replace('Inicio');
-    } else {
-      Alert.alert('Acceso denegado', 'Este usuario no tiene permiso para ingresar.');
+      if (data.rol === 0) {
+        await AsyncStorage.setItem('token', data.token);
+        navigation.replace('Inicio');
+      } else {
+        setError('Este usuario no tiene permiso para ingresar.');
+      }
+    } catch (error: any) {
+      if (error?.response?.data) {
+        // Podés mostrar un mensaje custom si tu backend lo tiene en message o error
+        setError(error.response.data.message || error.response.data.error || 'Credenciales incorrectas');
+      } else {
+        setError('No se pudo iniciar sesión. Verifica tus datos e intenta nuevamente.');
+      }
     }
-  } catch (error: any) {
-    if (error.response) {
-      Alert.alert(
-        'Error de API',
-        JSON.stringify(error.response.data, null, 2)
-      );
-    } else {
-      Alert.alert('Error inesperado', error.message || 'No se pudo iniciar sesión.');
-    }
-  }
-};
-
+  };
 
   return (
     <View style={styles.container}>
@@ -88,11 +87,19 @@ const handleLogin = async () => {
           />
           <TouchableOpacity onPress={togglePasswordVisibility}>
             <Icon
-              name={showPassword ? 'eye-slash' : 'eye'}
+              name={showPassword ? 'eye' : 'eye-slash'}
               style={[styles.icon, { color: colors.verdeZoco }]}
             />
           </TouchableOpacity>
         </View>
+
+        {/* MENSAJE DE ERROR */}
+        {error && (
+          <View style={styles.errorBox}>
+            <Icon name="exclamation-circle" size={16} color="#e23d36" style={{ marginRight: 6 }} />
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginText}>Ingresar</Text>

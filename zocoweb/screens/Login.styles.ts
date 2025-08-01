@@ -46,7 +46,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    marginLeft: 10, // más a la izquierda pero no pegado
+    marginLeft: 10,
   },
 
   hola: {
@@ -87,6 +87,26 @@ export default StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#000',
+  },
+
+  errorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fdecea',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    marginTop: 22,
+    marginBottom: 4,
+    alignSelf: 'stretch',
+  },
+
+  errorText: {
+    color: '#e23d36',
+    fontSize: 14,
+    fontWeight: '500',
+    flex: 1,
+    flexWrap: 'wrap',
   },
 
   loginButton: {
