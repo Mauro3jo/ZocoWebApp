@@ -3,10 +3,30 @@ import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import styles from './Login.styles';
 import Footer from '../components/layout/Footer';
 import colors from '../constants/colors';
-import { loginUsuario } from '../src/services/api';
+import { API_LOGIN_URL } from '@env'; // ESTA ES LA FORMA QUE PIDE EXPO
+
+const loginUsuario = async (usuario: string, password: string) => {
+  const body = {
+    Usuario: usuario,
+    Password: password,
+  };
+
+  const response = await axios.post(
+    API_LOGIN_URL, // <-- ACA USA LA VARIABLE DEL .ENV
+    body,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return response.data;
+};
 
 export default function Login() {
   const navigation = useNavigation<any>();
@@ -23,7 +43,7 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    setError(null); // Limpia errores viejos al intentar loguear
+    setError(null);
     try {
       const data = await loginUsuario(cuit, password);
 
@@ -35,8 +55,11 @@ export default function Login() {
       }
     } catch (error: any) {
       if (error?.response?.data) {
-        // Podés mostrar un mensaje custom si tu backend lo tiene en message o error
-        setError(error.response.data.message || error.response.data.error || 'Credenciales incorrectas');
+        setError(
+          error.response.data.message ||
+            error.response.data.error ||
+            'Credenciales incorrectas'
+        );
       } else {
         setError('No se pudo iniciar sesión. Verifica tus datos e intenta nuevamente.');
       }
@@ -93,7 +116,6 @@ export default function Login() {
           </TouchableOpacity>
         </View>
 
-        {/* MENSAJE DE ERROR */}
         {error && (
           <View style={styles.errorBox}>
             <Icon name="exclamation-circle" size={16} color="#e23d36" style={{ marginRight: 6 }} />
