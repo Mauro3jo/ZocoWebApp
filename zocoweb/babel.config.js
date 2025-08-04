@@ -4,14 +4,14 @@ module.exports = function(api) {
     presets: ['babel-preset-expo'],
     plugins: [
       [
-        'module:react-native-dotenv', // 👈 Soporta import { ... } from '@env'
+        'module:react-native-dotenv',
         {
           moduleName: '@env',
           path: '.env',
         },
       ],
       [
-        'module-resolver', // 👈 Alias personalizados (tu @services)
+        'module-resolver',
         {
           root: ['./src'],
           alias: {
@@ -19,7 +19,7 @@ module.exports = function(api) {
           },
         },
       ],
-      'react-native-reanimated/plugin', // Si usás Reanimated
+      'react-native-reanimated/plugin',
     ],
   };
 };

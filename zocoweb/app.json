@@ -4,7 +4,7 @@
     "slug": "zocoweb",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/img/Z.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -19,14 +19,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "transparent"
+        "foregroundImage": "./assets/img/Z.png",
+        "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.mauro3jo.zocoweb"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/img/Z.png"
     },
     "extra": {
       "eas": {
