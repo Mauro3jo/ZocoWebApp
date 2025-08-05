@@ -1,7 +1,8 @@
+import React, { useRef } from 'react';
 import { View, Text, Image } from 'react-native';
 import { Video } from 'expo-av';
-import { useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context'; // IMPORTANTE
 import Boton from '../components/ui/Boton';
 import Footer from '../components/layout/Footer';
 import styles from './Welcome.styles';
@@ -10,6 +11,7 @@ import colors from '../constants/colors';
 export default function Welcome() {
   const video = useRef(null);
   const navigation = useNavigation<any>();
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.container}>
@@ -35,15 +37,15 @@ export default function Welcome() {
           resizeMode="contain"
         />
 
-        {/* Fondo verde */}
-        <View style={styles.footerSection}>
+        {/* Fondo verde, con safe area opcional */}
+        <View style={[styles.footerSection, { paddingBottom: insets.bottom }]}>
           <View style={styles.buttonWrapper}>
             <Boton text="Inicia sesión" onPress={() => navigation.navigate('Login')} />
           </View>
         </View>
 
-        {/* Footer al fondo */}
-        <View style={styles.footerAbsolute}>
+        {/* Footer al fondo, siempre visible */}
+        <View style={[styles.footerAbsolute, { paddingBottom: insets.bottom }]}>
           <Footer text="Condiciones de uso y política de privacidad" />
         </View>
       </View>

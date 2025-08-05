@@ -4,25 +4,19 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useSafeAreaInsets } from 'react-native-safe-area-context'; // <--- AGREGADO
 import styles from './Login.styles';
 import Footer from '../components/layout/Footer';
 import colors from '../constants/colors';
-import { API_LOGIN_URL } from '@env'; // ESTA ES LA FORMA QUE PIDE EXPO
+import { API_LOGIN_URL } from '@env';
 
 const loginUsuario = async (usuario: string, password: string) => {
-  const body = {
-    Usuario: usuario,
-    Password: password,
-  };
+  const body = { Usuario: usuario, Password: password };
 
   const response = await axios.post(
-    API_LOGIN_URL, // <-- ACA USA LA VARIABLE DEL .ENV
+    API_LOGIN_URL,
     body,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
+    { headers: { 'Content-Type': 'application/json' } }
   );
 
   return response.data;
@@ -30,6 +24,7 @@ const loginUsuario = async (usuario: string, password: string) => {
 
 export default function Login() {
   const navigation = useNavigation<any>();
+  const insets = useSafeAreaInsets(); // <--- AGREGADO
   const [showPassword, setShowPassword] = useState(false);
   const [cuit, setCuit] = useState('');
   const [password, setPassword] = useState('');
@@ -128,8 +123,8 @@ export default function Login() {
         </TouchableOpacity>
       </View>
 
-      {/* FOOTER */}
-      <View style={styles.footer}>
+      {/* FOOTER con safe area */}
+      <View style={[styles.footer, { paddingBottom: insets.bottom }]}>
         <Footer text="Condiciones de uso y Política de privacidad" />
       </View>
     </View>

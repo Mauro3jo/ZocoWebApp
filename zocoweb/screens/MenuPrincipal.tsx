@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import IconMC from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMI from 'react-native-vector-icons/MaterialIcons';
 import styles from './MenuPrincipal.styles';
@@ -29,12 +30,14 @@ const menuItems = [
 ];
 
 export default function MenuPrincipal({ navigation }) {
+  const insets = useSafeAreaInsets();
+
   const handleNavigation = (key) => {
     console.log('Navegar a', key);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       {/* HEADER */}
       <View style={styles.headerSpacer} />
       <View style={styles.header}>
@@ -70,21 +73,23 @@ export default function MenuPrincipal({ navigation }) {
       </ScrollView>
 
       {/* BOTÓN SALIR SIEMPRE ARRIBA DEL MENÚ INFERIOR */}
-  <View style={styles.exitButtonContainer}>
-     <TouchableOpacity
-       style={styles.exitButton}
-       onPress={() => {
-         // Limpiá token, sesión, etc. si querés
-         navigation.replace('Welcome');
-       }}
-     >
-       <Image source={icons.salir} style={styles.exitIcon} />
-       <Text style={styles.exitLabel}>Salir</Text>
-     </TouchableOpacity>
-   </View>
+      <View style={[styles.exitButtonContainer, { marginBottom: insets.bottom + 60 }]}>
+        <TouchableOpacity
+          style={styles.exitButton}
+          onPress={() => {
+            // Limpiá token, sesión, etc. si querés
+            navigation.replace('Welcome');
+          }}
+        >
+          <Image source={icons.salir} style={styles.exitIcon} />
+          <Text style={styles.exitLabel}>Salir</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* MENÚ INFERIOR */}
-      <MainView />
+      <View style={{ marginBottom: insets.bottom }}>
+        <MainView />
+      </View>
     </View>
   );
 }
