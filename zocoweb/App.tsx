@@ -1,11 +1,17 @@
 import React from 'react';
 import AppNavigation from './app/navigation';
-import { DatosInicioProvider } from './src/context/DatosInicioContext'; // ajustá la ruta real
+import { DarkModeProvider } from './src/context/DarkModeContext';
+import { DatosInicioProvider } from './src/context/DatosInicioContext';
+import { InicioAhorroProvider } from './src/context/InicioAhorroContext';
 
 export default function App() {
   return (
-    <DatosInicioProvider>
-      <AppNavigation />
-    </DatosInicioProvider>
+    <DarkModeProvider>
+      <DatosInicioProvider>
+        <InicioAhorroProvider>
+          <AppNavigation />
+        </InicioAhorroProvider>
+      </DatosInicioProvider>
+    </DarkModeProvider>
   );
 }

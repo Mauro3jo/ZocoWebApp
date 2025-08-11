@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -9,6 +9,7 @@ import styles from './Login.styles';
 import Footer from '../components/layout/Footer';
 import colors from '../constants/colors';
 import { API_LOGIN_URL } from '@env';
+import { InicioAhorroContext } from '../src/context/InicioAhorroContext';
 
 type LoginResponse = {
   usuario?: { Nombre?: string; nombre?: string } | null;
@@ -34,6 +35,9 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  // ⬇️ Traemos el refresco del contexto de Inicio Ahorro
+  const { fetchDatosInicioAhorro } = useContext(InicioAhorroContext) ?? {};
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleCuitChange = (text: string) => {
@@ -55,8 +59,21 @@ export default function Login() {
           ['Nombre', nombre],
         ]);
 
+        // Asegura persistencia antes de cambiar de pantalla
+        await AsyncStorage.getItem('token');
+
+        // 🔥 Dispara la carga del Inicio Ahorro
+        try {
+          await fetchDatosInicioAhorro?.();
+        } catch {}
+
         setPassword('');
-        navigation.replace('Inicio');
+
+        // Fuerza remount al Inicio para que los contextos lean el token ya guardado
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Inicio' }],
+        });
       } else {
         setError('Este usuario no tiene permiso para ingresar.');
       }
