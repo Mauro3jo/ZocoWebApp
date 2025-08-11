@@ -4,7 +4,11 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@services/*": ["src/services/*"]
+      "@services/*": ["src/services/*"],
+      "@context/*": ["src/context/*"],
+      "@components/*": ["src/components/*"]
     }
-  }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "index.ts", "index.tsx"],
+  "exclude": ["node_modules", "dist", "build"]
 }

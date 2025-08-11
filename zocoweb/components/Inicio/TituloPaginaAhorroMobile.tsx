@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState, useContext } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,9 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import IconMC from 'react-native-vector-icons/MaterialCommunityIcons';
-import { DarkModeContext } from '@context/DarkModeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// ⬇️ ajustá las rutas si tus assets están en otro lado
 const logozoco = require('../../assets/img/Logo-ZOCO-4.png');
 const logopayway = require('../../assets/img/payway-texto.png');
 const logomercadopago = require('../../assets/img/Logo-Mercado-Pago-4.png');
@@ -44,8 +42,6 @@ export default function TituloPaginaAhorroMobile(props: Props) {
     netoZoco,
   } = props;
 
-  const { darkMode } = useContext(DarkModeContext);
-
   const items = useMemo(
     () => [
       { logo: logopayway, ahorro: ahorroPayway, size: 40 },
@@ -58,29 +54,27 @@ export default function TituloPaginaAhorroMobile(props: Props) {
     [ahorroPayway, ahorroMercadoPago, ahorroGetnet, ahorroNave, ahorroNaranjaX, ahorroViumi]
   );
 
-  // animación tipo marquee (duplicamos el contenido para loop suave)
   const translateX = useRef(new Animated.Value(0)).current;
   const [rowWidth, setRowWidth] = useState<number>(SCREEN_WIDTH);
   const [paused, setPaused] = useState(false);
 
-  const DURATION_PER_SCREEN = 20000; // 20s por ancho de pantalla (ajustable)
+  const DURATION_PER_SCREEN = 20000;
 
   const start = () => {
     translateX.setValue(0);
     Animated.timing(translateX, {
-      toValue: -rowWidth, // movemos una fila completa
+      toValue: -rowWidth,
       duration: Math.max(8000, (rowWidth / SCREEN_WIDTH) * DURATION_PER_SCREEN),
       easing: Easing.linear,
       useNativeDriver: true,
     }).start(({ finished }) => {
-      if (finished && !paused) start(); // loop
+      if (finished && !paused) start();
     });
   };
 
   useEffect(() => {
     if (!paused && rowWidth > 0) start();
     return () => translateX.stopAnimation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowWidth, paused]);
 
   const currency = (v: any) =>
@@ -89,7 +83,6 @@ export default function TituloPaginaAhorroMobile(props: Props) {
   const Comparativa = ({ logo, ahorro, size }: { logo: any; ahorro: any; size: number }) => (
     <View style={styles.comparativa}>
       <View style={styles.verticalDivider} />
-      {/* Zoco */}
       <Image source={logozoco} style={[styles.logoZoco, { width: 70 }]} resizeMode="contain" />
       <View style={styles.ahorroBox}>
         <IconMC name="arrow-up-bold" size={18} style={styles.up} />
@@ -101,7 +94,6 @@ export default function TituloPaginaAhorroMobile(props: Props) {
 
       <Text style={styles.vs}>VS</Text>
 
-      {/* Competidor */}
       <Image source={logo} style={[styles.logoComp, { width: size }]} resizeMode="contain" />
       <View style={styles.ahorroBox}>
         <IconMC name="arrow-down-bold" size={18} style={styles.down} />
@@ -114,12 +106,7 @@ export default function TituloPaginaAhorroMobile(props: Props) {
   );
 
   return (
-    <View
-      style={[
-        styles.wrap,
-        { backgroundColor: darkMode ? '#15171D' : '#ffffff' },
-      ]}
-    >
+    <View style={[styles.wrap, { backgroundColor: '#ffffff' }]}>
       <TouchableWithoutFeedback
         onPressIn={() => setPaused(true)}
         onPressOut={() => setPaused(false)}
@@ -129,10 +116,9 @@ export default function TituloPaginaAhorroMobile(props: Props) {
             style={{
               flexDirection: 'row',
               transform: [{ translateX }],
-              width: rowWidth * 2, // 2 filas (duplicado)
+              width: rowWidth * 2,
             }}
           >
-            {/* fila A */}
             <View
               style={styles.row}
               onLayout={(e) => setRowWidth(e.nativeEvent.layout.width)}
@@ -142,7 +128,6 @@ export default function TituloPaginaAhorroMobile(props: Props) {
               ))}
             </View>
 
-            {/* fila B (duplicada para loop suave) */}
             <View style={styles.row}>
               {items.map((it, idx) => (
                 <Comparativa key={`B-${idx}`} {...it} />
@@ -162,7 +147,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     height: 100,
     overflow: 'hidden',
-    // sutil sombra
     shadowColor: '#000',
     shadowOpacity: 0.06,
     shadowOffset: { width: 0, height: 4 },

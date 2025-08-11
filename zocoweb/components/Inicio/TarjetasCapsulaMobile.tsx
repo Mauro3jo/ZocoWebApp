@@ -1,6 +1,5 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { DarkModeContext } from '@context/DarkModeContext';
 
 type Item = { tarjeta: string; totalConDescuento?: number | string };
 type Props = {
@@ -32,15 +31,12 @@ const logos: Record<string, any> = {
 const BAR_HEIGHT = 14;
 
 const TarjetasCapsulaMobile: React.FC<Props> = ({ datos }) => {
-  const { darkMode } = useContext(DarkModeContext);
-
   const items = useMemo(() => {
     const list = (datos?.descuentosPorTarjeta ?? []).map(it => ({
       nombre: it.tarjeta,
       valor: toNumber(it.totalConDescuento),
       logo: logos[it.tarjeta] ?? null,
     }));
-    // ordenar desc por valor
     return list.sort((a, b) => b.valor - a.valor);
   }, [datos]);
 
@@ -49,10 +45,10 @@ const TarjetasCapsulaMobile: React.FC<Props> = ({ datos }) => {
     [items]
   );
 
-  const bgCard = darkMode ? '#1E1F23' : '#FFFFFF';
-  const labelColor = darkMode ? '#FFFFFF' : '#2B2F3A';
+  const bgCard = '#FFFFFF';
+  const labelColor = '#2B2F3A';
   const fillColor = '#B4C400';          // verde ZOCO
-  const restColor = darkMode ? '#3A3E47' : '#C9D1EC'; // “gris-lila” resto
+  const restColor = '#C9D1EC'; // “gris-lila” resto
 
   if (!items.length) return null;
 

@@ -1,7 +1,6 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { DarkModeContext } from '@context/DarkModeContext';
 
 type DiaValor = { key: string; value: number };
 type Totales = Record<string, DiaValor[]>;
@@ -15,9 +14,8 @@ type Props = {
 const screenWidth = Dimensions.get('window').width;
 
 const ComportamientoLineaMobile: React.FC<Props> = ({ datos }) => {
-  const { darkMode } = useContext(DarkModeContext);
-  const tickColor = darkMode ? '#fff' : '#292B2F';
-  const cardBg = darkMode ? '#1E1F23' : '#FFFFFF';
+  const tickColor = '#292B2F';
+  const cardBg = '#FFFFFF';
 
   const totalesPorDiaTarjeta = datos?.totalesPorDiaTarjeta || {};
   const tiendas = Object.keys(totalesPorDiaTarjeta);

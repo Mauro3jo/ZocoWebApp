@@ -1,7 +1,6 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { DarkModeContext } from '@context/DarkModeContext';
 
 type Props = {
   datos: {
@@ -43,11 +42,9 @@ const CapsuleBar: React.FC<{
 };
 
 const ComparativaMesMobile: React.FC<Props> = ({ datos }) => {
-  const { darkMode } = useContext(DarkModeContext);
-
-  const tickColor = darkMode ? '#fff' : '#292B2F';
-  const cardBg = darkMode ? '#1E1F23' : '#FFFFFF';
-  const outline = darkMode ? '#AAB1C5' : '#2F3341';
+  const tickColor = '#292B2F';
+  const cardBg = '#FFFFFF';
+  const outline = '#2F3341';
   const accentFill = '#B4C400'; // verde ZOCO
 
   const {
@@ -78,9 +75,9 @@ const ComparativaMesMobile: React.FC<Props> = ({ datos }) => {
       <View style={styles.row}>
         {/* Mitad izquierda: “cilindros” */}
         <View style={styles.left}>
-          {/* líneas guía suaves (opcional) */}
-          <View style={[styles.hline, { backgroundColor: darkMode ? '#2A2B30' : '#EDEFF5', top: 40 }]} />
-          <View style={[styles.hline, { backgroundColor: darkMode ? '#2A2B30' : '#EDEFF5', top: 110 }]} />
+          {/* líneas guía suaves */}
+          <View style={[styles.hline, { backgroundColor: '#EDEFF5', top: 40 }]} />
+          <View style={[styles.hline, { backgroundColor: '#EDEFF5', top: 110 }]} />
 
           <View style={styles.barZone}>
             <View style={styles.barBlock}>
@@ -98,7 +95,7 @@ const ComparativaMesMobile: React.FC<Props> = ({ datos }) => {
         </View>
 
         {/* divisor */}
-        <View style={[styles.divider, { backgroundColor: darkMode ? '#2A2B30' : '#E7EAF3' }]} />
+        <View style={[styles.divider, { backgroundColor: '#E7EAF3' }]} />
 
         {/* Mitad derecha: flecha + % */}
         <View style={styles.right}>
