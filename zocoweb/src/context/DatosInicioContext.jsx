@@ -25,6 +25,9 @@ export const DatosInicioProvider = ({ children }) => {
   const [datosFiltrado, setdatosfiltrados] = useState({});
   const [noHayDatos, setNoHayDatos] = useState(true);
 
+  // loading general para cuando refrescamos todo (lo usa Login para esperar)
+  const [loading, setLoading] = useState(false);
+
   // para evitar recargas repetidas
   const lastLoadKeyRef = useRef("");
 
@@ -40,7 +43,7 @@ export const DatosInicioProvider = ({ children }) => {
     }
   };
 
-  // consulta true/false para mostrar modal de datos
+  // consulta true/false para mostrar modal de datos (informativo)
   const obtenerNoHayDatos = async () => {
     const token = await obtenerToken();
     if (!token) return true;
@@ -174,7 +177,22 @@ export const DatosInicioProvider = ({ children }) => {
     }
   };
 
-  // === supervisor ===
+  // 🔁 refresco manual para usar desde Login (espera a que terminen todas)
+  const refreshAll = async () => {
+    setLoading(true);
+    try {
+      await Promise.all([
+        cargarDatosInicio(),
+        cargarDatosContabilidad(),
+        cargarDatosAnalisis(),
+        cargarDatosCupones(),
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // === supervisor (carga automática cuando hay token y cambian filtros) ===
   useEffect(() => {
     const verificarYcargarDatos = async () => {
       const token = await obtenerToken();
@@ -189,40 +207,26 @@ export const DatosInicioProvider = ({ children }) => {
 
         if (!resp.ok) return;
 
-        const data = await resp.json(); // tu backend: 0 == OK
-        const nhd = await obtenerNoHayDatos(); // espero el valor actualizado
+        const data = await resp.json(); // backend: 0 == OK
+        // Sólo informativo (no bloquea las cargas)
+        obtenerNoHayDatos();
 
-        if (nhd === true && data === 0) {
-          // clave para evitar llamadas repetidas
-          const key = JSON.stringify({
-            datos,
-            filtro: datosFiltrado,
-          });
-
-          if (
-            datos === null ||
-            key !== lastLoadKeyRef.current
-          ) {
-            await Promise.all([
-              cargarDatosInicio(),
-              cargarDatosContabilidad(),
-              cargarDatosAnalisis(),
-              cargarDatosCupones(),
-            ]);
-
+        if (data === 0) {
+          const key = JSON.stringify({ datos, filtro: datosFiltrado });
+          if (datos === null || key !== lastLoadKeyRef.current) {
+            await refreshAll();
             setdatosfiltrados(datos);
             lastLoadKeyRef.current = key;
           }
         }
-      } catch (e) {
-        // swallow
+      } catch {
+        // noop
       }
     };
 
-    // Disparamos cuando cambia "datos" (parámetros del filtro)
     verificarYcargarDatos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(datos)]); // JSON.stringify para comparación estable
+  }, [JSON.stringify(datos)]);
 
   return (
     <DatosInicioContext.Provider
@@ -240,6 +244,8 @@ export const DatosInicioProvider = ({ children }) => {
         setDatosAnalisisContext,
         codigoRespuesta,
         noHayDatos,
+        refreshAll,      // ⬅️ para que Login espere
+        loading,         // ⬅️ opcional, por si querés mostrar “Cargando…”
       }}
     >
       {children}

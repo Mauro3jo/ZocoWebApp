@@ -10,6 +10,7 @@ import Footer from '../components/layout/Footer';
 import colors from '../constants/colors';
 import { API_LOGIN_URL } from '@env';
 import { InicioAhorroContext } from '../src/context/InicioAhorroContext';
+import { DatosInicioContext } from '../src/context/DatosInicioContext';
 
 type LoginResponse = {
   usuario?: { Nombre?: string; nombre?: string } | null;
@@ -34,9 +35,11 @@ export default function Login() {
   const [cuit, setCuit] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // ⬇️ Traemos el refresco del contexto de Inicio Ahorro
+  // refrescos de contextos (mobile)
   const { fetchDatosInicioAhorro } = useContext(InicioAhorroContext) ?? {};
+  const { refreshAll } = useContext(DatosInicioContext) ?? {};
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -46,7 +49,9 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
+    if (loading) return;
     setError(null);
+    setLoading(true);
     try {
       const data = await loginUsuario(cuit, password); // { usuario, token, rol }
 
@@ -62,14 +67,16 @@ export default function Login() {
         // Asegura persistencia antes de cambiar de pantalla
         await AsyncStorage.getItem('token');
 
-        // 🔥 Dispara la carga del Inicio Ahorro
-        try {
-          await fetchDatosInicioAhorro?.();
-        } catch {}
+        // Cargar datos necesarios ANTES de salir del login
+        // (aunque el usuario no tenga históricos, las llamadas terminan)
+        await Promise.all([
+          fetchDatosInicioAhorro?.(),
+          refreshAll?.(),
+        ]).catch(() => { /* evitamos romper el flujo si alguna falla */ });
 
         setPassword('');
 
-        // Fuerza remount al Inicio para que los contextos lean el token ya guardado
+        // Recién ahora navegamos
         navigation.reset({
           index: 0,
           routes: [{ name: 'Inicio' }],
@@ -84,6 +91,8 @@ export default function Login() {
         err?.response?.data?.error ||
         'Credenciales incorrectas';
       setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,8 +153,12 @@ export default function Login() {
           </View>
         )}
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginText}>Ingresar</Text>
+        <TouchableOpacity
+          style={[styles.loginButton, loading && { opacity: 0.7 }]}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.loginText}>{loading ? 'Cargando datos...' : 'Ingresar'}</Text>
         </TouchableOpacity>
       </View>
 
