@@ -9,6 +9,7 @@ import TituloPaginaAhorroMobile from '../components/Inicio/TituloPaginaAhorroMob
 import DatosInicioMobile from '../components/Inicio/DatosInicioMobile';
 import ComportamientoLineaMobile from '../components/Inicio/ComportamientoLineaMobile';
 import ComparativaMesMobile from '../components/Inicio/ComparativaMesMobile';
+import TarjetasCapsulaMobile from '../components/Inicio/TarjetasCapsulaMobile';
 
 import { InicioAhorroContext } from '../src/context/InicioAhorroContext';
 import { DatosInicioContext } from '../src/context/DatosInicioContext';
@@ -26,7 +27,8 @@ export default function Inicio() {
     netoZoco,
   } = useContext(InicioAhorroContext);
 
-  const { datosBackContext } = useContext(DatosInicioContext) ?? { datosBackContext: null };
+  const { datosBackContext } =
+    useContext(DatosInicioContext) ?? { datosBackContext: null };
 
   const tieneLinea = useMemo(() => {
     const t = datosBackContext?.totalesPorDiaTarjeta;
@@ -35,7 +37,16 @@ export default function Inicio() {
 
   const tieneBarras = useMemo(() => {
     const d = datosBackContext || {};
-    return d?.comparativahoy != null || d?.comparativaHoymesanterior != null || d?.comparativaMes;
+    return (
+      d?.comparativahoy != null ||
+      d?.comparativaHoymesanterior != null ||
+      d?.comparativaMes
+    );
+  }, [datosBackContext]);
+
+  const tieneCapsulas = useMemo(() => {
+    const arr = datosBackContext?.descuentosPorTarjeta;
+    return Array.isArray(arr) && arr.length > 0;
   }, [datosBackContext]);
 
   return (
@@ -63,6 +74,8 @@ export default function Inicio() {
         {tieneLinea && <ComportamientoLineaMobile datos={datosBackContext} />}
 
         {tieneBarras && <ComparativaMesMobile datos={datosBackContext} />}
+
+        {tieneCapsulas && <TarjetasCapsulaMobile datos={datosBackContext} />}
       </ScrollView>
 
       {/* Menú siempre fijo abajo */}
