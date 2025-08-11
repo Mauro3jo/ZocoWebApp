@@ -1,19 +1,23 @@
+// src/screens/Inicio.tsx
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MainView from '../components/MainView'; // Ajustá el path según tu estructura
+import HeaderPrincipal from '../components/HeaderPrincipal';
+import FiltrosBar from '../components/FiltrosBar';
+import MainView from '../components/MainView';
 
 export default function Inicio() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <Text style={styles.text}>Pantalla de Inicio</Text>
-      {/* Llamada al menú ya hecho */}
-      <MainView />
+      <HeaderPrincipal />
+      <FiltrosBar />
+      <View style={{ flex: 1, marginTop: 12 }}>
+        <MainView />
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  text: { fontSize: 20 },
+  container: { flex: 1, backgroundColor: '#F4F6FA' },
 });
