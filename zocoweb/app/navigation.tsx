@@ -9,6 +9,10 @@ import Inicio from '../screens/Inicio';
 import MenuPrincipal from '../screens/MenuPrincipal';
 import Contabilidad from '../screens/Contabilidad';
 import Analisis from '../screens/Analisis';
+import Cupones from '../screens/Cupones';
+import Consultas from '../screens/Consultas';
+import Calificar from '../screens/Calificar';
+import Simulador from '../screens/Simulador';
 
 export type RootStackParamList = {
   IntroZoco: undefined;
@@ -18,6 +22,10 @@ export type RootStackParamList = {
   MenuPrincipal: undefined;
   Contabilidad: undefined;
   Analisis: undefined;
+  Cupones: undefined;
+  Consultas: undefined;
+  Calificar: undefined;
+  Simulador: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -33,6 +41,10 @@ export default function AppNavigation() {
         <Stack.Screen name="MenuPrincipal" component={MenuPrincipal} />
         <Stack.Screen name="Contabilidad" component={Contabilidad} />
         <Stack.Screen name="Analisis" component={Analisis} />
+        <Stack.Screen name="Cupones" component={Cupones} />
+        <Stack.Screen name="Consultas" component={Consultas} />
+        <Stack.Screen name="Calificar" component={Calificar} />
+        <Stack.Screen name="Simulador" component={Simulador} />
       </Stack.Navigator>
     </NavigationContainer>
   );
