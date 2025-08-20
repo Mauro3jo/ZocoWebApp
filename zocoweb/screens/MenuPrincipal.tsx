@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import IconMC from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMI from 'react-native-vector-icons/MaterialIcons';
 import styles from './MenuPrincipal.styles';
@@ -32,12 +32,39 @@ const menuItems = [
 export default function MenuPrincipal({ navigation }) {
   const insets = useSafeAreaInsets();
 
-  const handleNavigation = (key) => {
-    console.log('Navegar a', key);
+  const handleNavigation = (key: string) => {
+    switch (key) {
+      case 'inicio':
+        navigation.navigate('Inicio');
+        break;
+      case 'contabilidad':
+        navigation.navigate('Contabilidad');
+        break;
+      case 'analisis':
+        navigation.navigate('Analisis');
+        break;
+      case 'cupones':
+        navigation.navigate('Cupones');
+        break;
+      case 'calificar':
+        navigation.navigate('Calificar');
+        break;
+      case 'consultas':
+        navigation.navigate('Consultas');
+        break;
+      case 'simulador':
+        navigation.navigate('Simulador');
+        break;
+      case 'postventa':
+        navigation.navigate('Postventa');
+        break;
+      default:
+        console.log('Ruta no definida:', key);
+    }
   };
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+    <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.headerSpacer} />
       <View style={styles.header}>
@@ -55,7 +82,7 @@ export default function MenuPrincipal({ navigation }) {
       {/* MENÚ PRINCIPAL */}
       <ScrollView
         style={styles.menuList}
-        contentContainerStyle={[styles.menuListContent, { paddingBottom: 90 }]} // deja lugar para el botón salir y menú inferior
+        contentContainerStyle={[styles.menuListContent, { paddingBottom: 90 }]}
         showsVerticalScrollIndicator={false}
       >
         {menuItems.map((item) => (
@@ -72,12 +99,11 @@ export default function MenuPrincipal({ navigation }) {
         ))}
       </ScrollView>
 
-      {/* BOTÓN SALIR SIEMPRE ARRIBA DEL MENÚ INFERIOR */}
+      {/* BOTÓN SALIR */}
       <View style={[styles.exitButtonContainer, { marginBottom: insets.bottom + 60 }]}>
         <TouchableOpacity
           style={styles.exitButton}
           onPress={() => {
-            // Limpiá token, sesión, etc. si querés
             navigation.replace('Welcome');
           }}
         >
@@ -86,9 +112,11 @@ export default function MenuPrincipal({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* MENÚ INFERIOR */}
-      <View style={{ marginBottom: insets.bottom }}>
-        <MainView />
+      {/* MENÚ INFERIOR con SafeArea */}
+      <View style={styles.tabbarContainer}>
+        <SafeAreaView edges={['bottom']} style={styles.tabbar}>
+          <MainView />
+        </SafeAreaView>
       </View>
     </View>
   );

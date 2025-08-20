@@ -6,7 +6,9 @@ import Welcome from '../screens/Welcome';
 import Login from '../screens/Login';
 import IntroZoco from '../screens/IntroZoco';
 import Inicio from '../screens/Inicio';
-import MenuPrincipal from '../screens/MenuPrincipal'; // 👈 Asegurate de tener este archivo creado
+import MenuPrincipal from '../screens/MenuPrincipal';
+import Contabilidad from '../screens/Contabilidad';
+import Analisis from '../screens/Analisis';
 
 export type RootStackParamList = {
   IntroZoco: undefined;
@@ -14,6 +16,8 @@ export type RootStackParamList = {
   Login: undefined;
   Inicio: undefined;
   MenuPrincipal: undefined;
+  Contabilidad: undefined;
+  Analisis: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -27,6 +31,8 @@ export default function AppNavigation() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Inicio" component={Inicio} />
         <Stack.Screen name="MenuPrincipal" component={MenuPrincipal} />
+        <Stack.Screen name="Contabilidad" component={Contabilidad} />
+        <Stack.Screen name="Analisis" component={Analisis} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -3,8 +3,13 @@ import { StyleSheet } from 'react-native';
 const TABBAR_HEIGHT = 64;
 
 export default StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F4F6FA' },
-  scroll: { flex: 1 },
+  container: {
+    flex: 1,
+    backgroundColor: '#F4F6FA',
+  },
+  scroll: {
+    flex: 1,
+  },
   tabbarContainer: {
     position: 'absolute',
     left: 0,

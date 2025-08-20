@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HeaderPrincipal from '../components/HeaderPrincipal';
@@ -14,10 +14,12 @@ import TarjetasCapsulaMobile from '../components/Inicio/TarjetasCapsulaMobile';
 import { InicioAhorroContext } from '../src/context/InicioAhorroContext';
 import { DatosInicioContext } from '../src/context/DatosInicioContext';
 
+import styles from './Inicio.styles'; // ✅ mismo folder
+
 const TABBAR_HEIGHT = 64; // altura visual del menú
 
 export default function Inicio() {
-  const insets = useSafeAreaInsets(); // <- para respetar la zona segura inferior
+  const insets = useSafeAreaInsets();
 
   const {
     ahorroMercadoPago,
@@ -51,9 +53,6 @@ export default function Inicio() {
     return Array.isArray(arr) && arr.length > 0;
   }, [datosBackContext]);
 
-  // Altura efectiva del tabbar sumando la zona segura inferior (ej. barra gestual)
-  const TABBAR_EFFECTIVE = TABBAR_HEIGHT + insets.bottom;
-
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <HeaderPrincipal />
@@ -61,7 +60,7 @@ export default function Inicio() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: TABBAR_EFFECTIVE + 16 }}
+        contentContainerStyle={{ paddingBottom: TABBAR_HEIGHT + 16 }}
         showsVerticalScrollIndicator={false}
       >
         <TituloPaginaAhorroMobile
@@ -75,38 +74,17 @@ export default function Inicio() {
         />
 
         {datosBackContext && <DatosInicioMobile datos={datosBackContext} />}
-
         {tieneLinea && <ComportamientoLineaMobile datos={datosBackContext} />}
-
         {tieneBarras && <ComparativaMesMobile datos={datosBackContext} />}
-
         {tieneCapsulas && <TarjetasCapsulaMobile datos={datosBackContext} />}
       </ScrollView>
 
-      {/* Menú fijo abajo, con padding para no chocar con la barra del sistema */}
-      <View style={[styles.tabbar, { height: TABBAR_EFFECTIVE, paddingBottom: insets.bottom }]}>
-        <MainView />
+      {/* Menú fijo abajo con safe area real */}
+      <View style={styles.tabbarContainer}>
+        <SafeAreaView edges={['bottom']} style={styles.tabbar}>
+          <MainView />
+        </SafeAreaView>
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F4F6FA' },
-  scroll: { flex: 1 },
-  tabbar: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0, // pegado al borde inferior pero respetando safe area con paddingBottom
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#E3E6EE',
-    backgroundColor: '#fff',
-    // sombra sutil
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: -2 },
-    elevation: 8,
-  },
-});

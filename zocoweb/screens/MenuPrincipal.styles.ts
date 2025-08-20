@@ -1,8 +1,9 @@
 import { StyleSheet, Dimensions } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
-const SIDE_MARGIN = width * 0.10; // 10% de ancho
-const TOP_SPACER = height * 0.10; // 10% del alto
+const SIDE_MARGIN = width * 0.10;
+const TOP_SPACER = height * 0.10;
+const TABBAR_HEIGHT = 64;
 
 export default StyleSheet.create({
   container: {
@@ -15,7 +16,6 @@ export default StyleSheet.create({
   header: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingBottom: 0,
     backgroundColor: '#fff',
   },
   logo: {
@@ -48,7 +48,7 @@ export default StyleSheet.create({
     width: '100%',
   },
   menuListContent: {
-    paddingBottom: 180, // deja suficiente espacio para el botón salir y el menú inferior
+    paddingBottom: 180,
     paddingHorizontal: SIDE_MARGIN,
   },
   menuItem: {
@@ -77,12 +77,11 @@ export default StyleSheet.create({
     fontWeight: '500',
     textAlignVertical: 'center',
   },
-  // Botón Salir ABSOLUTO Y SEPARADO DEL MENÚ INFERIOR
   exitButtonContainer: {
     position: 'absolute',
     left: SIDE_MARGIN,
     right: SIDE_MARGIN,
-    bottom: 125, // Más arriba del menú inferior (ajusta si lo querés más arriba/abajo)
+    bottom: 125,
     zIndex: 200,
   },
   exitButton: {
@@ -105,35 +104,25 @@ export default StyleSheet.create({
     marginLeft: 8,
     fontSize: 17,
   },
-  menuBottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 66,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+
+  // 🔥 nuevo: tabbar igual que Inicio
+  tabbarContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    width,
-    elevation: 8,
+    backgroundColor: '#fff',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#E3E6EE',
     shadowColor: '#000',
-    shadowOpacity: 0.04,
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
     shadowOffset: { width: 0, height: -2 },
-    shadowRadius: 10,
-    zIndex: 99,
-    paddingHorizontal: SIDE_MARGIN,
+    elevation: 8,
   },
-  tabButton: {
-    flex: 1,
-    alignItems: 'center',
+  tabbar: {
+    height: TABBAR_HEIGHT,
     justifyContent: 'center',
-  },
-  menuBottomIcon: {
-    width: 28,
-    height: 28,
-    resizeMode: 'contain',
+    alignItems: 'center',
   },
 });
