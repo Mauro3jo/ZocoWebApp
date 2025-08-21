@@ -112,9 +112,12 @@ export default function MenuPrincipal({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* MENÚ INFERIOR con SafeArea */}
+      {/* MENÚ INFERIOR con SafeArea y padding dinámico */}
       <View style={styles.tabbarContainer}>
-        <SafeAreaView edges={['bottom']} style={styles.tabbar}>
+        <SafeAreaView
+          edges={['bottom']}
+          style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}
+        >
           <MainView />
         </SafeAreaView>
       </View>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HeaderPrincipal from '../components/HeaderPrincipal';
 import FiltrosBar from '../components/FiltrosBar';
@@ -11,6 +11,8 @@ import styles from './Calificar.Style';
 const TABBAR_HEIGHT = 64;
 
 export default function Calificar() {
+  const insets = useSafeAreaInsets();
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* HEADER + FILTROS */}
@@ -23,15 +25,17 @@ export default function Calificar() {
         contentContainerStyle={{ paddingBottom: TABBAR_HEIGHT + 16 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* 🔥 Contenido de Calificar va acá */}
         <View style={{ padding: 20 }}>
-          {/* Placeholder temporal */}
+          {/* 🔥 contenido real de Calificar va acá */}
         </View>
       </ScrollView>
 
       {/* MENÚ INFERIOR */}
       <View style={styles.tabbarContainer}>
-        <SafeAreaView edges={['bottom']} style={styles.tabbar}>
+        <SafeAreaView
+          edges={['bottom']}
+          style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]} // ✅ respeta safe area
+        >
           <MainView />
         </SafeAreaView>
       </View>

@@ -25,8 +25,9 @@ export default StyleSheet.create({
     elevation: 8,
   },
   tabbar: {
-    height: TABBAR_HEIGHT,
+    minHeight: TABBAR_HEIGHT, // ✅ altura mínima
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
 });

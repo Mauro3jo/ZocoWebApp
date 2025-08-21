@@ -14,9 +14,9 @@ import TarjetasCapsulaMobile from '../components/Inicio/TarjetasCapsulaMobile';
 import { InicioAhorroContext } from '../src/context/InicioAhorroContext';
 import { DatosInicioContext } from '../src/context/DatosInicioContext';
 
-import styles from './Inicio.styles'; // ✅ mismo folder
+import styles from './Inicio.styles';
 
-const TABBAR_HEIGHT = 64; // altura visual del menú
+const TABBAR_HEIGHT = 64;
 
 export default function Inicio() {
   const insets = useSafeAreaInsets();
@@ -81,7 +81,10 @@ export default function Inicio() {
 
       {/* Menú fijo abajo con safe area real */}
       <View style={styles.tabbarContainer}>
-        <SafeAreaView edges={['bottom']} style={styles.tabbar}>
+        <SafeAreaView
+          edges={['bottom']}
+          style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]} // ✅ respeta safe area
+        >
           <MainView />
         </SafeAreaView>
       </View>
