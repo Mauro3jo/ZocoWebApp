@@ -39,7 +39,7 @@ export default function Login() {
 
   // refrescos de contextos (mobile)
   const { fetchDatosInicioAhorro } = useContext(InicioAhorroContext) ?? {};
-  const { refreshAll } = useContext(DatosInicioContext) ?? {};
+  const { refreshAll, setFiltrosDefault } = useContext(DatosInicioContext) ?? {};
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -58,25 +58,27 @@ export default function Login() {
       if (data.rol === 0) {
         const nombre = data?.usuario?.Nombre ?? data?.usuario?.nombre ?? '';
 
-        // Guarda SOLO token y Nombre
+        // 🔹 BORRA primero cualquier filtro o datos de sesión previa
+        await AsyncStorage.multiRemove(['filtrosSeleccionados', 'token', 'Nombre']);
+
+        // 🔹 Reinicia filtros en memoria
+        setFiltrosDefault?.();
+
+        // 🔹 Ahora guarda SOLO token y Nombre de esta sesión
         await AsyncStorage.multiSet([
           ['token', data.token],
           ['Nombre', nombre],
         ]);
 
-        // Asegura persistencia antes de cambiar de pantalla
-        await AsyncStorage.getItem('token');
-
-        // Cargar datos necesarios ANTES de salir del login
-        // (aunque el usuario no tenga históricos, las llamadas terminan)
+        // 🔹 Cargar datos necesarios ANTES de navegar
         await Promise.all([
           fetchDatosInicioAhorro?.(),
           refreshAll?.(),
-        ]).catch(() => { /* evitamos romper el flujo si alguna falla */ });
+        ]).catch(() => {});
 
         setPassword('');
 
-        // Recién ahora navegamos
+        // 🔹 Recién ahora navegamos
         navigation.reset({
           index: 0,
           routes: [{ name: 'Inicio' }],

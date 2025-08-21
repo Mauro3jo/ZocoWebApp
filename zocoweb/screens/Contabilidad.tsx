@@ -1,39 +1,52 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useContext } from "react";
+import { View, ScrollView } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
-import HeaderPrincipal from '../components/HeaderPrincipal';
-import FiltrosBar from '../components/FiltrosBar';
-import MainView from '../components/MainView';
+import HeaderPrincipal from "../components/HeaderPrincipal";
+import FiltrosBar from "../components/FiltrosBar";
+import MainView from "../components/MainView";
 
-import styles from './Contabilidad.styles';
+import DatosContabilidadMobile from "../components/Contabilidad/DatosContabilidadMobile";
+import ImpuestosCardsMobile from "../components/Contabilidad/ImpuestosCardsMobile";
+import TablaContabilidadArchivosMobile from "../components/Contabilidad/TablaContabilidadArchivosMobile";
+
+import { DatosInicioContext } from "../src/context/DatosInicioContext";
+
+import styles from "./Contabilidad.styles";
 
 const TABBAR_HEIGHT = 64;
 
 export default function Contabilidad() {
   const insets = useSafeAreaInsets();
 
+  // 🔹 consumir datos desde el contexto
+  const { datosContabilidadContext } =
+    useContext(DatosInicioContext) ?? { datosContabilidadContext: null };
+
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      {/* HEADER + FILTROS */}
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <HeaderPrincipal />
       <FiltrosBar />
 
-      {/* CONTENIDO SCROLLEABLE */}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: TABBAR_HEIGHT + 16 }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ padding: 20 }}>
-          {/* tu contenido de contabilidad */}
-        </View>
+        {/* 🔹 SIEMPRE mostrar todo (como en la versión web) */}
+        <DatosContabilidadMobile datosBack={datosContabilidadContext} />
+
+        <ImpuestosCardsMobile datosBack={datosContabilidadContext} />
+
+        <TablaContabilidadArchivosMobile
+          datosBack={datosContabilidadContext?.archivos}
+        />
       </ScrollView>
 
-      {/* MENÚ INFERIOR (respeta barra del sistema) */}
+      {/* Menú fijo abajo */}
       <View style={styles.tabbarContainer}>
         <SafeAreaView
-          edges={['bottom']}
+          edges={["bottom"]}
           style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}
         >
           <MainView />
