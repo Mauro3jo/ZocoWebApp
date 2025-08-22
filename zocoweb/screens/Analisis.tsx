@@ -9,7 +9,7 @@ import MainView from "../components/MainView";
 
 import DatosAnalisisMobile from "../components/Analisis/DatosAnalisisMobile";
 import EvolucionMensual3BarrasMobile from "../components/Analisis/EvolucionMensual3BarrasMobile";
-// import TripleGraficoAnalisisMobile from "../components/Analisis/TripleGraficoAnalisisMobile";
+import TripleGraficoAnalisisMobile from "../components/Analisis/TripleGraficoAnalisisMobile"; // 👈 agregado
 
 import { DatosInicioContext } from "../src/context/DatosInicioContext";
 import styles from "./Analisis.styles";
@@ -35,10 +35,11 @@ export default function Analisis() {
         <View style={{ padding: 20 }}>
           <DatosAnalisisMobile datosBack={datosAnalisisContext} />
 
-          {/* 👇 agregado */}
+          {/* Evolución mensual */}
           <EvolucionMensual3BarrasMobile datosBack={datosAnalisisContext} />
 
-          {/* <TripleGraficoAnalisisMobile datosBack={datosAnalisisContext} /> */}
+          {/* Triple gráfico (ventas por tipo de pago, ticket promedio, cuotas) */}
+          <TripleGraficoAnalisisMobile datosBack={datosAnalisisContext} />
         </View>
       </ScrollView>
 
