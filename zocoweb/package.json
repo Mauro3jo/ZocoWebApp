@@ -1,9 +1,11 @@
 {
   "name": "zocoweb",
   "version": "1.0.0",
+  "private": true,
   "main": "index.ts",
+  "packageManager": "npm@10.8.1",
+  "engines": { "node": ">=18 <23" },
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -19,6 +21,7 @@
     "expo-file-system": "~18.1.11",
     "expo-sharing": "~13.1.5",
     "expo-status-bar": "~2.2.3",
+    "expo-print": "~14.1.4",
     "react": "19.0.0",
     "react-native": "0.79.5",
     "react-native-awesome-alerts": "^2.0.0",
@@ -30,8 +33,7 @@
     "react-native-screens": "~4.11.1",
     "react-native-svg": "15.11.2",
     "react-native-vector-icons": "^10.3.0",
-    "victory-native": "^41.19.3",
-    "expo-print": "~14.1.4"
+    "victory-native": "^41.19.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -42,6 +44,5 @@
   },
   "resolutions": {
     "com.google.android.material:material": "1.11.0"
-  },
-  "private": true
+  }
 }
