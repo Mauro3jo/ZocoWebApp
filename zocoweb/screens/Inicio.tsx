@@ -1,5 +1,6 @@
-import React, { useContext, useMemo } from 'react';
-import { View, ScrollView } from 'react-native';
+// src/screens/Inicio.tsx
+import React, { useContext, useMemo, useState } from 'react';
+import { View, ScrollView, LayoutChangeEvent } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HeaderPrincipal from '../components/HeaderPrincipal';
@@ -15,8 +16,6 @@ import { InicioAhorroContext } from '../src/context/InicioAhorroContext';
 import { DatosInicioContext } from '../src/context/DatosInicioContext';
 
 import styles from './Inicio.styles';
-
-const TABBAR_HEIGHT = 64;
 
 export default function Inicio() {
   const insets = useSafeAreaInsets();
@@ -53,6 +52,11 @@ export default function Inicio() {
     return Array.isArray(arr) && arr.length > 0;
   }, [datosBackContext]);
 
+  // 🔹 altura real del tabbar
+  const [tabbarHeight, setTabbarHeight] = useState(0);
+  const onTabbarLayout = (e: LayoutChangeEvent) =>
+    setTabbarHeight(e.nativeEvent.layout.height);
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <HeaderPrincipal />
@@ -60,7 +64,7 @@ export default function Inicio() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: TABBAR_HEIGHT + 16 }}
+        contentContainerStyle={{ paddingBottom: tabbarHeight }} // ✅ adaptativo
         showsVerticalScrollIndicator={false}
       >
         <TituloPaginaAhorroMobile
@@ -80,10 +84,14 @@ export default function Inicio() {
       </ScrollView>
 
       {/* Menú fijo abajo con safe area real */}
-      <View style={styles.tabbarContainer}>
+      <View
+        style={styles.tabbarContainer}
+        pointerEvents="box-none"
+        onLayout={onTabbarLayout} // 👈 medimos altura real del tabbar
+      >
         <SafeAreaView
           edges={['bottom']}
-          style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]} // ✅ respeta safe area
+          style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}
         >
           <MainView />
         </SafeAreaView>

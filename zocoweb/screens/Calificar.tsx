@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
+// src/screens/Calificar.tsx
+import React, { useState } from 'react';
+import { View, ScrollView, LayoutChangeEvent } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HeaderPrincipal from '../components/HeaderPrincipal';
@@ -8,10 +9,14 @@ import MainView from '../components/MainView';
 
 import styles from './Calificar.Style';
 
-const TABBAR_HEIGHT = 64;
-
 export default function Calificar() {
   const insets = useSafeAreaInsets();
+
+  // 👉 medimos altura real del tabbar (minHeight + safe area + padding)
+  const [tabbarHeight, setTabbarHeight] = useState(0);
+  const onTabbarLayout = (e: LayoutChangeEvent) => {
+    setTabbarHeight(e.nativeEvent.layout.height);
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -22,7 +27,7 @@ export default function Calificar() {
       {/* CONTENIDO SCROLLEABLE */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: TABBAR_HEIGHT + 16 }}
+        contentContainerStyle={{ paddingBottom: tabbarHeight }} // 👈 adaptativo
         showsVerticalScrollIndicator={false}
       >
         <View style={{ padding: 20 }}>
@@ -31,10 +36,14 @@ export default function Calificar() {
       </ScrollView>
 
       {/* MENÚ INFERIOR */}
-      <View style={styles.tabbarContainer}>
+      <View
+        style={styles.tabbarContainer}
+        pointerEvents="box-none"
+        onLayout={onTabbarLayout} // 👈 medimos
+      >
         <SafeAreaView
           edges={['bottom']}
-          style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]} // ✅ respeta safe area
+          style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]} // respeta safe area
         >
           <MainView />
         </SafeAreaView>

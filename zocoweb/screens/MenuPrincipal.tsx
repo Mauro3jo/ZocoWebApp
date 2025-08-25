@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+// src/screens/MenuPrincipal.tsx
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Image, ScrollView, LayoutChangeEvent } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import IconMC from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMI from 'react-native-vector-icons/MaterialIcons';
@@ -31,6 +32,11 @@ const menuItems = [
 
 export default function MenuPrincipal({ navigation }) {
   const insets = useSafeAreaInsets();
+
+  // 🔹 medir altura real del tabbar
+  const [tabbarHeight, setTabbarHeight] = useState(0);
+  const onTabbarLayout = (e: LayoutChangeEvent) =>
+    setTabbarHeight(e.nativeEvent.layout.height);
 
   const handleNavigation = (key: string) => {
     switch (key) {
@@ -82,7 +88,7 @@ export default function MenuPrincipal({ navigation }) {
       {/* MENÚ PRINCIPAL */}
       <ScrollView
         style={styles.menuList}
-        contentContainerStyle={[styles.menuListContent, { paddingBottom: 90 }]}
+        contentContainerStyle={[styles.menuListContent, { paddingBottom: tabbarHeight }]} // ✅ adaptativo
         showsVerticalScrollIndicator={false}
       >
         {menuItems.map((item) => (
@@ -113,7 +119,11 @@ export default function MenuPrincipal({ navigation }) {
       </View>
 
       {/* MENÚ INFERIOR con SafeArea y padding dinámico */}
-      <View style={styles.tabbarContainer}>
+      <View
+        style={styles.tabbarContainer}
+        pointerEvents="box-none"
+        onLayout={onTabbarLayout} // 👈 medimos
+      >
         <SafeAreaView
           edges={['bottom']}
           style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}

@@ -1,5 +1,6 @@
-import React, { useContext, useMemo } from "react";
-import { View } from "react-native";
+// src/screens/Cupones.tsx
+import React, { useContext, useMemo, useState } from "react";
+import { View, LayoutChangeEvent } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import HeaderPrincipal from "../components/HeaderPrincipal";
@@ -11,8 +12,6 @@ import DatosTicketsMobile from "../components/Cupones/DatosTicketsMobile";
 import TablaTicketsMobile from "../components/Cupones/TablaTicketsMobile";
 
 import styles from "./Cupones.styles";
-
-const TABBAR_HEIGHT = 64;
 
 export default function Cupones() {
   const insets = useSafeAreaInsets();
@@ -26,6 +25,11 @@ export default function Cupones() {
     [datosCuponesContext?.listaMes]
   );
 
+  // 🔹 altura real del tabbar
+  const [tabbarHeight, setTabbarHeight] = useState(0);
+  const onTabbarLayout = (e: LayoutChangeEvent) =>
+    setTabbarHeight(e.nativeEvent.layout.height);
+
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <HeaderPrincipal />
@@ -35,12 +39,18 @@ export default function Cupones() {
         <TablaTicketsMobile
           listaMes={listaMes}
           datos={datos}
-          headerComponent={<DatosTicketsMobile datosCuponesContext={datosCuponesContext} />}
-          bottomPadding={TABBAR_HEIGHT + Math.max(insets.bottom, 8)}
+          headerComponent={
+            <DatosTicketsMobile datosCuponesContext={datosCuponesContext} />
+          }
+          bottomPadding={tabbarHeight} // ✅ adaptativo
         />
       </View>
 
-      <View style={styles.tabbarContainer}>
+      <View
+        style={styles.tabbarContainer}
+        pointerEvents="box-none"
+        onLayout={onTabbarLayout} // 👈 medimos
+      >
         <SafeAreaView
           edges={["bottom"]}
           style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}

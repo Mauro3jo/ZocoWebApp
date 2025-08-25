@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
-import { View, ScrollView } from "react-native";
+// src/screens/Contabilidad.tsx
+import React, { useContext, useState } from "react";
+import { View, ScrollView, LayoutChangeEvent } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import HeaderPrincipal from "../components/HeaderPrincipal";
@@ -14,14 +15,17 @@ import { DatosInicioContext } from "../src/context/DatosInicioContext";
 
 import styles from "./Contabilidad.styles";
 
-const TABBAR_HEIGHT = 64;
-
 export default function Contabilidad() {
   const insets = useSafeAreaInsets();
 
-  // 🔹 consumir datos desde el contexto
+  // 🔹 datos desde el contexto
   const { datosContabilidadContext } =
     useContext(DatosInicioContext) ?? { datosContabilidadContext: null };
+
+  // 🔹 medir altura real del tabbar para el padding del ScrollView
+  const [tabbarHeight, setTabbarHeight] = useState(0);
+  const onTabbarLayout = (e: LayoutChangeEvent) =>
+    setTabbarHeight(e.nativeEvent.layout.height);
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
@@ -30,10 +34,10 @@ export default function Contabilidad() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: TABBAR_HEIGHT + 16 }}
+        contentContainerStyle={{ paddingBottom: tabbarHeight }} // ✅ adaptativo
         showsVerticalScrollIndicator={false}
       >
-        {/* 🔹 SIEMPRE mostrar todo (como en la versión web) */}
+        {/* 🔹 SIEMPRE mostrar todo (como en web) */}
         <DatosContabilidadMobile datosBack={datosContabilidadContext} />
 
         <ImpuestosCardsMobile datosBack={datosContabilidadContext} />
@@ -44,7 +48,11 @@ export default function Contabilidad() {
       </ScrollView>
 
       {/* Menú fijo abajo */}
-      <View style={styles.tabbarContainer}>
+      <View
+        style={styles.tabbarContainer}
+        pointerEvents="box-none"
+        onLayout={onTabbarLayout} // 👈 medimos altura
+      >
         <SafeAreaView
           edges={["bottom"]}
           style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}
