@@ -29,4 +29,30 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  // 🔹 Toggle de simulador
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
+    paddingHorizontal: 20,
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 10,
+    marginHorizontal: 5,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  toggleActive: {
+    backgroundColor: '#B1C20E',
+  },
+  toggleInactive: {
+    backgroundColor: '#E3E6EE',
+  },
+  toggleText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 });
