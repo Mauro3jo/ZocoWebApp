@@ -23,7 +23,7 @@ export default function Analisis() {
     setTabbarHeight(e.nativeEvent.layout.height);
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right", "bottom"]}>
       <HeaderPrincipal />
       <FiltrosBar />
 
@@ -40,7 +40,11 @@ export default function Analisis() {
       </ScrollView>
 
       {/* Tab bar fija, medimos su alto y lo aplicamos arriba */}
-      <View style={styles.tabbarContainer} pointerEvents="box-none" onLayout={onTabbarLayout}>
+      <View
+        style={styles.tabbarContainer}
+        pointerEvents="box-none"
+        onLayout={onTabbarLayout}
+      >
         <SafeAreaView
           edges={["bottom"]}
           style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}

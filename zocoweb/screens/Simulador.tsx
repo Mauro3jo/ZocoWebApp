@@ -18,7 +18,7 @@ export default function Simulador() {
     setTabbarHeight(e.nativeEvent.layout.height);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       {/* HEADER + FILTROS */}
       <HeaderPrincipal />
       <FiltrosBar />
@@ -47,6 +47,4 @@ export default function Simulador() {
           <MainView />
         </SafeAreaView>
       </View>
-    </SafeAreaView>
-  );
-}
+    </S
