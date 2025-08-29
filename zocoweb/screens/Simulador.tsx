@@ -47,4 +47,6 @@ export default function Simulador() {
           <MainView />
         </SafeAreaView>
       </View>
-    </S
+    </SafeAreaView>
+  );
+}
