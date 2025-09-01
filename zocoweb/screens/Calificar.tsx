@@ -1,25 +1,84 @@
 // src/screens/Calificar.tsx
-import React, { useState } from 'react';
-import { View, ScrollView, LayoutChangeEvent } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  ScrollView,
+  LayoutChangeEvent,
+  Alert,
+  Platform,
+} from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
-import HeaderPrincipal from '../components/HeaderPrincipal';
-import FiltrosBar from '../components/FiltrosBar';
-import MainView from '../components/MainView';
+import HeaderPrincipal from "../components/HeaderPrincipal";
+import FiltrosBar from "../components/FiltrosBar";
+import MainView from "../components/MainView";
+import FormComentarioCalificarMobile from "../components/Calificar/FormComentarioCalificarMobile";
 
-import styles from './Calificar.Style';
+import styles from "./Calificar.Style";
+import { REACT_APP_API_TOKEN } from "@env";
 
 export default function Calificar() {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
 
   // 👉 medimos altura real del tabbar (minHeight + safe area + padding)
   const [tabbarHeight, setTabbarHeight] = useState(0);
-  const onTabbarLayout = (e: LayoutChangeEvent) => {
+  const onTabbarLayout = (e: LayoutChangeEvent) =>
     setTabbarHeight(e.nativeEvent.layout.height);
-  };
+
+  // ✅ Validación de token (mismo flujo que web)
+  useEffect(() => {
+    const verificarToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (!token) {
+          manejarNoAutorizado();
+          return;
+        }
+
+        const resp = await fetch(REACT_APP_API_TOKEN, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ Token: token }),
+        });
+
+        if (!resp.ok) {
+          if (resp.status === 401) manejarNoAutorizado();
+          return;
+        }
+
+        const data = await resp.json();
+        // En tu web: si data !== 0 => acceso denegado
+        if (data !== 0) manejarAccesoDenegado();
+      } catch (err) {
+        // Si falla la validación por red, opcionalmente podés permitir ver la pantalla
+        // o mandar a inicio. Mantengo consistente con web: tratar como no autorizado.
+        manejarNoAutorizado();
+      }
+    };
+
+    const manejarNoAutorizado = () => {
+      AsyncStorage.removeItem("token");
+      Alert.alert(
+        "Sesión expirada o token inválido",
+        "Iniciá sesión nuevamente.",
+        [{ text: "OK", onPress: () => navigation.replace("Inicio") }]
+      );
+    };
+
+    const manejarAccesoDenegado = () => {
+      Alert.alert("Acceso denegado", "No tenés permisos para acceder.", [
+        { text: "OK", onPress: () => navigation.replace("Inicio") },
+      ]);
+    };
+
+    verificarToken();
+  }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       {/* HEADER + FILTROS */}
       <HeaderPrincipal />
       <FiltrosBar />
@@ -27,11 +86,13 @@ export default function Calificar() {
       {/* CONTENIDO SCROLLEABLE */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: tabbarHeight }} // 👈 adaptativo
+        contentContainerStyle={{ paddingBottom: tabbarHeight }}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={{ padding: 20 }}>
-          {/* 🔥 contenido real de Calificar va acá */}
+          {/* ⭐ Calificar (estrellas + comentario) */}
+          <FormComentarioCalificarMobile />
         </View>
       </ScrollView>
 
@@ -39,11 +100,14 @@ export default function Calificar() {
       <View
         style={styles.tabbarContainer}
         pointerEvents="box-none"
-        onLayout={onTabbarLayout} // 👈 medimos
+        onLayout={onTabbarLayout}
       >
         <SafeAreaView
-          edges={['bottom']}
-          style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]} // respeta safe area
+          edges={["bottom"]}
+          style={[
+            styles.tabbar,
+            { paddingBottom: Math.max(insets.bottom, Platform.OS === "ios" ? 8 : 10) },
+          ]}
         >
           <MainView />
         </SafeAreaView>
