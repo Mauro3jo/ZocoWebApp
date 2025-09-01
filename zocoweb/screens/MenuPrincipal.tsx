@@ -1,6 +1,13 @@
 // src/screens/MenuPrincipal.tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, LayoutChangeEvent } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  LayoutChangeEvent,
+} from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import IconMC from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMI from 'react-native-vector-icons/MaterialIcons';
@@ -20,54 +27,41 @@ const icons = {
 const logo = require('../assets/img/Logo-login.png');
 
 const menuItems = [
-  { key: 'inicio', icon: <Image source={icons.inicio} style={styles.menuIcon} />, label: 'Inicio' },
-  { key: 'contabilidad', icon: <Image source={icons.contabilidad} style={styles.menuIcon} />, label: 'Contabilidad' },
-  { key: 'analisis', icon: <IconMC name="magnify" size={28} color="#B1C20E" />, label: 'Análisis' },
-  { key: 'cupones', icon: <Image source={icons.cupones} style={styles.menuIcon} />, label: 'Cupones' },
-  { key: 'calificar', icon: <Image source={icons.calificar} style={styles.menuIcon} />, label: 'Calificar' },
-  { key: 'consultas', icon: <Image source={icons.consultas} style={styles.menuIcon} />, label: 'Consultas' },
-  { key: 'simulador', icon: <Image source={icons.simulador} style={styles.menuIcon} />, label: 'Simulador' },
-  { key: 'postventa', icon: <Image source={icons.postventa} style={styles.menuIcon} />, label: 'Postventa' },
+  { key: 'inicio',        icon: <Image source={icons.inicio} style={styles.menuIcon} />,      label: 'Inicio' },
+  { key: 'contabilidad',  icon: <Image source={icons.contabilidad} style={styles.menuIcon} />,label: 'Contabilidad' },
+  { key: 'analisis',      icon: <IconMC name="magnify" size={28} color="#B1C20E" />,          label: 'Análisis' },
+  { key: 'cupones',       icon: <Image source={icons.cupones} style={styles.menuIcon} />,     label: 'Cupones' },
+  { key: 'calificar',     icon: <Image source={icons.calificar} style={styles.menuIcon} />,   label: 'Calificar' },
+  { key: 'consultas',     icon: <Image source={icons.consultas} style={styles.menuIcon} />,   label: 'Consultas' },
+  { key: 'simulador',     icon: <Image source={icons.simulador} style={styles.menuIcon} />,   label: 'Simulador' },
+  { key: 'postventa',     icon: <Image source={icons.postventa} style={styles.menuIcon} />,   label: 'Postventa' },
 ];
 
 export default function MenuPrincipal({ navigation }) {
   const insets = useSafeAreaInsets();
 
-  // 🔹 medir altura real del tabbar
+  // medir altura real del tabbar (minHeight + safe area + padding)
   const [tabbarHeight, setTabbarHeight] = useState(0);
-  const onTabbarLayout = (e: LayoutChangeEvent) =>
+  const onTabbarLayout = (e: LayoutChangeEvent) => {
     setTabbarHeight(e.nativeEvent.layout.height);
+  };
 
   const handleNavigation = (key: string) => {
     switch (key) {
-      case 'inicio':
-        navigation.navigate('Inicio');
-        break;
-      case 'contabilidad':
-        navigation.navigate('Contabilidad');
-        break;
-      case 'analisis':
-        navigation.navigate('Analisis');
-        break;
-      case 'cupones':
-        navigation.navigate('Cupones');
-        break;
-      case 'calificar':
-        navigation.navigate('Calificar');
-        break;
-      case 'consultas':
-        navigation.navigate('Consultas');
-        break;
-      case 'simulador':
-        navigation.navigate('Simulador');
-        break;
-      case 'postventa':
-        navigation.navigate('Postventa');
-        break;
-      default:
-        console.log('Ruta no definida:', key);
+      case 'inicio':        navigation.navigate('Inicio');       break;
+      case 'contabilidad':  navigation.navigate('Contabilidad'); break;
+      case 'analisis':      navigation.navigate('Analisis');     break;
+      case 'cupones':       navigation.navigate('Cupones');      break;
+      case 'calificar':     navigation.navigate('Calificar');    break;
+      case 'consultas':     navigation.navigate('Consultas');    break;
+      case 'simulador':     navigation.navigate('Simulador');    break;
+      case 'postventa':     navigation.navigate('Postventa');    break;
+      default:              console.log('Ruta no definida:', key);
     }
   };
+
+  // Altura extra para que ScrollView no tape el botón “Salir”
+  const EXIT_BTN_HEIGHT_PAD = 90;
 
   return (
     <View style={styles.container}>
@@ -88,7 +82,13 @@ export default function MenuPrincipal({ navigation }) {
       {/* MENÚ PRINCIPAL */}
       <ScrollView
         style={styles.menuList}
-        contentContainerStyle={[styles.menuListContent, { paddingBottom: tabbarHeight }]} // ✅ adaptativo
+        contentContainerStyle={[
+          styles.menuListContent,
+          {
+            // ✅ deja espacio para botón Salir + tabbar + safe area
+            paddingBottom: tabbarHeight + Math.max(insets.bottom, 8) + EXIT_BTN_HEIGHT_PAD,
+          },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         {menuItems.map((item) => (
@@ -105,24 +105,36 @@ export default function MenuPrincipal({ navigation }) {
         ))}
       </ScrollView>
 
-      {/* BOTÓN SALIR */}
-      <View style={[styles.exitButtonContainer, { marginBottom: insets.bottom + 60 }]}>
+      {/* BOTÓN SALIR (absoluto y siempre encima del tabbar) */}
+      <View
+        style={[
+          styles.exitButtonContainer,
+          {
+            position: 'absolute',
+            left: 20,
+            right: 20,
+            // 👇 lo colocamos justo arriba del tabbar + safe area
+            bottom: tabbarHeight + Math.max(insets.bottom, 8) + 12,
+          },
+        ]}
+      >
         <TouchableOpacity
           style={styles.exitButton}
           onPress={() => {
             navigation.replace('Welcome');
           }}
+          activeOpacity={0.8}
         >
           <Image source={icons.salir} style={styles.exitIcon} />
           <Text style={styles.exitLabel}>Salir</Text>
         </TouchableOpacity>
       </View>
 
-      {/* MENÚ INFERIOR con SafeArea y padding dinámico */}
+      {/* MENÚ INFERIOR (tabbar) con SafeArea y padding dinámico */}
       <View
         style={styles.tabbarContainer}
         pointerEvents="box-none"
-        onLayout={onTabbarLayout} // 👈 medimos
+        onLayout={onTabbarLayout} // medimos
       >
         <SafeAreaView
           edges={['bottom']}

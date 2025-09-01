@@ -1,48 +1,42 @@
-// src/screens/Consultas.tsx
-import React, { useState } from 'react';
-import { View, ScrollView, LayoutChangeEvent } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { View, LayoutChangeEvent } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
-import HeaderPrincipal from '../components/HeaderPrincipal';
-import FiltrosBar from '../components/FiltrosBar';
-import MainView from '../components/MainView';
+import HeaderPrincipal from "../components/HeaderPrincipal";
+import FiltrosBar from "../components/FiltrosBar";
+import MainView from "../components/MainView";
+import ContenidoConsultasAliados from "../components/Consultas/ContenidoConsultasAliados";
 
-import styles from './Consultas.styles';
+import styles from "./Consultas.styles";
 
 export default function Consultas() {
   const insets = useSafeAreaInsets();
 
-  // Mide la altura real del tabbar (incluye safe area/paddings)
+  // medimos altura real del tabbar (minHeight + safe area + padding)
   const [tabbarHeight, setTabbarHeight] = useState(0);
   const onTabbarLayout = (e: LayoutChangeEvent) => {
     setTabbarHeight(e.nativeEvent.layout.height);
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
-      {/* HEADER + FILTROS */}
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      {/* HEADER + FILTROS (fijos) */}
       <HeaderPrincipal />
       <FiltrosBar />
 
-      {/* CONTENIDO SCROLLEABLE */}
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: tabbarHeight }} // ✅ adaptativo
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={{ padding: 20 }}>
-          {/* contenido real de Consultas */}
-        </View>
-      </ScrollView>
+      {/* CONTENIDO (sin ScrollView; el FlatList interno maneja el scroll) */}
+      <View style={[styles.scroll, { paddingHorizontal: 20 }]}>
+        <ContenidoConsultasAliados contentBottomPadding={tabbarHeight} />
+      </View>
 
       {/* MENÚ INFERIOR */}
       <View
         style={styles.tabbarContainer}
         pointerEvents="box-none"
-        onLayout={onTabbarLayout} // 👈 medimos
+        onLayout={onTabbarLayout}
       >
         <SafeAreaView
-          edges={['bottom']}
+          edges={["bottom"]}
           style={[styles.tabbar, { paddingBottom: Math.max(insets.bottom, 8) }]}
         >
           <MainView />

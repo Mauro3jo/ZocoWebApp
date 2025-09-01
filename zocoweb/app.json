@@ -7,9 +7,11 @@
     "icon": "./assets/img/Z.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+
     "splash": {
       "backgroundColor": "#000000"
     },
+
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mauro3jo.zocoweb",
@@ -17,22 +19,50 @@
         "ITSAppUsesNonExemptEncryption": false
       }
     },
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/img/Z.png",
         "backgroundColor": "#000000"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.mauro3jo.zocoweb"
+
     },
+
+    "androidStatusBar": {
+      "backgroundColor": "#F4F6FA",
+      "barStyle": "dark-content",
+      "translucent": false
+    },
+
+    "androidNavigationBar": {
+      "backgroundColor": "#000000",
+      "barStyle": "light-content",
+      "visible": "visible"
+    },
+
+    "plugins": [
+      [
+        "expo-navigation-bar",
+        {
+          "backgroundColor": "#000000",
+          "barStyle": "light",
+          "behavior": "inset-swipe",
+          "position": "relative"
+        }
+      ]
+    ],
+
     "web": {
       "favicon": "./assets/img/Z.png"
     },
+
     "extra": {
       "eas": {
         "projectId": "ccb04cb9-db3e-4d4e-8ac2-b495000aaae7"
       }
     },
+
     "owner": "mauro3jo"
   }
 }
