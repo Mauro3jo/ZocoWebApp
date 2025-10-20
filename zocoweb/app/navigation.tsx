@@ -1,18 +1,20 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, ActivityIndicator } from "react-native";
 
-import Welcome from '../screens/Welcome';
-import Login from '../screens/Login';
-import IntroZoco from '../screens/IntroZoco';
-import Inicio from '../screens/Inicio';
-import MenuPrincipal from '../screens/MenuPrincipal';
-import Contabilidad from '../screens/Contabilidad';
-import Analisis from '../screens/Analisis';
-import Cupones from '../screens/Cupones';
-import Consultas from '../screens/Consultas';
-import Calificar from '../screens/Calificar';
-import Simulador from '../screens/Simulador';
+import Welcome from "../screens/Welcome";
+import Login from "../screens/Login";
+import IntroZoco from "../screens/IntroZoco";
+import Inicio from "../screens/Inicio";
+import MenuPrincipal from "../screens/MenuPrincipal";
+import Contabilidad from "../screens/Contabilidad";
+import Analisis from "../screens/Analisis";
+import Cupones from "../screens/Cupones";
+import Consultas from "../screens/Consultas";
+import Calificar from "../screens/Calificar";
+import Simulador from "../screens/Simulador";
 
 export type RootStackParamList = {
   IntroZoco: undefined;
@@ -31,9 +33,40 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigation() {
+  const [initialRoute, setInitialRoute] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkInitialRoute = async () => {
+      try {
+        const welcomeSeen = await AsyncStorage.getItem("welcomeSeen");
+
+        if (!welcomeSeen) {
+          // Primera vez → mostrar IntroZoco o Welcome
+          setInitialRoute("IntroZoco");
+        } else {
+          // Ya lo vio → ir directo al Login
+          setInitialRoute("Login");
+        }
+      } catch {
+        // En caso de error, default a IntroZoco
+        setInitialRoute("IntroZoco");
+      }
+    };
+
+    checkInitialRoute();
+  }, []);
+
+  if (!initialRoute) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#B1C20E" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="IntroZoco" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
         <Stack.Screen name="IntroZoco" component={IntroZoco} />
         <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="Login" component={Login} />

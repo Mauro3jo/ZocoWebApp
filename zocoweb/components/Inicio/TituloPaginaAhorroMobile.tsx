@@ -141,18 +141,19 @@ export default function TituloPaginaAhorroMobile(props: Props) {
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    borderRadius: 12,
-    marginHorizontal: 12,
-    marginTop: 12,
-    height: 100,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
-    elevation: 2,
-  },
+wrap: {
+  borderRadius: 10,
+  marginHorizontal: 10,
+  marginTop: 10,
+  height: 72, // 🔹 antes 92 → más baja la barra
+  overflow: "hidden",
+  shadowColor: "#000",
+  shadowOpacity: 0.06,
+  shadowOffset: { width: 0, height: 3 },
+  shadowRadius: 6,
+  elevation: 2,
+},
+
   scrollerContainer: {
     flex: 1,
     justifyContent: 'center',

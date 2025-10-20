@@ -2,7 +2,8 @@ import React, { useRef } from 'react';
 import { View, Text, Image } from 'react-native';
 import { Video } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context'; // IMPORTANTE
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // ✅ agregado
 import Boton from '../components/ui/Boton';
 import Footer from '../components/layout/Footer';
 import styles from './Welcome.styles';
@@ -12,6 +13,17 @@ export default function Welcome() {
   const video = useRef(null);
   const navigation = useNavigation<any>();
   const insets = useSafeAreaInsets();
+
+  // ✅ Función que guarda el flag y navega al Login
+  const handleContinue = async () => {
+    try {
+      await AsyncStorage.setItem('welcomeSeen', 'true');
+      navigation.replace('Login'); // reemplaza en lugar de apilar
+    } catch (error) {
+      console.error('Error al guardar flag welcomeSeen:', error);
+      navigation.navigate('Login');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -40,7 +52,8 @@ export default function Welcome() {
         {/* Fondo verde, con safe area opcional */}
         <View style={[styles.footerSection, { paddingBottom: insets.bottom }]}>
           <View style={styles.buttonWrapper}>
-            <Boton text="Inicia sesión" onPress={() => navigation.navigate('Login')} />
+            {/* 🔹 Botón que guarda y saltea el Welcome */}
+            <Boton text="Inicia sesión" onPress={handleContinue} />
           </View>
         </View>
 

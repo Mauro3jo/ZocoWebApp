@@ -1,16 +1,17 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import styles from './Login.styles';
-import Footer from '../components/layout/Footer';
-import colors from '../constants/colors';
-import { API_LOGIN_URL } from '@env';
-import { InicioAhorroContext } from '../src/context/InicioAhorroContext';
-import { DatosInicioContext } from '../src/context/DatosInicioContext';
+import React, { useState, useContext, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, Image, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as LocalAuthentication from "expo-local-authentication";
+import styles from "./Login.styles";
+import Footer from "../components/layout/Footer";
+import colors from "../constants/colors";
+import { API_LOGIN_URL } from "@env";
+import { InicioAhorroContext } from "../src/context/InicioAhorroContext";
+import { DatosInicioContext } from "../src/context/DatosInicioContext";
 
 type LoginResponse = {
   usuario?: { Nombre?: string; nombre?: string } | null;
@@ -20,11 +21,9 @@ type LoginResponse = {
 
 const loginUsuario = async (usuario: string, password: string) => {
   const body = { Usuario: usuario, Password: password };
-  const response = await axios.post<LoginResponse>(
-    API_LOGIN_URL,
-    body,
-    { headers: { 'Content-Type': 'application/json' } }
-  );
+  const response = await axios.post<LoginResponse>(API_LOGIN_URL, body, {
+    headers: { "Content-Type": "application/json" },
+  });
   return response.data;
 };
 
@@ -32,69 +31,127 @@ export default function Login() {
   const navigation = useNavigation<any>();
   const insets = useSafeAreaInsets();
   const [showPassword, setShowPassword] = useState(false);
-  const [cuit, setCuit] = useState('');
-  const [password, setPassword] = useState('');
+  const [cuit, setCuit] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
 
-  // refrescos de contextos (mobile)
+  // contextos
   const { fetchDatosInicioAhorro } = useContext(InicioAhorroContext) ?? {};
   const { refreshAll, setFiltrosDefault } = useContext(DatosInicioContext) ?? {};
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleCuitChange = (text: string) => {
-    const numericOnly = text.replace(/[^0-9]/g, '');
+    const numericOnly = text.replace(/[^0-9]/g, "");
     setCuit(numericOnly.length <= 11 ? numericOnly : cuit);
   };
 
+  // 🔹 Chequear disponibilidad de biometría y preferencia guardada
+  useEffect(() => {
+    const checkBiometric = async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      const enrolled = await LocalAuthentication.isEnrolledAsync();
+      const enabled = await AsyncStorage.getItem("biometricEnabled");
+      setBiometricAvailable(compatible && enrolled);
+      setBiometricEnabled(enabled === "true");
+    };
+    checkBiometric();
+  }, []);
+
+  const navigateToInicio = () => {
+    setPassword("");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Inicio" }],
+    });
+  };
+
+  // 🔹 Login normal
   const handleLogin = async () => {
     if (loading) return;
     setError(null);
     setLoading(true);
     try {
-      const data = await loginUsuario(cuit, password); // { usuario, token, rol }
-
+      const data = await loginUsuario(cuit, password);
       if (data.rol === 0) {
-        const nombre = data?.usuario?.Nombre ?? data?.usuario?.nombre ?? '';
+        const nombre = data?.usuario?.Nombre ?? data?.usuario?.nombre ?? "";
 
-        // 🔹 BORRA primero cualquier filtro o datos de sesión previa
-        await AsyncStorage.multiRemove(['filtrosSeleccionados', 'token', 'Nombre']);
-
-        // 🔹 Reinicia filtros en memoria
+        await AsyncStorage.multiRemove(["filtrosSeleccionados", "token", "Nombre"]);
         setFiltrosDefault?.();
 
-        // 🔹 Ahora guarda SOLO token y Nombre de esta sesión
         await AsyncStorage.multiSet([
-          ['token', data.token],
-          ['Nombre', nombre],
+          ["token", data.token],
+          ["Nombre", nombre],
+          ["Usuario", cuit],
+          ["Password", password],
         ]);
 
-        // 🔹 Cargar datos necesarios ANTES de navegar
-        await Promise.all([
-          fetchDatosInicioAhorro?.(),
-          refreshAll?.(),
-        ]).catch(() => {});
+        // ✅ solo pregunta UNA vez, después de ingresar a la app
+        if (biometricAvailable) {
+          const askedBefore = await AsyncStorage.getItem("biometricAsked");
+          if (!askedBefore) {
+            await AsyncStorage.setItem("biometricAsked", "true");
+            setTimeout(() => {
+              Alert.alert(
+                "Acceso con huella",
+                "¿Querés habilitar el acceso con huella digital para futuros ingresos?",
+                [
+                  { text: "No", onPress: () => navigateToInicio() },
+                  {
+                    text: "Sí",
+                    onPress: async () => {
+                      await AsyncStorage.setItem("biometricEnabled", "true");
+                      navigateToInicio();
+                    },
+                  },
+                ]
+              );
+            }, 600);
+            return;
+          }
+        }
 
-        setPassword('');
-
-        // 🔹 Recién ahora navegamos
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Inicio' }],
-        });
+        navigateToInicio();
       } else {
-        setError('Este usuario no tiene permiso para ingresar.');
+        setError("Este usuario no tiene permiso para ingresar.");
       }
     } catch (err: any) {
       const msg =
         err?.response?.data?.mensaje ||
         err?.response?.data?.message ||
         err?.response?.data?.error ||
-        'Credenciales incorrectas';
+        "Credenciales incorrectas";
       setError(msg);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 🔹 Login con huella → hace login automático
+  const handleBiometricLogin = async () => {
+    if (!biometricEnabled) return;
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Usá tu huella para ingresar",
+      fallbackLabel: "Ingresar manualmente",
+    });
+
+    if (result.success) {
+      const savedUser = await AsyncStorage.getItem("Usuario");
+      const savedPass = await AsyncStorage.getItem("Password");
+      if (savedUser && savedPass) {
+        const data = await loginUsuario(savedUser, savedPass);
+        if (data.rol === 0) {
+          const nombre = data?.usuario?.Nombre ?? data?.usuario?.nombre ?? "";
+          await AsyncStorage.multiSet([
+            ["token", data.token],
+            ["Nombre", nombre],
+          ]);
+          navigateToInicio();
+        }
+      }
     }
   };
 
@@ -105,7 +162,7 @@ export default function Login() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-left" size={22} style={styles.backArrow} />
         </TouchableOpacity>
-        <Image source={require('../assets/img/Logo-login.png')} style={styles.logo} />
+        <Image source={require("../assets/img/Logo-login.png")} style={styles.logo} />
       </View>
 
       {/* CONTENIDO */}
@@ -142,7 +199,7 @@ export default function Login() {
           />
           <TouchableOpacity onPress={togglePasswordVisibility}>
             <Icon
-              name={showPassword ? 'eye' : 'eye-slash'}
+              name={showPassword ? "eye" : "eye-slash"}
               style={[styles.icon, { color: colors.verdeZoco }]}
             />
           </TouchableOpacity>
@@ -155,16 +212,33 @@ export default function Login() {
           </View>
         )}
 
+        {/* BOTÓN NORMAL */}
         <TouchableOpacity
           style={[styles.loginButton, loading && { opacity: 0.7 }]}
           onPress={handleLogin}
           disabled={loading}
         >
-          <Text style={styles.loginText}>{loading ? 'Cargando datos...' : 'Ingresar'}</Text>
+          <Text style={styles.loginText}>{loading ? "Cargando datos..." : "Ingresar"}</Text>
         </TouchableOpacity>
+
+        {/* BOTÓN SUTIL DE HUELLA */}
+        {biometricAvailable && biometricEnabled && (
+          <TouchableOpacity
+            style={{
+              marginTop: 25,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={handleBiometricLogin}
+          >
+            <Icon name="fingerprint" size={20} color={colors.verdeZoco} style={{ marginRight: 8 }} />
+            <Text style={{ color: "#555", fontSize: 15 }}>Ingresar con huella</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* FOOTER con safe area */}
+      {/* FOOTER */}
       <View style={[styles.footer, { paddingBottom: insets.bottom }]}>
         <Footer text="Condiciones de uso y Política de privacidad" />
       </View>
