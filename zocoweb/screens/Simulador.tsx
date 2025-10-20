@@ -40,13 +40,13 @@ export default function Simulador() {
             style={[styles.toggleButton, modo === "plazo" ? styles.toggleActive : styles.toggleInactive]}
             onPress={() => setModo("plazo")}
           >
-            <Text style={styles.toggleText}>Sim. Plazos</Text>
+            <Text style={styles.toggleText}>Plazos</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.toggleButton, modo === "monto" ? styles.toggleActive : styles.toggleInactive]}
             onPress={() => setModo("monto")}
           >
-            <Text style={styles.toggleText}>Sim. Monto</Text>
+            <Text style={styles.toggleText}>Monto</Text>
           </TouchableOpacity>
         </View>
 

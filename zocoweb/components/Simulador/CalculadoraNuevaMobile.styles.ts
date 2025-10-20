@@ -6,52 +6,63 @@ export default StyleSheet.create({
     padding: 16,
     backgroundColor: "#F4F6FA",
   },
+
   label: {
     fontSize: 16,
     fontWeight: "600",
     marginVertical: 8,
+    color: "#1C1C1C",
   },
+
+  // ===== INPUT =====
   input: {
     backgroundColor: "#dde1e8",
     borderRadius: 25,
-    padding: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     marginBottom: 16,
-  },
-  switchRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 12,
-  },
-  switchButton: {
-    padding: 10,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: "#292b2f",
-  },
-  switchActive: {
-    backgroundColor: "#b4c400",
-  },
-  switchText: {
     fontSize: 16,
-    fontWeight: "bold",
+    color: "#000",
   },
-  radioRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 12,
-  },
-  radioText: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  picker: {
+
+  // ===== PICKER IGUAL AL INPUT =====
+  pickerWrapper: {
     backgroundColor: "#dde1e8",
     borderRadius: 25,
-    marginVertical: 8,
+    marginBottom: 16,
+    justifyContent: "center",
+    height: 50,
+    paddingHorizontal: 12,
   },
+  picker: {
+    color: "#000",
+    fontSize: 16,
+    width: "100%",
+  },
+
+  // ===== SWITCH COBRAR / RECIBIR =====
+  switchRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  switchGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 15,
+  },
+  switchLabel: {
+    fontSize: 15,
+    fontWeight: "500",
+    marginRight: 6,
+    color: "#2A2A2A",
+  },
+
+  // ===== BOTÓN =====
   btn: {
     backgroundColor: "#b4c400",
-    padding: 14,
+    paddingVertical: 14,
     borderRadius: 25,
     alignItems: "center",
     marginVertical: 16,
@@ -61,6 +72,8 @@ export default StyleSheet.create({
     fontWeight: "bold",
     fontSize: 18,
   },
+
+  // ===== RESULTADOS =====
   resultCard: {
     marginTop: 20,
     padding: 16,

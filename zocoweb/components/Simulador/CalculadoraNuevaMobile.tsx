@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Switch,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useForm, Controller } from "react-hook-form";
@@ -22,9 +23,6 @@ export default function CalculadoraNuevaMobile() {
   const [isActiveDebito, setIsActiveDebito] = useState(true);
   const [selectedTarjeta, setSelectedTarjeta] = useState<any>(null);
   const [selectedCuota, setSelectedCuota] = useState<any>(null);
-  const [tipoTarjetaBanco, setTipoTarjetaBanco] = useState<string | null>(null);
-  const [showBancoOptions, setShowBancoOptions] = useState(false);
-
   const [optionsTarjeta, setOptionsTarjeta] = useState<any[]>([]);
   const [optionsCuotas, setOptionsCuotas] = useState<any[]>([]);
   const [datosTarjeta, setDatosTarjeta] = useState<any>({});
@@ -79,9 +77,6 @@ export default function CalculadoraNuevaMobile() {
     if (defaultCuota) {
       setValue("cuota", defaultCuota);
       setSelectedCuota(defaultCuota);
-      setShowBancoOptions(true);
-    } else {
-      setShowBancoOptions(false);
     }
   };
 
@@ -103,7 +98,6 @@ export default function CalculadoraNuevaMobile() {
       const cuota0 = { value: "0", label: "Cuota 0" };
       setOptionsCuotas([cuota0]);
       setSelectedCuota(cuota0);
-      setShowBancoOptions(false);
     }
   };
 
@@ -118,7 +112,6 @@ export default function CalculadoraNuevaMobile() {
       TipoDebCred: data.radio,
       TipoTarjeta: data.tarjeta.value,
       Tarjeta: data.tarjeta.label,
-      TipoTarjetaBanco: tipoTarjetaBanco,
     };
 
     try {
@@ -146,25 +139,36 @@ export default function CalculadoraNuevaMobile() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* switches Neto/Bruto */}
+      {/* switches Neto/Bruto → tipo toggle */}
       <View style={styles.switchRow}>
-        <TouchableOpacity
-          style={[styles.switchButton, isActive === "Bruto" && styles.switchActive]}
-          onPress={() => toggleActive("Bruto")}
-        >
-          <Text style={styles.switchText}>Cobrar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.switchButton, isActive === "Neto" && styles.switchActive]}
-          onPress={() => toggleActive("Neto")}
-        >
-          <Text style={styles.switchText}>Recibir</Text>
-        </TouchableOpacity>
+        <View style={styles.switchGroup}>
+          <Text style={styles.switchLabel}>Cobrar</Text>
+          <Switch
+            trackColor={{ false: "#ccc", true: "#B1C20E" }}
+            thumbColor="#fff"
+            ios_backgroundColor="#ccc"
+            value={isActive === "Bruto"}
+            onValueChange={() => toggleActive("Bruto")}
+          />
+        </View>
+
+        <View style={styles.switchGroup}>
+          <Text style={styles.switchLabel}>Recibir</Text>
+          <Switch
+            trackColor={{ false: "#ccc", true: "#B1C20E" }}
+            thumbColor="#fff"
+            ios_backgroundColor="#ccc"
+            value={isActive === "Neto"}
+            onValueChange={() => toggleActive("Neto")}
+          />
+        </View>
       </View>
 
       {/* input monto */}
       <Text style={styles.label}>
-        {isActive === "Neto" ? "¿Cuánto quieres recibir?" : "¿Cuánto quieres cobrar?"}
+        {isActive === "Neto"
+          ? "¿Cuánto querés recibir?"
+          : "¿Cuánto querés cobrar?"}
       </Text>
       <Controller
         control={control}
@@ -180,77 +184,85 @@ export default function CalculadoraNuevaMobile() {
         )}
       />
 
-      {/* radios debito/credito */}
-      <View style={styles.radioRow}>
-        <TouchableOpacity onPress={() => handleTipoTarjetaChange("Debito")}>
-          <Text style={styles.radioText}>Débito</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleTipoTarjetaChange("Credito")}>
-          <Text style={styles.radioText}>Crédito</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Picker tipo tarjeta */}
+      <Text style={styles.label}>Tipo de tarjeta</Text>
+      <Controller
+        control={control}
+        name="radio"
+        render={({ field: { onChange, value } }) => (
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={value}
+              style={styles.picker}
+              dropdownIconColor="#000"
+              onValueChange={(val) => {
+                onChange(val);
+                handleTipoTarjetaChange(val);
+              }}
+            >
+              <Picker.Item label="Débito" value="Debito" />
+              <Picker.Item label="Crédito" value="Credito" />
+            </Picker>
+          </View>
+        )}
+      />
 
-      {/* picker tarjeta */}
+      {/* Picker tarjeta */}
       <Text style={styles.label}>
-        {isActive === "Neto" ? "¿Con qué Tarjeta te pagan?" : "¿Con qué Tarjeta querés cobrar?"}
+        {isActive === "Neto"
+          ? "¿Con qué tarjeta te pagan?"
+          : "¿Con qué tarjeta querés cobrar?"}
       </Text>
       <Controller
         control={control}
         name="tarjeta"
         render={({ field: { onChange, value } }) => (
-          <Picker
-            selectedValue={value?.value}
-            style={styles.picker}
-            onValueChange={(val, index) => {
-              const tarjeta = optionsTarjeta[index];
-              onChange(tarjeta);
-              handleTarjetaChange(tarjeta);
-            }}
-          >
-            {optionsTarjeta.map((opt, idx) => (
-              <Picker.Item key={idx} label={opt.label} value={opt.value} />
-            ))}
-          </Picker>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={value?.value}
+              style={styles.picker}
+              dropdownIconColor="#000"
+              onValueChange={(val, index) => {
+                const tarjeta = optionsTarjeta[index];
+                onChange(tarjeta);
+                handleTarjetaChange(tarjeta);
+              }}
+            >
+              {optionsTarjeta.map((opt, idx) => (
+                <Picker.Item key={idx} label={opt.label} value={opt.value} />
+              ))}
+            </Picker>
+          </View>
         )}
       />
 
-      {/* picker cuotas */}
+      {/* Picker cuotas */}
       <Text style={styles.label}>¿En cuántas cuotas?</Text>
       <Controller
         control={control}
         name="cuota"
         render={({ field: { onChange, value } }) => (
-          <Picker
-            selectedValue={value?.value}
-            enabled={!isActiveDebito}
-            style={styles.picker}
-            onValueChange={(val, index) => {
-              const cuota = optionsCuotas[index];
-              onChange(cuota);
-              setSelectedCuota(cuota);
-              setShowBancoOptions(cuota?.value === "1");
-            }}
-          >
-            {optionsCuotas.map((opt, idx) => (
-              <Picker.Item key={idx} label={opt.label} value={opt.value} />
-            ))}
-          </Picker>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={value?.value}
+              enabled={!isActiveDebito}
+              style={styles.picker}
+              dropdownIconColor="#000"
+              onValueChange={(val, index) => {
+                const cuota = optionsCuotas[index];
+                onChange(cuota);
+                setSelectedCuota(cuota);
+              }}
+            >
+              {optionsCuotas.map((opt, idx) => (
+                <Picker.Item key={idx} label={opt.label} value={opt.value} />
+              ))}
+            </Picker>
+          </View>
         )}
       />
 
-      {/* banco options */}
-      {showBancoOptions && (
-        <View style={styles.radioRow}>
-          <TouchableOpacity onPress={() => setTipoTarjetaBanco("Bancarizadas")}>
-            <Text style={styles.radioText}>Bancarizadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setTipoTarjetaBanco("No Bancarizadas")}>
-            <Text style={styles.radioText}>No Bancarizadas</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* boton */}
+      {/* botón Calcular */}
       <TouchableOpacity style={styles.btn} onPress={handleSubmit(onSubmit)}>
         <Text style={styles.btnText}>Calcular</Text>
       </TouchableOpacity>
@@ -262,23 +274,20 @@ export default function CalculadoraNuevaMobile() {
             {isActiveDebito ? "Débito" : "Crédito"}
           </Text>
 
-          {/* Si recibís/cobrás */}
           <View style={styles.row}>
             <Text style={styles.textLeft}>
               {isActive === "Neto" ? "Si recibís" : "Si cobrás"}
             </Text>
             <Text style={styles.textRightBig}>$ {montoinicial ?? "0"}</Text>
           </View>
-          <View style={styles.separator} />
 
-          {/* Arancel */}
+          <View style={styles.separator} />
           <View style={styles.row}>
             <Text style={styles.textLeft}>Arancel + IVA</Text>
             <Text style={styles.textRight}>$ {comisionMasIva ?? "0"}</Text>
           </View>
-          <View style={styles.separator} />
 
-          {/* Costo financiero */}
+          <View style={styles.separator} />
           <View style={styles.row}>
             <Text style={styles.textLeft}>Costo financiero + IVA</Text>
             <Text style={styles.textRight}>
@@ -287,30 +296,26 @@ export default function CalculadoraNuevaMobile() {
                 : `$ ${costoTarjeta ?? "0"}`}
             </Text>
           </View>
-          <View style={styles.separator} />
 
-          {/* Costo anticipo */}
+          <View style={styles.separator} />
           <View style={styles.row}>
             <Text style={styles.textLeft}>Costo por anticipo + IVA</Text>
             <Text style={styles.textRight}>$ {costoAnticipo ?? "0"}</Text>
           </View>
-          <View style={styles.separator} />
 
-          {/* IIBB */}
+          <View style={styles.separator} />
           <View style={styles.row}>
             <Text style={styles.textLeft}>Ret. Prov. (IIBB)</Text>
             <Text style={styles.textRight}>$ {alicuotaFinal ?? "0"}</Text>
           </View>
-          <View style={styles.separator} />
 
-          {/* Transc */}
+          <View style={styles.separator} />
           <View style={styles.row}>
             <Text style={styles.textLeft}>Cost. Transc.</Text>
             <Text style={styles.textRight}>$ {debcredFinal ?? "0"}</Text>
           </View>
-          <View style={styles.separator} />
 
-          {/* Total */}
+          <View style={styles.separator} />
           <View style={styles.row}>
             <Text style={styles.greenLeft}>
               {isActive === "Neto" ? "Cobrás" : "Recibís"}
