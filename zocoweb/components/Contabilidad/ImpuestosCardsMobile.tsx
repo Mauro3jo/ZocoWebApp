@@ -14,7 +14,7 @@ const formatearAPeso = (valor) => {
   partes[0] = partes[0]
     .replace(/\D/g, "")
     .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return `$ ${partes.join(",")}`;
+  return `$${partes.join(",")}`;
 };
 
 const formatearValores = (...valores) => {
@@ -48,7 +48,7 @@ export default function ImpuestosCardsMobile({ datosBack }) {
   return (
     <View style={styles.container}>
       {/* IVA */}
-      <View style={styles.card}>
+      <View style={styles.cardFlat}>
         <Text style={styles.cardTitle}>IVA</Text>
 
         {/* Ventas */}
@@ -58,7 +58,7 @@ export default function ImpuestosCardsMobile({ datosBack }) {
             <Text style={styles.value}>{valoresFormateados[0]}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>IVA Débito fiscal</Text>
+            <Text style={styles.label}>IVA débito fiscal</Text>
             <Text style={styles.value}>{valoresFormateados[1]}</Text>
           </View>
           <View style={styles.row}>
@@ -74,7 +74,7 @@ export default function ImpuestosCardsMobile({ datosBack }) {
             <Text style={styles.value}>{valoresFormateados[2]}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>IVA Crédito fiscal</Text>
+            <Text style={styles.label}>IVA débito fiscal</Text>
             <Text style={styles.value}>{valoresFormateados[3]}</Text>
           </View>
           <View style={styles.row}>
@@ -83,30 +83,23 @@ export default function ImpuestosCardsMobile({ datosBack }) {
           </View>
         </View>
 
-        {/* Total Retenciones IVA */}
         <Text style={styles.retencionText}>
-          Total Ret. IVA {valoresFormateados[6]}
+          Total ret. IVA {valoresFormateados[6]}
         </Text>
       </View>
 
-      {/* IIBB + Retención Ganancias */}
-      <View style={styles.card}>
-        <View style={styles.rowSplit}>
-          {/* IIBB */}
-          <View style={styles.splitBlock}>
-            <Text style={styles.splitTitle}>IIBB</Text>
-            <Text style={styles.label}>TOTAL</Text>
-            <Text style={styles.value}>{valoresFormateados[4]}</Text>
-          </View>
+      {/* IIBB + Ret. de ganancias */}
+      <View style={styles.rowSplitContainer}>
+        <View style={styles.halfCard}>
+          <Text style={styles.splitTitle}>IIBB</Text>
+          <Text style={styles.subLabel}>TOTAL</Text>
+          <Text style={styles.splitValue}>{valoresFormateados[4]}</Text>
+        </View>
 
-          <View style={styles.divider} />
-
-          {/* Retención Ganancias */}
-          <View style={styles.splitBlock}>
-            <Text style={styles.splitTitle}>Retención de ganancias</Text>
-            <Text style={styles.label}>TOTAL</Text>
-            <Text style={styles.value}>{valoresFormateados[5]}</Text>
-          </View>
+        <View style={styles.halfCard}>
+          <Text style={styles.splitTitle}>Ret. de ganancias</Text>
+          <Text style={styles.subLabel}>TOTAL</Text>
+          <Text style={styles.splitValue}>{valoresFormateados[5]}</Text>
         </View>
       </View>
     </View>
@@ -118,69 +111,76 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 20,
   },
-  card: {
+  cardFlat: {
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 6,
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: "#ececec",
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "700",
-    color: "#1E1E2D",
+    color: "#222",
     textAlign: "center",
     marginBottom: 12,
   },
   block: {
-    marginBottom: 12,
+    marginBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    paddingBottom: 8,
+    borderBottomColor: "#e0e0e0",
+    paddingBottom: 6,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 6,
+    marginBottom: 5,
   },
   label: {
     fontSize: 14,
-    color: "#8C91A5",
+    color: "#555",
   },
   value: {
     fontSize: 14,
-    fontWeight: "700",
-    color: "#30313A",
+    fontWeight: "600",
+    color: "#1E1E2D",
   },
   retencionText: {
     marginTop: 8,
     textAlign: "center",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
     color: "#1E1E2D",
   },
-  rowSplit: {
+  rowSplitContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  splitBlock: {
-    flex: 1,
+  halfCard: {
+    flexBasis: "48.5%", // ✅ asegura mismo tamaño en todos los dispositivos
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#ececec",
+    paddingVertical: 14,
     alignItems: "center",
+    justifyContent: "center",
   },
   splitTitle: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#222",
+    marginBottom: 6,
+  },
+  subLabel: {
+    fontSize: 13,
+    color: "#777",
+    marginBottom: 4,
+  },
+  splitValue: {
     fontSize: 16,
     fontWeight: "700",
-    marginBottom: 6,
     color: "#1E1E2D",
-    textAlign: "center",
-  },
-  divider: {
-    width: 1,
-    backgroundColor: "#ddd",
-    marginHorizontal: 8,
   },
 });
