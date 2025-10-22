@@ -10,17 +10,15 @@ type Props = {
   } | null;
 };
 
-// 🔹 Helpers locales
+// 🔹 Helper para formatear a pesos
 export const formatearAPeso = (valor: number) => {
+  if (!valor || isNaN(valor)) return "$0,00";
   const valorFormateado = new Intl.NumberFormat("es-AR", {
     style: "currency",
     currency: "ARS",
+    minimumFractionDigits: 2,
   }).format(valor);
-  const partes = valorFormateado.split(",");
-  partes[0] = partes[0]
-    .replace(/\D/g, "")
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return partes.join(",");
+  return valorFormateado.replace("ARS", "").trim();
 };
 
 export default function DatosAnalisisMobile({ datosBack }: Props) {
@@ -64,15 +62,12 @@ export default function DatosAnalisisMobile({ datosBack }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Análisis</Text>
-
       <View style={styles.grid}>
         {cards.map((c, idx) => (
-          <View key={idx} style={[styles.card, styles.cardLight]}>
+          <View key={idx} style={styles.card}>
             <Text style={styles.cardTitle}>{c.title}</Text>
-            <Text style={styles.cardValue}>
-              {c.money ? c.value : c.value}
-            </Text>
+            <View style={styles.separator} />
+            <Text style={styles.cardValue}>{c.value}</Text>
           </View>
         ))}
       </View>
@@ -81,40 +76,45 @@ export default function DatosAnalisisMobile({ datosBack }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { gap: 12 },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#292B2F",
-    textAlign: "center",
-  },
+  container: { gap: 12, marginBottom: 8 },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
     justifyContent: "space-between",
   },
   card: {
     width: "48%",
-    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
     paddingVertical: 14,
-    paddingHorizontal: 12,
-    elevation: 2,
-  },
-  cardLight: {
-    backgroundColor: "#F6F7F9",
+    paddingHorizontal: 10,
+    borderWidth: 0.8,
+    borderColor: "#E3E6EE",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 3,
+    elevation: 1,
+    marginBottom: 10,
+    alignItems: "center",
   },
   cardTitle: {
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: "500",
     color: "#434751",
     textAlign: "center",
+    marginBottom: 6,
+  },
+  separator: {
+    width: "70%",
+    height: 1,
+    backgroundColor: "#DADDE5",
     marginBottom: 6,
   },
   cardValue: {
     fontSize: 20,
     fontWeight: "800",
-    color: "#292B2F",
+    color: "#1E1E2D",
     textAlign: "center",
   },
 });
