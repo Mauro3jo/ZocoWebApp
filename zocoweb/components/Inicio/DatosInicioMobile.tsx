@@ -12,34 +12,38 @@ type DatosProps = {
 
 const DatosInicioMobile: React.FC<DatosProps> = ({ datos }) => {
   const fmt = (v: number) => {
-    try {
-      const f = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(v);
-      const partes = f.split(',');
-      partes[0] = partes[0].replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      return partes.join(',');
-    } catch {
-      return `$ ${Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
-    }
+    if (!v || isNaN(v)) return '$0,00';
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      minimumFractionDigits: 2,
+    })
+      .format(v)
+      .replace('ARS', '')
+      .trim();
   };
 
   const cards = useMemo(
     () => [
       { title: 'Hoy se acredita', value: fmt(datos.totalNetoHoy) },
       { title: 'Mañana se acredita', value: fmt(datos.totalNetoMañana) },
-      { title: 'Total Bruto', value: fmt(datos.totalBrutoMes) },
-      { title: 'Total Neto', value: fmt(datos.totalNetoMes) },
+      { title: 'Total bruto', value: fmt(datos.totalBrutoMes) },
+      { title: 'Total neto', value: fmt(datos.totalNetoMes) },
     ],
     [datos]
   );
 
   return (
-    <View style={styles.wrapper}>
-      {cards.map((c, i) => (
-        <View key={i} style={[styles.card, styles.cardLight]}>
-          <Text style={styles.title}>{c.title}</Text>
-          <Text style={styles.amount}>$ {c.value}</Text>
-        </View>
-      ))}
+    <View style={styles.section}>
+      <View style={styles.wrapper}>
+        {cards.map((c, i) => (
+          <View key={i} style={styles.card}>
+            <Text style={styles.title}>{c.title}</Text>
+            <View style={styles.separator} />
+            <Text style={styles.amount}>{c.value}</Text>
+          </View>
+        ))}
+      </View>
     </View>
   );
 };
@@ -47,40 +51,51 @@ const DatosInicioMobile: React.FC<DatosProps> = ({ datos }) => {
 export default DatosInicioMobile;
 
 const styles = StyleSheet.create({
+  section: {
+    backgroundColor: '#fff', // Fondo general blanco
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    marginHorizontal: 10,
+    marginTop: 10,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.02,
+    shadowRadius: 2,
+  },
   wrapper: {
-    paddingHorizontal: 16,
-    marginTop: 12,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   card: {
     width: '48%',
-    borderRadius: 14,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
     paddingVertical: 14,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
+    alignItems: 'center',
     marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  cardLight: {
-    backgroundColor: '#FFFFFF',
   },
   title: {
-    textAlign: 'center',
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#d9d9d9',
+    width: '70%',
     marginBottom: 8,
-    color: '#2b2b2b',
   },
   amount: {
-    textAlign: 'center',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
-    letterSpacing: 0.3,
-    color: '#2b2b2b',
+    color: '#000',
+    textAlign: 'center',
   },
 });
