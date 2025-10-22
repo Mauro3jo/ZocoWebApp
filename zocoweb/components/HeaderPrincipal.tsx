@@ -2,21 +2,22 @@ import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Image,
-  Animated,
-  Easing,
+  Modal,
+  TextInput,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import IconMC from "react-native-vector-icons/MaterialCommunityIcons";
 import Z from "../assets/svg/Z.svg";
+import styles from "./HeaderPrincipal.styles";
 
 export default function HeaderPrincipal() {
   const [nombre, setNombre] = useState<string>("");
-  const [open, setOpen] = useState(false);
-  const [heightAnim] = useState(new Animated.Value(0));
+  const [modalVisible, setModalVisible] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   const loadNombre = useCallback(async () => {
     try {
@@ -33,15 +34,14 @@ export default function HeaderPrincipal() {
     }, [loadNombre])
   );
 
-  const toggleDropdown = () => {
-    const toValue = open ? 0 : 110; // altura del menú desplegable
-    Animated.timing(heightAnim, {
-      toValue,
-      duration: 250,
-      easing: Easing.ease,
-      useNativeDriver: false,
-    }).start();
-    setOpen(!open);
+  const openModal = () => {
+    setShowPasswordForm(false);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setShowPasswordForm(false);
   };
 
   return (
@@ -53,11 +53,10 @@ export default function HeaderPrincipal() {
           <Text style={styles.text}>Hola{nombre ? `, ${nombre}` : ""}!</Text>
         </View>
 
-        {/* Botón de usuario */}
         <TouchableOpacity
           style={styles.rightButton}
           activeOpacity={0.6}
-          onPress={toggleDropdown}
+          onPress={openModal}
         >
           <Image
             source={require("../assets/img/usuario.png")}
@@ -67,105 +66,74 @@ export default function HeaderPrincipal() {
         </TouchableOpacity>
       </View>
 
-      {/* MENÚ DESPLEGABLE */}
-      <Animated.View style={[styles.dropdown, { height: heightAnim }]}>
-        <View style={styles.dropdownContent}>
-          {/* Flecha para replegar */}
-          <TouchableOpacity
-            style={styles.arrowContainer}
-            onPress={toggleDropdown}
-            activeOpacity={0.7}
-          >
-            <IconMC name="chevron-up" size={22} color="#000" />
-          </TouchableOpacity>
+      {/* MODAL */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={closeModal}
+      >
+        {/* Fondo oscuro */}
+        <Pressable style={styles.overlay} onPress={closeModal} />
 
-          <Text style={styles.dropdownTitle}>{nombre || "ZOCO S.A.S"}</Text>
-          <View style={styles.line} />
-          <TouchableOpacity style={styles.changePassButton}>
-            <Text style={styles.changePassText}>Cambiar contraseña</Text>
-          </TouchableOpacity>
+        {/* Contenedor central */}
+        <View style={styles.modalContainer}>
+          {!showPasswordForm ? (
+            // 🔹 Menú principal
+            <View style={styles.modalContent}>
+              <TouchableOpacity
+                style={styles.arrowContainer}
+                onPress={closeModal}
+                activeOpacity={0.7}
+              >
+                <IconMC name="chevron-up" size={22} color="#000" />
+              </TouchableOpacity>
+
+              <Text style={styles.dropdownTitle}>{nombre || "ZOCO S.A.S"}</Text>
+              <View style={styles.line} />
+
+              <TouchableOpacity
+                style={styles.changePassButton}
+                onPress={() => setShowPasswordForm(true)}
+              >
+                <Text style={styles.changePassText}>Cambiar contraseña</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            // 🔹 Formulario
+            <View style={styles.passwordForm}>
+              <TouchableOpacity
+                style={styles.arrowContainer}
+                onPress={closeModal}
+                activeOpacity={0.7}
+              >
+                <IconMC name="chevron-up" size={22} color="#000" />
+              </TouchableOpacity>
+
+              <Text style={styles.formTitle}>Cambiar contraseña</Text>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Ingresar contraseña anterior</Text>
+                <TextInput style={styles.input} secureTextEntry />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Ingresar contraseña nueva</Text>
+                <TextInput style={styles.input} secureTextEntry />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Ingresar contraseña nueva otra vez</Text>
+                <TextInput style={styles.input} secureTextEntry />
+              </View>
+
+              <TouchableOpacity style={styles.saveButton}>
+                <Text style={styles.saveButtonText}>Guardar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
-      </Animated.View>
+      </Modal>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    marginHorizontal: 12,
-    marginTop: 4,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  left: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  text: {
-    marginLeft: 6,
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#000",
-  },
-  rightButton: {
-    padding: 5,
-  },
-  userIcon: {
-    width: 24,
-    height: 24,
-    tintColor: "#000",
-  },
-  dropdown: {
-    overflow: "hidden",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    marginHorizontal: 20,
-    marginTop: 4,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-  dropdownContent: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 8,
-  },
-  arrowContainer: {
-    position: "absolute",
-    top: 6,
-    right: 10,
-    zIndex: 2,
-  },
-  dropdownTitle: {
-    marginTop: 16,
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-    marginBottom: 4,
-  },
-  line: {
-    width: "80%",
-    height: 1,
-    backgroundColor: "#ccc",
-    marginVertical: 4,
-  },
-  changePassButton: {
-    paddingVertical: 4,
-  },
-  changePassText: {
-    fontSize: 14,
-    color: "#000",
-  },
-});
