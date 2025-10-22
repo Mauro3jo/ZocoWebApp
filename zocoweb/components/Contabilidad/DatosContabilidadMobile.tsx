@@ -7,7 +7,7 @@ const formaPesos = (numero) => {
   const monto = parseFloat(numero.toString());
   let partes = monto.toFixed(2).split(".");
   partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return `$ ${partes[0]},${partes[1]}`;
+  return `$${partes[0]},${partes[1]}`;
 };
 
 const DatosContabilidadMobile = ({ datosBack }) => {
@@ -25,42 +25,30 @@ const DatosContabilidadMobile = ({ datosBack }) => {
       {/* Fila 1 */}
       <View style={styles.row}>
         <View style={styles.card}>
-          <Text style={styles.title}>
-            Total Bruto{" "}
-            <MaterialCommunityIcons
-              name="cash-multiple"
-              size={16}
-              color="#B1C20E"
-            />
-          </Text>
+          <Text style={styles.title}>Total bruto</Text>
+          <View style={styles.line} />
           <Text style={styles.value}>{formaPesos(totalBrutoMes)}</Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.title}>
-            Total Neto{" "}
-            <MaterialCommunityIcons
-              name="cash-multiple"
-              size={16}
-              color="#B1C20E"
-            />
-          </Text>
+          <Text style={styles.title}>Total neto</Text>
+          <View style={styles.line} />
           <Text style={styles.value}>{formaPesos(totalNetoMes)}</Text>
         </View>
       </View>
 
       {/* Fila 2 */}
       <View style={styles.row}>
-        <View style={styles.cardLight}>
-          <Text style={styles.titleLight}>Total de Retenciones</Text>
-          <Text style={styles.valueLight}>
-            {formaPesos(totalRetencionesMes)}
-          </Text>
+        <View style={styles.card}>
+          <Text style={styles.title}>Total de retenciones</Text>
+          <View style={styles.line} />
+          <Text style={styles.value}>{formaPesos(totalRetencionesMes)}</Text>
         </View>
 
-        <View style={styles.cardLight}>
-          <Text style={styles.titleLight}>IVA por Comisión</Text>
-          <Text style={styles.valueLight}>{formaPesos(totalIvaMes)}</Text>
+        <View style={styles.card}>
+          <Text style={styles.title}>IVA por comisión</Text>
+          <View style={styles.line} />
+          <Text style={styles.value}>{formaPesos(totalIvaMes)}</Text>
         </View>
       </View>
     </View>
@@ -69,8 +57,8 @@ const DatosContabilidadMobile = ({ datosBack }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 12,
-    paddingHorizontal: 8,
+    marginTop: 8,
+    paddingHorizontal: 10,
   },
   row: {
     flexDirection: "row",
@@ -81,48 +69,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     borderRadius: 12,
-    padding: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
     marginHorizontal: 6,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  cardLight: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 14,
-    marginHorizontal: 6,
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: "#eee",
   },
   title: {
     textAlign: "center",
     fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 8,
-    color: "#555",
-  },
-  titleLight: {
-    textAlign: "center",
-    fontSize: 14,
     fontWeight: "400",
-    marginBottom: 8,
-    color: "#777",
+    color: "#444",
+  },
+  line: {
+    height: 1,
+    backgroundColor: "#e6e6e6",
+    width: "70%",
+    alignSelf: "center",
+    marginVertical: 8,
   },
   value: {
     textAlign: "center",
     fontSize: 18,
     fontWeight: "bold",
     color: "#1E1E2D",
-  },
-  valueLight: {
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#444",
   },
 });
 
