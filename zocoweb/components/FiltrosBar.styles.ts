@@ -22,40 +22,40 @@ export default StyleSheet.create({
   left: { flexDirection: 'row', alignItems: 'center', flex: 1 },
   text: { marginLeft: 8, fontSize: 15, color: '#8C91A5', flex: 1 },
 
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    justifyContent: 'center',
+  overlay: {
+    flex: 1,
+    backgroundColor: 'transparent',
   },
-  sheet: {
-    marginHorizontal: 16,
+  modalContainer: {
+    position: 'absolute',
+    top: 180, // justo debajo del filtro bar
+    alignSelf: 'center',
+    width: '90%',
     backgroundColor: '#fff',
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingTop: 10,
     shadowColor: '#000',
-    shadowOpacity: 0.18,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
     elevation: 10,
-    maxHeight: '80%',
   },
-  sheetHeader: {
+
+  // 🔹 Header superior con ícono
+  modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 6,
-    paddingBottom: 8,
+    justifyContent: 'center',
+    gap: 6,
+    marginBottom: 4,
   },
-  sheetTitle: {
-    fontSize: 16,
-    color: '#6f768a',
+  modalTitle: {
+    fontSize: 15,
     fontWeight: '600',
+    color: '#8C91A5',
   },
-  linkMuted: {
-    color: '#98a0b5',
-    fontSize: 14,
-  },
+
   divider: {
     height: 1,
     backgroundColor: '#eef1f6',
@@ -72,12 +72,7 @@ export default StyleSheet.create({
   },
   rowLabel: { color: '#6f768a', fontSize: 15, fontWeight: '600' },
   rowValue: { color: '#9aa0b4', fontSize: 14, marginRight: 6, maxWidth: 160 },
-
-  optionsList: {
-    maxHeight: 220,
-    marginHorizontal: 6,
-    marginBottom: 8,
-  },
+  optionsList: { maxHeight: 220, marginHorizontal: 6, marginBottom: 8 },
   opcionItem: {
     paddingVertical: 12,
     paddingHorizontal: 10,
@@ -87,35 +82,30 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  opcionItemSelected: {
-    backgroundColor: '#f3f7ea',
-  },
-  opcionText: {
-    color: '#30313A',
-    fontSize: 14,
-  },
-  opcionTextSelected: {
-    color: '#7d8d00',
-    fontWeight: '600',
-  },
-  applyBtn: {
-    alignSelf: 'center',
-    marginTop: 8,
-    marginBottom: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#eef1f6',
+  opcionItemSelected: { backgroundColor: '#f3f7ea' },
+  opcionText: { color: '#30313A', fontSize: 14 },
+  opcionTextSelected: { color: '#7d8d00', fontWeight: '600' },
+  sep: { height: 6 },
+
+  // 🔹 Barra inferior
+  bottomBar: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#eef1f6',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    marginTop: 6,
   },
-  applyText: {
-    color: '#7d8d00',
+  bottomText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#8C91A5',
+  },
+  bottomTextApply: {
+    fontSize: 15,
     fontWeight: '700',
-  },
-  sep: {
-    height: 6,
+    color: '#B1C20E',
   },
 });

@@ -10,19 +10,15 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { DatosInicioContext } from '../src/context/DatosInicioContext';
 import { REACT_APP_API_BIENVENIDO_PANEL } from '@env';
 import styles, { HITSLOP } from './FiltrosBar.styles';
 
-// === constantes ===
 const STORAGE_KEY = 'filtrosSeleccionados';
 const API_URL = REACT_APP_API_BIENVENIDO_PANEL;
 
-// === tipos ===
 type Opcion = { label: string; value: any; dias?: Date[] };
 
-// === item lista opciones ===
 const OpcionItem = ({
   item,
   selected,
@@ -44,30 +40,22 @@ const OpcionItem = ({
   </Pressable>
 );
 
-// === componente principal ===
 export default function FiltrosBar() {
   const { actualizarDatos } = useContext(DatosInicioContext) ?? {};
   const insets = useSafeAreaInsets();
 
-  // opciones dinámicas
   const [optionsAnios, setOptionsAnios] = useState<Opcion[]>([]);
   const [optionsMes, setOptionsMes] = useState<Opcion[]>([]);
   const [optionsSemanas, setOptionsSemanas] = useState<Opcion[]>([]);
   const [optionsComercio, setOptionsComercio] = useState<Opcion[]>([]);
-
-  // fechas de rango
-  const [fechaInicio, setFechaInicio] = useState<Date | null>(null);
-  const [fechaFin, setFechaFin] = useState<Date | null>(null);
-
-  // selección
   const [anio, setAnio] = useState<Opcion | null>(null);
   const [mes, setMes] = useState<Opcion | null>(null);
   const [semana, setSemana] = useState<Opcion | null>(null);
   const [comercio, setComercio] = useState<Opcion | null>(null);
-
   const [visible, setVisible] = useState(false);
+  const [fechaInicio, setFechaInicio] = useState<Date | null>(null);
+  const [fechaFin, setFechaFin] = useState<Date | null>(null);
 
-  // === fetch de API al montar ===
   useEffect(() => {
     (async () => {
       try {
@@ -83,13 +71,11 @@ export default function FiltrosBar() {
         if (!resp.ok) throw new Error('Error al cargar filtros');
         const data = await resp.json();
 
-        // Guardar fechas
         const fi = new Date(data.fechaInicio);
         const ff = new Date(data.fechaFin);
         setFechaInicio(fi);
         setFechaFin(ff);
 
-        // Comercios (incluye "Todos")
         const optionsComercios: Opcion[] = [
           { value: 'todos', label: 'Todos' },
           ...data.comercios.map((c: string) => ({
@@ -99,14 +85,12 @@ export default function FiltrosBar() {
         ];
         setOptionsComercio(optionsComercios);
 
-        // Años
         const anios: Opcion[] = [];
         for (let y = fi.getFullYear(); y <= ff.getFullYear(); y++) {
           anios.push({ value: y, label: String(y) });
         }
         setOptionsAnios(anios);
 
-        // Restaurar guardado
         const raw = await AsyncStorage.getItem(STORAGE_KEY);
         if (raw) {
           const saved = JSON.parse(raw);
@@ -125,7 +109,6 @@ export default function FiltrosBar() {
             optionsComercios[0];
           setComercio(_com);
         } else {
-          // defaults: último año/mes/semana
           const ultimoAnio = anios.at(-1)!;
           setAnio(ultimoAnio);
           actualizarMesesPorAnio(ultimoAnio.value, fi, ff);
@@ -137,7 +120,6 @@ export default function FiltrosBar() {
     })();
   }, []);
 
-  // === funciones auxiliares ===
   const actualizarMesesPorAnio = (
     anioSel: number,
     fi: Date,
@@ -147,8 +129,8 @@ export default function FiltrosBar() {
   ) => {
     const mesInicio = anioSel === fi.getFullYear() ? fi.getMonth() : 0;
     const mesFin = anioSel === ff.getFullYear() ? ff.getMonth() : 11;
-
     const optionsMeses: Opcion[] = [];
+
     for (let m = mesInicio; m <= mesFin; m++) {
       const fecha = new Date(anioSel, m, 1);
       const nombreMes = fecha.toLocaleString('es', { month: 'long' });
@@ -224,13 +206,11 @@ export default function FiltrosBar() {
     setSemana(semanaSel);
   };
 
-  // resumen
   const resumen = useMemo(() => {
     const parts = [anio?.label, mes?.label, semana?.label, comercio?.label];
     return parts.filter(Boolean).join(' · ') || 'Filtros';
   }, [anio, mes, semana, comercio]);
 
-  // limpiar
   const limpiar = async () => {
     if (optionsAnios.length && fechaInicio && fechaFin) {
       const _anio = optionsAnios.at(-1)!;
@@ -241,7 +221,6 @@ export default function FiltrosBar() {
     await AsyncStorage.removeItem(STORAGE_KEY);
   };
 
-  // aplicar
   const aplicar = async () => {
     if (!anio || !mes || !semana || !comercio) return;
     const payload = { anio, mes, semana, comercio };
@@ -263,7 +242,7 @@ export default function FiltrosBar() {
         onPress={() => setVisible(true)}
       >
         <View style={styles.left}>
-          <Icon name="filter" size={18} color="#B4C400" />
+          <Icon name="filter" size={18} color="#000" />
           <Text style={styles.text} numberOfLines={1}>
             {resumen || 'Filtros'}
           </Text>
@@ -277,84 +256,52 @@ export default function FiltrosBar() {
         transparent
         onRequestClose={() => setVisible(false)}
       >
-        <View style={styles.backdrop} />
+        <View style={styles.overlay}>
+          <View style={styles.modalContainer}>
+            {/* 🔹 Título superior con ícono */}
+            <View style={styles.modalHeader}>
+              <Icon name="filter" size={16} color="#B1C20E" />
+              <Text style={styles.modalTitle}>Filtros</Text>
+            </View>
 
-        <View
-          style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, 12) }]}
-        >
-          <View style={styles.sheetHeader}>
-            <TouchableOpacity onPress={() => setVisible(false)} hitSlop={HITSLOP}>
-              <Text style={styles.linkMuted}>Cancelar</Text>
-            </TouchableOpacity>
-            <Text style={styles.sheetTitle}>Filtros</Text>
-            <TouchableOpacity
-              onPress={limpiar}
-              hitSlop={HITSLOP}
-              style={{ flexDirection: 'row', alignItems: 'center' }}
-            >
-              <Text style={styles.linkMuted}>Limpiar</Text>
-              <Icon
-                name="send"
-                size={16}
-                color="#B4C400"
-                style={{ marginLeft: 6 }}
-              />
-            </TouchableOpacity>
-          </View>
+            <View style={styles.divider} />
 
-          <View style={styles.divider} />
-
-          <CampoSelector
-            titulo="Año"
-            opciones={optionsAnios}
-            seleccionado={anio}
-            onSelect={(a) => {
+            <CampoSelector titulo="Año" opciones={optionsAnios} seleccionado={anio} onSelect={(a) => {
               setAnio(a);
               if (fechaInicio && fechaFin)
                 actualizarMesesPorAnio(a.value, fechaInicio, fechaFin);
-            }}
-          />
+            }} />
 
-          <CampoSelector
-            titulo="Mes"
-            opciones={optionsMes}
-            seleccionado={mes}
-            onSelect={(m) => {
+            <CampoSelector titulo="Mes" opciones={optionsMes} seleccionado={mes} onSelect={(m) => {
               setMes(m);
               if (fechaInicio && fechaFin && anio)
                 actualizarSemanasPorMes(anio.value, m.value, fechaInicio, fechaFin);
-            }}
-          />
+            }} />
 
-          <CampoSelector
-            titulo="Semanas"
-            opciones={optionsSemanas}
-            seleccionado={semana}
-            onSelect={setSemana}
-          />
+            <CampoSelector titulo="Semanas" opciones={optionsSemanas} seleccionado={semana} onSelect={setSemana} />
+            <CampoSelector titulo="Comercio" opciones={optionsComercio} seleccionado={comercio} onSelect={setComercio} />
 
-          <CampoSelector
-            titulo="Comercio"
-            opciones={optionsComercio}
-            seleccionado={comercio}
-            onSelect={setComercio}
-          />
+            {/* 🔹 Barra inferior */}
+            <View style={styles.bottomBar}>
+              <TouchableOpacity onPress={() => setVisible(false)} hitSlop={HITSLOP}>
+                <Icon name="arrow-left" size={20} color="#000" />
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.applyBtn, { marginTop: 12 }]}
-            activeOpacity={0.9}
-            onPress={aplicar}
-          >
-            <Text style={styles.applyText}>Aplicar</Text>
-            <Icon name="thumbs-up" size={16} color="#B4C400" style={{ marginLeft: 6 }} />
-          </TouchableOpacity>
+              <TouchableOpacity onPress={aplicar} hitSlop={HITSLOP}>
+                <Text style={styles.bottomTextApply}>Aplicar</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={limpiar} hitSlop={HITSLOP}>
+                <Text style={styles.bottomText}>Borrar todo</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
     </>
   );
 }
 
-// === CampoSelector ===
 function CampoSelector({
   titulo,
   opciones,
