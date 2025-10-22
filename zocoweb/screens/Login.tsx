@@ -1,5 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -38,7 +46,6 @@ export default function Login() {
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
 
-  // contextos
   const { fetchDatosInicioAhorro } = useContext(InicioAhorroContext) ?? {};
   const { refreshAll, setFiltrosDefault } = useContext(DatosInicioContext) ?? {};
 
@@ -49,7 +56,6 @@ export default function Login() {
     setCuit(numericOnly.length <= 11 ? numericOnly : cuit);
   };
 
-  // 🔹 Chequear disponibilidad de biometría y preferencia guardada
   useEffect(() => {
     const checkBiometric = async () => {
       const compatible = await LocalAuthentication.hasHardwareAsync();
@@ -69,7 +75,6 @@ export default function Login() {
     });
   };
 
-  // 🔹 Login normal
   const handleLogin = async () => {
     if (loading) return;
     setError(null);
@@ -89,7 +94,13 @@ export default function Login() {
           ["Password", password],
         ]);
 
-        // ✅ solo pregunta UNA vez, después de ingresar a la app
+        // ✅ Esperar a que los contextos carguen
+        await Promise.all([
+          refreshAll?.(),
+          fetchDatosInicioAhorro?.(),
+        ]);
+
+        // ✅ Opción de activar huella
         if (biometricAvailable) {
           const askedBefore = await AsyncStorage.getItem("biometricAsked");
           if (!askedBefore) {
@@ -130,7 +141,6 @@ export default function Login() {
     }
   };
 
-  // 🔹 Login con huella → hace login automático
   const handleBiometricLogin = async () => {
     if (!biometricEnabled) return;
     const result = await LocalAuthentication.authenticateAsync({
@@ -169,13 +179,15 @@ export default function Login() {
       <View style={styles.content}>
         <View style={styles.holaContainer}>
           <Text style={styles.hola}>¡Hola!</Text>
-          <Text style={styles.wave}>👋</Text>
+          <Image source={require("../assets/img/hola.png")} style={styles.holaImg} />
         </View>
-        <Text style={styles.sub}>Ingresá tu CUIT para</Text>
-        <Text style={styles.sub}>iniciar sesión.</Text>
 
+        {/* Texto en una sola línea */}
+        <Text style={styles.sub}>Ingresá tu CUIT para iniciar sesión.</Text>
+
+        {/* Input CUIT */}
         <View style={styles.inputGroup}>
-          <Icon name="envelope" style={styles.icon} />
+          <Image source={require("../assets/img/usuario.png")} style={styles.iconImg} />
           <TextInput
             style={styles.input}
             placeholder="CUIT"
@@ -187,8 +199,9 @@ export default function Login() {
           />
         </View>
 
+        {/* Input Contraseña */}
         <View style={styles.inputGroup}>
-          <Icon name="lock" style={styles.icon} />
+          <Image source={require("../assets/img/candado.png")} style={styles.iconImg} />
           <TextInput
             style={styles.input}
             placeholder="Contraseña"
@@ -200,7 +213,7 @@ export default function Login() {
           <TouchableOpacity onPress={togglePasswordVisibility}>
             <Icon
               name={showPassword ? "eye" : "eye-slash"}
-              style={[styles.icon, { color: colors.verdeZoco }]}
+              style={[styles.icon, { color: "#000" }]}
             />
           </TouchableOpacity>
         </View>
@@ -212,26 +225,22 @@ export default function Login() {
           </View>
         )}
 
-        {/* BOTÓN NORMAL */}
+        {/* BOTÓN LOGIN */}
         <TouchableOpacity
           style={[styles.loginButton, loading && { opacity: 0.7 }]}
           onPress={handleLogin}
           disabled={loading}
         >
-          <Text style={styles.loginText}>{loading ? "Cargando datos..." : "Ingresar"}</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.loginText}>Ingresar</Text>
+          )}
         </TouchableOpacity>
 
-        {/* BOTÓN SUTIL DE HUELLA */}
+        {/* BOTÓN HUELLA */}
         {biometricAvailable && biometricEnabled && (
-          <TouchableOpacity
-            style={{
-              marginTop: 25,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={handleBiometricLogin}
-          >
+          <TouchableOpacity style={styles.huellaButton} onPress={handleBiometricLogin}>
             <Icon name="fingerprint" size={20} color={colors.verdeZoco} style={{ marginRight: 8 }} />
             <Text style={{ color: "#555", fontSize: 15 }}>Ingresar con huella</Text>
           </TouchableOpacity>
