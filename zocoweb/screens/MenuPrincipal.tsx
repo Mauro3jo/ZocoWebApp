@@ -1,4 +1,3 @@
-// src/screens/MenuPrincipal.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -9,58 +8,58 @@ import {
   LayoutChangeEvent,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import IconMC from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMI from 'react-native-vector-icons/MaterialIcons';
 import styles from './MenuPrincipal.styles';
 import MainView from '../components/MainView';
 
-const icons = {
-  inicio: require('../assets/img/InicioMenu.png'),
-  contabilidad: require('../assets/img/ContabilidadInicio.png'),
-  cupones: require('../assets/img/CuponesInicio.png'),
-  calificar: require('../assets/img/CalificarMenu.png'),
-  consultas: require('../assets/img/ConsultasMenu.png'),
-  simulador: require('../assets/img/SimuladorMenu.png'),
-  postventa: require('../assets/img/PosventaMenu.png'),
-  salir: require('../assets/img/SalirMenu.png'),
-};
+// 🟩 Íconos SVG
+import HomeIcon from '../assets/svg/casa 1.svg';
+import DolarIcon from '../assets/svg/dolar 1.svg';
+import LupaIcon from '../assets/svg/lupa 1.svg';
+import ArchivoIcon from '../assets/svg/archivo-2 1.svg';
+import CorazonIcon from '../assets/svg/corazon 1.svg';
+import ChatBotIcon from '../assets/svg/chat-bot 1.svg';
+import CalculadoraIcon from '../assets/svg/calculadora-2 1.svg';
+import WhatsAppIcon from '../assets/svg/whatsapp-2 1.svg';
+import SalirIcon from '../assets/svg/cerrar-sesion-2 1.svg';
+
 const logo = require('../assets/img/Logo-login.png');
 
+const COLOR_NEGRO = '#2E3136';
+
 const menuItems = [
-  { key: 'inicio',        icon: <Image source={icons.inicio} style={styles.menuIcon} />,      label: 'Inicio' },
-  { key: 'contabilidad',  icon: <Image source={icons.contabilidad} style={styles.menuIcon} />,label: 'Contabilidad' },
-  { key: 'analisis',      icon: <IconMC name="magnify" size={28} color="#B1C20E" />,          label: 'Análisis' },
-  { key: 'cupones',       icon: <Image source={icons.cupones} style={styles.menuIcon} />,     label: 'Cupones' },
-  { key: 'calificar',     icon: <Image source={icons.calificar} style={styles.menuIcon} />,   label: 'Calificar' },
-  { key: 'consultas',     icon: <Image source={icons.consultas} style={styles.menuIcon} />,   label: 'Consultas' },
-  { key: 'simulador',     icon: <Image source={icons.simulador} style={styles.menuIcon} />,   label: 'Simulador' },
-  { key: 'postventa',     icon: <Image source={icons.postventa} style={styles.menuIcon} />,   label: 'Postventa' },
+  { key: 'inicio', label: 'Inicio', icon: <HomeIcon width={24} height={24} color={COLOR_NEGRO} /> },
+  { key: 'contabilidad', label: 'Contabilidad', icon: <DolarIcon width={24} height={24} color={COLOR_NEGRO} /> },
+  { key: 'analisis', label: 'Análisis', icon: <LupaIcon width={24} height={24} color={COLOR_NEGRO} /> },
+  { key: 'cupones', label: 'Cupones', icon: <ArchivoIcon width={24} height={24} color={COLOR_NEGRO} /> },
+  { key: 'calificar', label: 'Calificar', icon: <CorazonIcon width={24} height={24} color={COLOR_NEGRO} /> },
+  { key: 'consultas', label: 'Consultas', icon: <ChatBotIcon width={24} height={24} color={COLOR_NEGRO} /> },
+  { key: 'simulador', label: 'Simulador', icon: <CalculadoraIcon width={24} height={24} color={COLOR_NEGRO} /> },
+  { key: 'postventa', label: 'Postventa', icon: <WhatsAppIcon width={24} height={24} color={COLOR_NEGRO} /> },
 ];
 
 export default function MenuPrincipal({ navigation }) {
   const insets = useSafeAreaInsets();
-
-  // medir altura real del tabbar (minHeight + safe area + padding)
   const [tabbarHeight, setTabbarHeight] = useState(0);
+
   const onTabbarLayout = (e: LayoutChangeEvent) => {
     setTabbarHeight(e.nativeEvent.layout.height);
   };
 
   const handleNavigation = (key: string) => {
     switch (key) {
-      case 'inicio':        navigation.navigate('Inicio');       break;
-      case 'contabilidad':  navigation.navigate('Contabilidad'); break;
-      case 'analisis':      navigation.navigate('Analisis');     break;
-      case 'cupones':       navigation.navigate('Cupones');      break;
-      case 'calificar':     navigation.navigate('Calificar');    break;
-      case 'consultas':     navigation.navigate('Consultas');    break;
-      case 'simulador':     navigation.navigate('Simulador');    break;
-      case 'postventa':     navigation.navigate('Postventa');    break;
-      default:              console.log('Ruta no definida:', key);
+      case 'inicio': navigation.navigate('Inicio'); break;
+      case 'contabilidad': navigation.navigate('Contabilidad'); break;
+      case 'analisis': navigation.navigate('Analisis'); break;
+      case 'cupones': navigation.navigate('Cupones'); break;
+      case 'calificar': navigation.navigate('Calificar'); break;
+      case 'consultas': navigation.navigate('Consultas'); break;
+      case 'simulador': navigation.navigate('Simulador'); break;
+      case 'postventa': navigation.navigate('Postventa'); break;
+      default: console.log('Ruta no definida:', key);
     }
   };
 
-  // Altura extra para que ScrollView no tape el botón “Salir”
   const EXIT_BTN_HEIGHT_PAD = 90;
 
   return (
@@ -69,14 +68,6 @@ export default function MenuPrincipal({ navigation }) {
       <View style={styles.headerSpacer} />
       <View style={styles.header}>
         <Image source={logo} style={styles.logo} />
-        <View style={styles.headerIcons}>
-          <IconMC name="moon-waning-crescent" size={28} color="#b0b5c3" style={styles.headerIcon} />
-          <View style={{ alignItems: 'center', justifyContent: 'center', marginHorizontal: 16 }}>
-            <IconMC name="bell-outline" size={28} color="#b0b5c3" style={styles.headerIcon} />
-            <View style={styles.dot} />
-          </View>
-          <IconMC name="account-circle-outline" size={28} color="#b0b5c3" style={styles.headerIcon} />
-        </View>
       </View>
 
       {/* MENÚ PRINCIPAL */}
@@ -85,7 +76,6 @@ export default function MenuPrincipal({ navigation }) {
         contentContainerStyle={[
           styles.menuListContent,
           {
-            // ✅ deja espacio para botón Salir + tabbar + safe area
             paddingBottom: tabbarHeight + Math.max(insets.bottom, 8) + EXIT_BTN_HEIGHT_PAD,
           },
         ]}
@@ -105,7 +95,7 @@ export default function MenuPrincipal({ navigation }) {
         ))}
       </ScrollView>
 
-      {/* BOTÓN SALIR (absoluto y siempre encima del tabbar) */}
+      {/* BOTÓN SALIR */}
       <View
         style={[
           styles.exitButtonContainer,
@@ -113,7 +103,6 @@ export default function MenuPrincipal({ navigation }) {
             position: 'absolute',
             left: 20,
             right: 20,
-            // 👇 lo colocamos justo arriba del tabbar + safe area
             bottom: tabbarHeight + Math.max(insets.bottom, 8) + 12,
           },
         ]}
@@ -125,16 +114,16 @@ export default function MenuPrincipal({ navigation }) {
           }}
           activeOpacity={0.8}
         >
-          <Image source={icons.salir} style={styles.exitIcon} />
+          <SalirIcon width={22} height={22} color="#fff" />
           <Text style={styles.exitLabel}>Salir</Text>
         </TouchableOpacity>
       </View>
 
-      {/* MENÚ INFERIOR (tabbar) con SafeArea y padding dinámico */}
+      {/* MENÚ INFERIOR */}
       <View
         style={styles.tabbarContainer}
         pointerEvents="box-none"
-        onLayout={onTabbarLayout} // medimos
+        onLayout={onTabbarLayout}
       >
         <SafeAreaView
           edges={['bottom']}

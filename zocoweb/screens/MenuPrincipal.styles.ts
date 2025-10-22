@@ -24,25 +24,6 @@ export default StyleSheet.create({
     resizeMode: 'contain',
     marginBottom: 18,
   },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 22,
-  },
-  headerIcon: {
-    width: 28,
-    height: 28,
-    marginHorizontal: 3,
-  },
-  dot: {
-    position: 'absolute',
-    top: 3,
-    right: 4,
-    width: 7,
-    height: 7,
-    borderRadius: 5,
-    backgroundColor: '#B1C20E',
-  },
   menuList: {
     flex: 1,
     width: '100%',
@@ -64,11 +45,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 20,
-  },
-  menuIcon: {
-    width: 28,
-    height: 28,
-    resizeMode: 'contain',
   },
   menuLabel: {
     fontSize: 16,
@@ -92,20 +68,12 @@ export default StyleSheet.create({
     paddingVertical: 13,
     justifyContent: 'center',
   },
-  exitIcon: {
-    width: 22,
-    height: 22,
-    resizeMode: 'contain',
-    tintColor: '#fff',
-  },
   exitLabel: {
     color: '#fff',
     fontWeight: 'bold',
     marginLeft: 8,
     fontSize: 17,
   },
-
-  // Tabbar con altura flexible
   tabbarContainer: {
     position: 'absolute',
     left: 0,
@@ -121,7 +89,7 @@ export default StyleSheet.create({
     elevation: 8,
   },
   tabbar: {
-    minHeight: TABBAR_HEIGHT,          // ✅ altura mínima (no fija)
+    minHeight: TABBAR_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
