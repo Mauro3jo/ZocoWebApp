@@ -1,36 +1,59 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import HomeIcon from '../assets/svg/Home.svg';
-import CampanaIcon from '../assets/svg/Campana.svg';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
+// 🟩 Íconos SVG con fill="currentColor"
+import HomeIcon from '../assets/svg/casa 1.svg';
+import MenuIcon from '../assets/svg/menu-2 1.svg';
+import CampanaIcon from '../assets/svg/notificacion 1.svg';
 
 const { width } = Dimensions.get('window');
-const SIDE_MARGIN = width * 0.10; // 10% de margen lateral
+const SIDE_MARGIN = width * 0.10;
+
+const COLOR_VERDE = '#B1C20E';
+const COLOR_NEGRO = '#2E3136';
 
 export default function MainView() {
   const navigation = useNavigation();
+  const route = useRoute();
+
+  // Nombre de la pantalla actual
+  const currentRoute = route?.name || '';
 
   const handleTabPress = (tab) => {
-    if (tab === 'home') {
-      navigation.navigate('Inicio');
-    } else if (tab === 'notifications') {
-      console.log('Ir a Notificaciones');
-    } else if (tab === 'menu') {
-      navigation.navigate('MenuPrincipal');
-    }
+    if (tab === 'home') navigation.navigate('Inicio');
+    else if (tab === 'menu') navigation.navigate('MenuPrincipal');
+    else console.log('Ir a Notificaciones');
   };
+
+  // Colores dinámicos corregidos
+  const colorHome =
+    currentRoute === 'Inicio'
+      ? COLOR_VERDE
+      : COLOR_NEGRO;
+
+  const colorMenu =
+    currentRoute === 'MenuPrincipal'
+      ? COLOR_VERDE
+      : COLOR_NEGRO;
+
+  const colorCampana = COLOR_NEGRO;
 
   return (
     <View style={styles.menuContainer}>
-      <TouchableOpacity onPress={() => handleTabPress('home')} style={styles.tabButton}>
-        <HomeIcon width={34} height={34} />
-      </TouchableOpacity>
+      {/* 🔔 Notificaciones */}
       <TouchableOpacity onPress={() => handleTabPress('notifications')} style={styles.tabButton}>
-        <CampanaIcon width={34} height={34} />
+        <CampanaIcon width={28} height={28} color={colorCampana} />
       </TouchableOpacity>
+
+      {/* 🏠 Home */}
+      <TouchableOpacity onPress={() => handleTabPress('home')} style={styles.tabButton}>
+        <HomeIcon width={28} height={28} color={colorHome} />
+      </TouchableOpacity>
+
+      {/* 📋 Menú */}
       <TouchableOpacity onPress={() => handleTabPress('menu')} style={styles.tabButton}>
-        <Icon name="menu" size={34} color="#b0b5c3" />
+        <MenuIcon width={28} height={28} color={colorMenu} />
       </TouchableOpacity>
     </View>
   );
@@ -54,7 +77,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     zIndex: 999,
-    paddingHorizontal: SIDE_MARGIN, // 10% de margen a cada lado
+    paddingHorizontal: SIDE_MARGIN,
   },
   tabButton: {
     flex: 1,
