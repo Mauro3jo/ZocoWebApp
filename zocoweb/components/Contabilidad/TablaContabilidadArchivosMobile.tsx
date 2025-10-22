@@ -1,4 +1,3 @@
-// src/components/Contabilidad/TablaContabilidadArchivos.tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -142,7 +141,6 @@ const TablaContabilidadArchivos: React.FC = () => {
   };
 
   // ======== UI ========
-  // Orden invertido: último primero
   const filas: FilaMes[] = [...(datosContabilidadArchivo?.fechasDisponibles ?? [])].reverse();
 
   return (
@@ -154,14 +152,14 @@ const TablaContabilidadArchivos: React.FC = () => {
 
       {/* Tabla sin scroll lateral (sólo vertical si hace falta) */}
       {loading ? (
-        <ActivityIndicator size="large" color="#b4c400" style={{ margin: 20 }} />
+        <ActivityIndicator size="large" color="#B1C20E" style={{ margin: 20 }} />
       ) : (
         <View>
           {/* Cabecera (4 columnas) */}
           <View style={styles.rowHeader}>
             <Text style={[styles.cellHeader, styles.colMes]}>MES</Text>
             <Text style={[styles.cellHeader, styles.colAccion]}>Factura</Text>
-            <Text style={[styles.cellHeader, styles.colAccion]}>(IVA-Ganancia)</Text>
+            <Text style={[styles.cellHeader, styles.colAccion]}>IVA-Ganancia</Text>
             <Text style={[styles.cellHeader, styles.colAccion]}>IIBB</Text>
           </View>
 
@@ -219,7 +217,7 @@ const TablaContabilidadArchivos: React.FC = () => {
               ))
             ) : (
               <View style={styles.emptyRow}>
-                <Text style={styles.noFile}>No hay datos disponibles</Text>
+                <Text style={styles.noFile}>No tiene datos</Text>
               </View>
             )}
           </ScrollView>
@@ -235,7 +233,7 @@ const TablaContabilidadArchivos: React.FC = () => {
         closeOnHardwareBackPress={false}
         showConfirmButton
         confirmText="OK"
-        confirmButtonColor="#b4c400"
+        confirmButtonColor="#B1C20E"
         onConfirmPressed={closeAlert}
       />
     </View>
@@ -247,50 +245,55 @@ export default TablaContabilidadArchivos;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#F7F8FC",
     padding: 10,
   },
-  header: {
-    paddingVertical: 14,
-    backgroundColor: "#b4c400",
-    alignItems: "center",
-    marginBottom: 12,
-    borderRadius: 8,
-  },
-  headerText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-  },
+header: {
+  paddingVertical: 14,
+  backgroundColor: "#B1C20E",
+  alignItems: "center",
+  marginBottom: 12,
+  borderRadius: 8,
+},
+headerText: {
+  fontSize: 16,
+  fontWeight: "bold",
+  color: "#FFFFFF",
+},
+
 
   /* cabecera y filas */
   rowHeader: {
     flexDirection: "row",
-    backgroundColor: "#30313A",
+    backgroundColor: "#F2F4F7",
     borderTopLeftRadius: 6,
     borderTopRightRadius: 6,
-    paddingVertical: 8,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E1E4EA",
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#E1E4EA",
     paddingVertical: 10,
   },
   emptyRow: {
     paddingVertical: 20,
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderColor: "#E1E4EA",
   },
 
-  /* columnas → que entren sin scroll lateral */
+  /* columnas */
   colMes: { flex: 1.3, paddingHorizontal: 10 },
   colAccion: { flex: 1, paddingHorizontal: 6 },
 
   /* celdas */
   cellHeader: {
-    fontWeight: "700",
-    color: "#fff",
+    fontWeight: "600",
+    color: "#222",
     textAlign: "center",
     fontSize: 13,
   },
@@ -300,9 +303,9 @@ const styles = StyleSheet.create({
   },
   center: { alignItems: "center", justifyContent: "center" },
 
-  /* botón compacto */
+  /* botón */
   btn: {
-    backgroundColor: "#b4c400",
+    backgroundColor: "#B1C20E",
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 6,
@@ -315,7 +318,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   noFile: {
-    color: "#888",
+    color: "#777",
     fontSize: 12,
     textAlign: "center",
   },
