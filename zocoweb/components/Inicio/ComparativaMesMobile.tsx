@@ -26,17 +26,28 @@ const toNumber = (x: any) => {
 const BAR_HEIGHT = 170;
 const BAR_WIDTH = 42;
 
-const CapsuleBar: React.FC<{
+const RectBar: React.FC<{
   value: number;
   max: number;
   outline: string;
   fill: string;
 }> = ({ value, max, outline, fill }) => {
   const pct = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
-  const fillH = Math.round(pct * (BAR_HEIGHT - 2)); // -2 por border
+  const fillHeight = Math.round(pct * (BAR_HEIGHT - 2));
+
   return (
-    <View style={[styles.capsule, { borderColor: outline }]}>
-      <View style={[styles.capsuleFill, { height: fillH, backgroundColor: fill }]} />
+    <View style={[styles.rect, { borderColor: outline }]}>
+      <View style={[styles.fillContainer]}>
+        <View
+          style={[
+            styles.rectFill,
+            {
+              height: fillHeight,
+              backgroundColor: fill,
+            },
+          ]}
+        />
+      </View>
     </View>
   );
 };
@@ -44,8 +55,8 @@ const CapsuleBar: React.FC<{
 const ComparativaMesMobile: React.FC<Props> = ({ datos }) => {
   const tickColor = '#292B2F';
   const cardBg = '#FFFFFF';
-  const outline = '#2F3341';
-  const accentFill = '#B4C400'; // verde ZOCO
+  const outline = '#B4B6BE';
+  const accentFill = '#B4C400'; // verde Zoco
 
   const {
     comparativahoy = 0,
@@ -58,7 +69,7 @@ const ComparativaMesMobile: React.FC<Props> = ({ datos }) => {
   const vAnterior = toNumber(comparativaHoymesanterior);
   const vActual = toNumber(comparativahoy);
   const pct = useMemo(
-    () => Math.round(toNumber(porcentaje) * 100), // entero
+    () => Math.round(toNumber(porcentaje) * 100),
     [porcentaje]
   );
 
@@ -73,22 +84,21 @@ const ComparativaMesMobile: React.FC<Props> = ({ datos }) => {
       <Text style={[styles.subtitle, { color: tickColor }]}>(1° hasta hoy)</Text>
 
       <View style={styles.row}>
-        {/* Mitad izquierda: “cilindros” */}
+        {/* Izquierda: barras */}
         <View style={styles.left}>
-          {/* líneas guía suaves */}
           <View style={[styles.hline, { backgroundColor: '#EDEFF5', top: 40 }]} />
           <View style={[styles.hline, { backgroundColor: '#EDEFF5', top: 110 }]} />
 
           <View style={styles.barZone}>
             <View style={styles.barBlock}>
-              <CapsuleBar value={vAnterior} max={maxVal} outline={outline} fill={accentFill} />
+              <RectBar value={vAnterior} max={maxVal} outline={outline} fill={accentFill} />
               <Text style={[styles.barLabel, { color: tickColor }]}>{mesAnterior}</Text>
             </View>
 
             <View style={{ width: 20 }} />
 
             <View style={styles.barBlock}>
-              <CapsuleBar value={vActual} max={maxVal} outline={outline} fill={accentFill} />
+              <RectBar value={vActual} max={maxVal} outline={outline} fill={accentFill} />
               <Text style={[styles.barLabel, { color: tickColor }]}>{mesActual}</Text>
             </View>
           </View>
@@ -97,7 +107,7 @@ const ComparativaMesMobile: React.FC<Props> = ({ datos }) => {
         {/* divisor */}
         <View style={[styles.divider, { backgroundColor: '#E7EAF3' }]} />
 
-        {/* Mitad derecha: flecha + % */}
+        {/* Derecha: flecha + % */}
         <View style={styles.right}>
           <Icon
             name={up ? 'arrow-up-right' : down ? 'arrow-down-right' : 'minus'}
@@ -105,7 +115,10 @@ const ComparativaMesMobile: React.FC<Props> = ({ datos }) => {
             color={accent}
             style={{ marginBottom: 6 }}
           />
-          <Text style={[styles.bigPct, { color: accent }]}>{up ? '+' : ''}{pct}%</Text>
+          <Text style={[styles.bigPct, { color: accent }]}>
+            {up ? '+' : ''}
+            {pct}%
+          </Text>
         </View>
       </View>
     </View>
@@ -121,11 +134,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 12,
-    elevation: 2,
+    elevation: 1,
     shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 1 },
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
   },
   title: { textAlign: 'center', fontSize: 16, fontWeight: '700' },
   subtitle: { textAlign: 'center', fontSize: 12, opacity: 0.8, marginBottom: 8 },
@@ -135,27 +150,40 @@ const styles = StyleSheet.create({
   left: { width: SCREEN_WIDTH * 0.5 - 32, position: 'relative' },
   hline: { position: 'absolute', left: 0, right: 0, height: 1, borderRadius: 1 },
 
-  barZone: { height: 200, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' },
+  barZone: {
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   barBlock: { alignItems: 'center' },
 
-  capsule: {
+  rect: {
     width: BAR_WIDTH,
     height: BAR_HEIGHT,
-    borderWidth: 2,
-    borderRadius: BAR_WIDTH / 2,
+    borderWidth: 1.5,
+    borderColor: '#ccc',
+    borderRadius: 4,
     justifyContent: 'flex-end',
     overflow: 'hidden',
-    backgroundColor: 'transparent',
+    backgroundColor: '#fff',
   },
-  capsuleFill: {
+  fillContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  rectFill: {
     width: '100%',
-    borderBottomLeftRadius: BAR_WIDTH / 2,
-    borderBottomRightRadius: BAR_WIDTH / 2,
   },
   barLabel: { marginTop: 6, fontSize: 12 },
 
   divider: { width: 1, height: 200, marginHorizontal: 10, borderRadius: 1 },
 
-  right: { width: SCREEN_WIDTH * 0.5 - 32, alignItems: 'center', justifyContent: 'center', height: 200 },
+  right: {
+    width: SCREEN_WIDTH * 0.5 - 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 200,
+  },
   bigPct: { fontSize: 32, fontWeight: '800', letterSpacing: 0.3 },
 });
