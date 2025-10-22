@@ -1,3 +1,4 @@
+// src/screens/Login.jsx
 import React, { useState, useContext, useEffect } from "react";
 import {
   View,
@@ -38,6 +39,7 @@ const loginUsuario = async (usuario: string, password: string) => {
 export default function Login() {
   const navigation = useNavigation<any>();
   const insets = useSafeAreaInsets();
+
   const [showPassword, setShowPassword] = useState(false);
   const [cuit, setCuit] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +49,7 @@ export default function Login() {
   const [biometricEnabled, setBiometricEnabled] = useState(false);
 
   const { fetchDatosInicioAhorro } = useContext(InicioAhorroContext) ?? {};
-  const { refreshAll, setFiltrosDefault } = useContext(DatosInicioContext) ?? {};
+  const { refreshAll, setModoLogin } = useContext(DatosInicioContext) ?? {};
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -79,14 +81,24 @@ export default function Login() {
     if (loading) return;
     setError(null);
     setLoading(true);
+
     try {
+      // 🔹 1️⃣ Login normal
       const data = await loginUsuario(cuit, password);
+
       if (data.rol === 0) {
         const nombre = data?.usuario?.Nombre ?? data?.usuario?.nombre ?? "";
 
-        await AsyncStorage.multiRemove(["filtrosSeleccionados", "token", "Nombre"]);
-        setFiltrosDefault?.();
+        // 🔹 2️⃣ Limpiar todo rastro previo
+        await AsyncStorage.multiRemove([
+          "filtrosSeleccionados",
+          "token",
+          "Nombre",
+          "Usuario",
+          "Password",
+        ]);
 
+        // 🔹 3️⃣ Guardar la nueva sesión limpia
         await AsyncStorage.multiSet([
           ["token", data.token],
           ["Nombre", nombre],
@@ -94,38 +106,44 @@ export default function Login() {
           ["Password", password],
         ]);
 
-        // ✅ Esperar a que los contextos carguen
-        await Promise.all([
-          refreshAll?.(),
-          fetchDatosInicioAhorro?.(),
-        ]);
+        // 🔹 4️⃣ Avisar al contexto que venimos del login
+        setModoLogin?.(true);
 
-        // ✅ Opción de activar huella
-        if (biometricAvailable) {
-          const askedBefore = await AsyncStorage.getItem("biometricAsked");
-          if (!askedBefore) {
-            await AsyncStorage.setItem("biometricAsked", "true");
-            setTimeout(() => {
-              Alert.alert(
-                "Acceso con huella",
-                "¿Querés habilitar el acceso con huella digital para futuros ingresos?",
-                [
-                  { text: "No", onPress: () => navigateToInicio() },
-                  {
-                    text: "Sí",
-                    onPress: async () => {
-                      await AsyncStorage.setItem("biometricEnabled", "true");
-                      navigateToInicio();
+        // 🔹 5️⃣ Hacer todas las consultas desde cero (espera OK)
+        const ok = await refreshAll?.(true);
+
+        // 🔹 6️⃣ Si todo fue OK, cargar ahorro y continuar
+        if (ok) {
+          await fetchDatosInicioAhorro?.();
+
+          if (biometricAvailable) {
+            const askedBefore = await AsyncStorage.getItem("biometricAsked");
+            if (!askedBefore) {
+              await AsyncStorage.setItem("biometricAsked", "true");
+              setTimeout(() => {
+                Alert.alert(
+                  "Acceso con huella",
+                  "¿Querés habilitar el acceso con huella digital para futuros ingresos?",
+                  [
+                    { text: "No", onPress: () => navigateToInicio() },
+                    {
+                      text: "Sí",
+                      onPress: async () => {
+                        await AsyncStorage.setItem("biometricEnabled", "true");
+                        navigateToInicio();
+                      },
                     },
-                  },
-                ]
-              );
-            }, 600);
-            return;
+                  ]
+                );
+              }, 600);
+              return;
+            }
           }
-        }
 
-        navigateToInicio();
+          navigateToInicio();
+        } else {
+          setError("Error cargando los datos iniciales. Intente nuevamente.");
+        }
       } else {
         setError("Este usuario no tiene permiso para ingresar.");
       }
@@ -182,10 +200,9 @@ export default function Login() {
           <Image source={require("../assets/img/hola.png")} style={styles.holaImg} />
         </View>
 
-        {/* Texto en una sola línea */}
         <Text style={styles.sub}>Ingresá tu CUIT para iniciar sesión.</Text>
 
-        {/* Input CUIT */}
+        {/* CUIT */}
         <View style={styles.inputGroup}>
           <Image source={require("../assets/img/usuario.png")} style={styles.iconImg} />
           <TextInput
@@ -199,7 +216,7 @@ export default function Login() {
           />
         </View>
 
-        {/* Input Contraseña */}
+        {/* CONTRASEÑA */}
         <View style={styles.inputGroup}>
           <Image source={require("../assets/img/candado.png")} style={styles.iconImg} />
           <TextInput
@@ -218,6 +235,7 @@ export default function Login() {
           </TouchableOpacity>
         </View>
 
+        {/* ERRORES */}
         {error && (
           <View style={styles.errorBox}>
             <Icon name="exclamation-circle" size={16} color="#e23d36" style={{ marginRight: 6 }} />
