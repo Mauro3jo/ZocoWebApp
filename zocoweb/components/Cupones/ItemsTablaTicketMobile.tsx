@@ -125,34 +125,27 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
       </Cell>
 
       {/* Orden de Pago */}
-      <Cell style={{ flex: 1 }}>
-        {tieneDocumentos === false ? (
-          <Text style={{ fontSize: 11, color: "#8a8d96", textAlign: "center" }}>
-            Sin docs
-          </Text>
-        ) : (
-          <TouchableOpacity
-            onPress={descargarOrdenesPorFecha}
-            disabled={downloading}
-            style={{
-              backgroundColor: "#111827",
-              borderRadius: 10,
-              paddingVertical: 8,
-              paddingHorizontal: 10,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {downloading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={{ color: "#fff", fontSize: 12, fontWeight: "800" }}>
-                Descargar
-              </Text>
-            )}
-          </TouchableOpacity>
-        )}
-      </Cell>
+    {/* Orden de Pago */}
+    <Cell style={{ flex: 1 }}>
+      {tieneDocumentos === false ? (
+        <Text style={{ fontSize: 11, color: "#8a8d96", textAlign: "center", fontWeight: "600" }}>
+          Sin docs
+        </Text>
+      ) : (
+        <TouchableOpacity
+          onPress={descargarOrdenesPorFecha}
+          disabled={downloading}
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          {downloading ? (
+            <ActivityIndicator color="#B1C20E" size="small" />
+          ) : (
+            <Text style={{ color: "#B1C20E", fontSize: 12, fontWeight: "800" }}>Descargar</Text>
+          )}
+        </TouchableOpacity>
+      )}
+    </Cell>
+
     </View>
   );
 };
