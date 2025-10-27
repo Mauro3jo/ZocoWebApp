@@ -109,9 +109,7 @@ export default function MenuPrincipal({ navigation }) {
       >
         <TouchableOpacity
           style={styles.exitButton}
-          onPress={() => {
-            navigation.replace('Welcome');
-          }}
+          onPress={() => navigation.replace('Welcome')}
           activeOpacity={0.8}
         >
           <SalirIcon width={22} height={22} color="#fff" />

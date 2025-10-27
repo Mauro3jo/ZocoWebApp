@@ -60,20 +60,21 @@ export default StyleSheet.create({
     bottom: 125,
     zIndex: 200,
   },
-  exitButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#aaa',
-    borderRadius: 8,
-    paddingVertical: 13,
-    justifyContent: 'center',
-  },
-  exitLabel: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginLeft: 8,
-    fontSize: 17,
-  },
+exitButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#c1c1c1',
+  borderRadius: 8,
+  paddingVertical: 13,
+  justifyContent: 'center',
+},
+exitLabel: {
+  color: '#fff',
+  fontWeight: 'bold',
+  marginLeft: 8,
+  fontSize: 17,
+},
+
   tabbarContainer: {
     position: 'absolute',
     left: 0,
