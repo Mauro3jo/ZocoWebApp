@@ -35,14 +35,12 @@ export default StyleSheet.create({
     backgroundColor: "transparent",
   },
 
-  // 🔹 Modal que parece salir desde el header (debajo, no medio pantalla)
+  // 🔹 Modal dinámico que aparece justo debajo del header
   modalContainer: {
     position: "absolute",
-    top: 100, // 📍 justo debajo del header (ajustá entre 90 y 110 según tu diseño)
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 12,
-    width: "90%",
     paddingVertical: 15,
     elevation: 15,
     shadowColor: "#000",

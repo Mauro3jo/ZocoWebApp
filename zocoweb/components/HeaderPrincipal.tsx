@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,9 @@ export default function HeaderPrincipal() {
   const [nombre, setNombre] = useState<string>("");
   const [modalVisible, setModalVisible] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [headerY, setHeaderY] = useState(0);
+  const [headerWidth, setHeaderWidth] = useState("90%");
+  const headerRef = useRef<View>(null);
 
   const loadNombre = useCallback(async () => {
     try {
@@ -44,10 +47,24 @@ export default function HeaderPrincipal() {
     setShowPasswordForm(false);
   };
 
+  // Medir posición real del header para posicionar el modal dinámicamente
+  const handleMeasure = () => {
+    headerRef.current?.measureInWindow((x, y, width, height) => {
+      setHeaderY(y + height);
+      setHeaderWidth(width);
+    });
+  };
+
+  useEffect(() => {
+    if (modalVisible) {
+      setTimeout(handleMeasure, 50);
+    }
+  }, [modalVisible]);
+
   return (
     <View>
       {/* HEADER PRINCIPAL */}
-      <View style={styles.card}>
+      <View ref={headerRef} style={styles.card}>
         <View style={styles.left}>
           <Z width={20} height={20} />
           <Text style={styles.text}>Hola{nombre ? `, ${nombre}` : ""}!</Text>
@@ -73,11 +90,16 @@ export default function HeaderPrincipal() {
         animationType="fade"
         onRequestClose={closeModal}
       >
-        {/* Fondo oscuro */}
+        {/* Fondo transparente */}
         <Pressable style={styles.overlay} onPress={closeModal} />
 
-        {/* Contenedor central */}
-        <View style={styles.modalContainer}>
+        {/* Contenedor del modal (debajo del header, posición dinámica) */}
+        <View
+          style={[
+            styles.modalContainer,
+            { top: headerY, width: headerWidth || "90%" },
+          ]}
+        >
           {!showPasswordForm ? (
             // 🔹 Menú principal
             <View style={styles.modalContent}>
@@ -123,7 +145,9 @@ export default function HeaderPrincipal() {
               </View>
 
               <View style={styles.formGroup}>
-                <Text style={styles.label}>Ingresar contraseña nueva otra vez</Text>
+                <Text style={styles.label}>
+                  Ingresar contraseña nueva otra vez
+                </Text>
                 <TextInput style={styles.input} secureTextEntry />
               </View>
 
