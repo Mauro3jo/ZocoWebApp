@@ -134,7 +134,7 @@ export default function Welcome() {
           <Text style={styles.textLine3}>ZOCO</Text>
         </View>
 
-        {/* Bloque verde con botón y huella */}
+        {/* Área verde con botón y huella */}
         <View style={[styles.footerSection, { paddingBottom: insets.bottom + 90 }]}>
           <View style={styles.buttonWrapper}>
             <Boton text="Inicia sesión" onPress={handleContinue} />
@@ -155,7 +155,7 @@ export default function Welcome() {
           )}
         </View>
 
-        {/* Footer fijo al final de la pantalla */}
+        {/* Footer fijo al final */}
         <View style={[styles.footerWrapper, { paddingBottom: insets.bottom }]}>
           <Footer text="Condiciones de uso y política de privacidad" />
         </View>

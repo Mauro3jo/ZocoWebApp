@@ -15,7 +15,7 @@ export default StyleSheet.create({
   // Z arriba izquierda
   logoZ: {
     position: "absolute",
-    top: height * 0.03, // sube un poco
+    top: height * 0.03,
     left: width * 0.08,
   },
 
@@ -67,7 +67,7 @@ export default StyleSheet.create({
     justifyContent: "center",
   },
 
-  // ✅ Footer fijo abajo, sin chocar con huella
+  // Footer fijo abajo
   footerWrapper: {
     position: "absolute",
     bottom: 0,
@@ -75,5 +75,19 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-end",
     paddingBottom: 10,
+  },
+
+  // ✅ Estilos globales para textos Montserrat en otros componentes si se heredan
+  defaultText: {
+    fontFamily: "Montserrat_400Regular",
+    color: colors.blanco,
+  },
+  boldText: {
+    fontFamily: "Montserrat_700Bold",
+    color: colors.blanco,
+  },
+  lightText: {
+    fontFamily: "Montserrat_300Light",
+    color: colors.blanco,
   },
 });
