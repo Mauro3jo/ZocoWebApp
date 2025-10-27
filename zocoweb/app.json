@@ -4,7 +4,7 @@
     "slug": "zocoweb",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/img/Z.png",
+    "icon": "./assets/img/Z-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
 
@@ -22,11 +22,10 @@
 
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/img/Z.png",
+        "foregroundImage": "./assets/img/Z-icon.png",
         "backgroundColor": "#000000"
       },
       "package": "com.mauro3jo.zocoweb"
-
     },
 
     "androidStatusBar": {
@@ -54,7 +53,7 @@
     ],
 
     "web": {
-      "favicon": "./assets/img/Z.png"
+      "favicon": "./assets/img/Z-icon.png"
     },
 
     "extra": {

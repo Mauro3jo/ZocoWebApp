@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,16 @@ import {
   Modal,
   FlatList,
   Pressable,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { DatosInicioContext } from '../src/context/DatosInicioContext';
-import { REACT_APP_API_BIENVENIDO_PANEL } from '@env';
-import styles, { HITSLOP } from './FiltrosBar.styles';
+  LayoutChangeEvent,
+} from "react-native";
+import Icon from "react-native-vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { DatosInicioContext } from "../src/context/DatosInicioContext";
+import { REACT_APP_API_BIENVENIDO_PANEL } from "@env";
+import styles, { HITSLOP } from "./FiltrosBar.styles";
 
-const STORAGE_KEY = 'filtrosSeleccionados';
+const STORAGE_KEY = "filtrosSeleccionados";
 const API_URL = REACT_APP_API_BIENVENIDO_PANEL;
 
 type Opcion = { label: string; value: any; dias?: Date[] };
@@ -31,7 +32,7 @@ const OpcionItem = ({
   <Pressable
     onPress={() => onPress(item)}
     style={[styles.opcionItem, selected && styles.opcionItemSelected]}
-    android_ripple={{ color: '#e6e9f2' }}
+    android_ripple={{ color: "#e6e9f2" }}
   >
     <Text style={[styles.opcionText, selected && styles.opcionTextSelected]}>
       {item.label}
@@ -56,19 +57,40 @@ export default function FiltrosBar() {
   const [fechaInicio, setFechaInicio] = useState<Date | null>(null);
   const [fechaFin, setFechaFin] = useState<Date | null>(null);
 
+  // 🔹 refs y medidas para posicionar el modal exactamente debajo
+  const filtroRef = useRef<View>(null);
+  const [modalTop, setModalTop] = useState(0);
+  const [modalWidth, setModalWidth] = useState("90%");
+
+  const handleMeasure = () => {
+    filtroRef.current?.measureInWindow((x, y, width, height) => {
+      // posición exacta del borde inferior del filtro
+      setModalTop(y + height);
+      setModalWidth(width);
+    });
+  };
+
+  useEffect(() => {
+    if (visible) {
+      // medir después del render
+      setTimeout(handleMeasure, 50);
+    }
+  }, [visible]);
+
+  // 🔹 Carga de datos
   useEffect(() => {
     (async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
+        const token = await AsyncStorage.getItem("token");
         if (!token) return;
 
         const resp = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),
         });
 
-        if (!resp.ok) throw new Error('Error al cargar filtros');
+        if (!resp.ok) throw new Error("Error al cargar filtros");
         const data = await resp.json();
 
         const fi = new Date(data.fechaInicio);
@@ -77,9 +99,9 @@ export default function FiltrosBar() {
         setFechaFin(ff);
 
         const optionsComercios: Opcion[] = [
-          { value: 'todos', label: 'Todos' },
+          { value: "todos", label: "Todos" },
           ...data.comercios.map((c: string) => ({
-            value: c.toLowerCase().replace(/\s+/g, ''),
+            value: c.toLowerCase().replace(/\s+/g, ""),
             label: c,
           })),
         ];
@@ -115,7 +137,7 @@ export default function FiltrosBar() {
           setComercio(optionsComercios[0]);
         }
       } catch (err) {
-        console.error('Error cargando filtros', err);
+        console.error("Error cargando filtros", err);
       }
     })();
   }, []);
@@ -133,7 +155,7 @@ export default function FiltrosBar() {
 
     for (let m = mesInicio; m <= mesFin; m++) {
       const fecha = new Date(anioSel, m, 1);
-      const nombreMes = fecha.toLocaleString('es', { month: 'long' });
+      const nombreMes = fecha.toLocaleString("es", { month: "long" });
       optionsMeses.push({ value: m + 1, label: nombreMes });
     }
     setOptionsMes(optionsMeses);
@@ -193,7 +215,7 @@ export default function FiltrosBar() {
     }
 
     const semanasFormateadas: Opcion[] = [
-      { value: 98, label: 'Todo el Mes' },
+      { value: 98, label: "Todo el Mes" },
       ...semanas,
     ];
     setOptionsSemanas(semanasFormateadas);
@@ -208,7 +230,7 @@ export default function FiltrosBar() {
 
   const resumen = useMemo(() => {
     const parts = [anio?.label, mes?.label, semana?.label, comercio?.label];
-    return parts.filter(Boolean).join(' · ') || 'Filtros';
+    return parts.filter(Boolean).join(" · ") || "Filtros";
   }, [anio, mes, semana, comercio]);
 
   const limpiar = async () => {
@@ -237,6 +259,7 @@ export default function FiltrosBar() {
   return (
     <>
       <TouchableOpacity
+        ref={filtroRef}
         style={styles.card}
         activeOpacity={0.8}
         onPress={() => setVisible(true)}
@@ -244,7 +267,7 @@ export default function FiltrosBar() {
         <View style={styles.left}>
           <Icon name="filter" size={18} color="#000" />
           <Text style={styles.text} numberOfLines={1}>
-            {resumen || 'Filtros'}
+            {resumen || "Filtros"}
           </Text>
         </View>
         <Icon name="chevron-right" size={22} color="#30313A" />
@@ -257,7 +280,12 @@ export default function FiltrosBar() {
         onRequestClose={() => setVisible(false)}
       >
         <View style={styles.overlay}>
-          <View style={styles.modalContainer}>
+          <View
+            style={[
+              styles.modalContainer,
+              { top: modalTop, width: modalWidth },
+            ]}
+          >
             {/* 🔹 Título superior con ícono */}
             <View style={styles.modalHeader}>
               <Icon name="filter" size={16} color="#B1C20E" />
@@ -266,24 +294,52 @@ export default function FiltrosBar() {
 
             <View style={styles.divider} />
 
-            <CampoSelector titulo="Año" opciones={optionsAnios} seleccionado={anio} onSelect={(a) => {
-              setAnio(a);
-              if (fechaInicio && fechaFin)
-                actualizarMesesPorAnio(a.value, fechaInicio, fechaFin);
-            }} />
+            <CampoSelector
+              titulo="Año"
+              opciones={optionsAnios}
+              seleccionado={anio}
+              onSelect={(a) => {
+                setAnio(a);
+                if (fechaInicio && fechaFin)
+                  actualizarMesesPorAnio(a.value, fechaInicio, fechaFin);
+              }}
+            />
 
-            <CampoSelector titulo="Mes" opciones={optionsMes} seleccionado={mes} onSelect={(m) => {
-              setMes(m);
-              if (fechaInicio && fechaFin && anio)
-                actualizarSemanasPorMes(anio.value, m.value, fechaInicio, fechaFin);
-            }} />
+            <CampoSelector
+              titulo="Mes"
+              opciones={optionsMes}
+              seleccionado={mes}
+              onSelect={(m) => {
+                setMes(m);
+                if (fechaInicio && fechaFin && anio)
+                  actualizarSemanasPorMes(
+                    anio.value,
+                    m.value,
+                    fechaInicio,
+                    fechaFin
+                  );
+              }}
+            />
 
-            <CampoSelector titulo="Semanas" opciones={optionsSemanas} seleccionado={semana} onSelect={setSemana} />
-            <CampoSelector titulo="Comercio" opciones={optionsComercio} seleccionado={comercio} onSelect={setComercio} />
+            <CampoSelector
+              titulo="Semanas"
+              opciones={optionsSemanas}
+              seleccionado={semana}
+              onSelect={setSemana}
+            />
+            <CampoSelector
+              titulo="Comercio"
+              opciones={optionsComercio}
+              seleccionado={comercio}
+              onSelect={setComercio}
+            />
 
             {/* 🔹 Barra inferior */}
             <View style={styles.bottomBar}>
-              <TouchableOpacity onPress={() => setVisible(false)} hitSlop={HITSLOP}>
+              <TouchableOpacity
+                onPress={() => setVisible(false)}
+                hitSlop={HITSLOP}
+              >
                 <Icon name="arrow-left" size={20} color="#000" />
               </TouchableOpacity>
 
@@ -323,12 +379,12 @@ function CampoSelector({
         onPress={() => setOpen((v) => !v)}
       >
         <Text style={styles.rowLabel}>{titulo}</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={styles.rowValue} numberOfLines={1}>
-            {seleccionado?.label ?? ''}
+            {seleccionado?.label ?? ""}
           </Text>
           <Icon
-            name={open ? 'chevron-up' : 'chevron-down'}
+            name={open ? "chevron-up" : "chevron-down"}
             size={18}
             color="#9aa0b4"
           />
