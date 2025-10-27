@@ -50,8 +50,8 @@ export default StyleSheet.create({
   },
 
   hola: {
+    fontFamily: "Montserrat_300Light",
     fontSize: 50,
-    fontWeight: "300",
     color: "#000",
   },
 
@@ -62,6 +62,7 @@ export default StyleSheet.create({
   },
 
   sub: {
+    fontFamily: "Montserrat_400Regular",
     fontSize: 16,
     color: "#666",
     marginLeft: 10,
@@ -93,6 +94,7 @@ export default StyleSheet.create({
 
   input: {
     flex: 1,
+    fontFamily: "Montserrat_400Regular",
     fontSize: 16,
     color: "#000",
   },
@@ -110,34 +112,29 @@ export default StyleSheet.create({
   },
 
   errorText: {
+    fontFamily: "Montserrat_400Regular",
     color: "#e23d36",
     fontSize: 14,
-    fontWeight: "500",
     flex: 1,
     flexWrap: "wrap",
   },
 
+  // ✅ BOTÓN RECTANGULAR CON BORDES REDONDEADOS (igual al del Welcome)
   loginButton: {
-    backgroundColor: "#B1C20E",
+    backgroundColor: colors.verdeZoco,
     marginTop: 40,
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 25,
+    paddingVertical: 14,
+    borderRadius: 12,
     width: "100%",
     alignItems: "center",
+    justifyContent: "center",
+    elevation: 3,
   },
 
   loginText: {
+    fontFamily: "Montserrat_700Bold",
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold",
-  },
-
-  huellaButton: {
-    marginTop: 25,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
   },
 
   footer: {
