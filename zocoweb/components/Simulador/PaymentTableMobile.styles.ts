@@ -23,17 +23,18 @@ export default StyleSheet.create({
   },
   headerText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "Montserrat_700Bold",
     fontSize: 14,
   },
   text: {
     fontSize: 12,
     color: "#000",
     textAlign: "center",
+    fontFamily: "Montserrat_400Regular",
   },
   textBold: {
     fontSize: 12,
-    fontWeight: "bold",
     textAlign: "center",
+    fontFamily: "Montserrat_700Bold",
   },
 });

@@ -14,8 +14,9 @@ export default StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Montserrat_700Bold",
     marginVertical: 8,
+    color: "#000",
   },
   input: {
     backgroundColor: "#dde1e8",
@@ -23,6 +24,9 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
     height: 44,
     marginBottom: 12,
+    fontSize: 15,
+    fontFamily: "Montserrat_400Regular",
+    color: "#000",
   },
   pickerWrapper: {
     backgroundColor: "#dde1e8",
@@ -39,13 +43,14 @@ export default StyleSheet.create({
   },
   btnText: {
     color: "#fff",
-    fontWeight: "bold",
     fontSize: 16,
+    fontFamily: "Montserrat_700Bold",
   },
   hint: {
     fontSize: 12,
     color: "#333",
     marginTop: 8,
+    fontFamily: "Montserrat_400Regular",
   },
   resultCard: {
     backgroundColor: "#f4f6fa",
@@ -57,13 +62,15 @@ export default StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginBottom: 8,
+    fontFamily: "Montserrat_600SemiBold",
+    color: "#000",
   },
   resultDate: {
     fontSize: 24,
     textAlign: "center",
     color: "#b4c400",
     marginBottom: 16,
-    fontWeight: "bold",
+    fontFamily: "Montserrat_700Bold",
   },
   row: {
     flexDirection: "row",
@@ -75,26 +82,28 @@ export default StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: "Montserrat_600SemiBold",
     marginBottom: 4,
   },
   bold: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: "Montserrat_700Bold",
   },
   green: {
     color: "#b4c400",
-    fontWeight: "bold",
+    fontFamily: "Montserrat_700Bold",
   },
   alert: {
     marginTop: 20,
     fontSize: 12,
     color: "red",
     textAlign: "center",
+    fontFamily: "Montserrat_400Regular",
   },
   noData: {
     fontSize: 14,
     textAlign: "center",
     color: "#555",
+    fontFamily: "Montserrat_400Regular",
   },
 });
