@@ -19,11 +19,10 @@ type Consulta = {
   provincia: string;
   observacionAliado?: string;
   estado: "pendiente" | "completado" | string;
-  fechaApertura: string; // ISO
+  fechaApertura: string;
 };
 
 type Props = {
-  /** padding inferior para que no lo tape el tabbar */
   contentBottomPadding?: number;
 };
 
@@ -117,7 +116,15 @@ const ContenidoConsultasAliados: React.FC<Props> = ({
       {isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#b4c400" />
-          <Text style={{ marginTop: 8 }}>Esperando datos...</Text>
+          <Text
+            style={{
+              marginTop: 8,
+              fontFamily: "Montserrat_400Regular",
+              color: "#292B2F",
+            }}
+          >
+            Esperando datos...
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -127,7 +134,7 @@ const ContenidoConsultasAliados: React.FC<Props> = ({
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingVertical: 8,
-            paddingBottom: contentBottomPadding, // 👈 separa del tabbar
+            paddingBottom: contentBottomPadding,
           }}
         />
       )}

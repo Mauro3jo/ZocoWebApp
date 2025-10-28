@@ -20,7 +20,7 @@ export default StyleSheet.create({
   title: {
     fontSize: 16,
     lineHeight: 22,
-    fontWeight: "700",
+    fontFamily: "Montserrat_700Bold",
     marginBottom: 12,
   },
   textLight: { color: "#292B2F" },
@@ -40,14 +40,18 @@ export default StyleSheet.create({
   },
   copyTitle: {
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: "Montserrat_700Bold",
     marginBottom: 6,
   },
   copy: {
     fontSize: 14,
     lineHeight: 20,
+    fontFamily: "Montserrat_400Regular",
   },
-  italic: { fontStyle: "italic" },
+  italic: {
+    fontStyle: "italic",
+    fontFamily: "Montserrat_300Light",
+  },
 
   textarea: {
     width: "100%",
@@ -57,6 +61,9 @@ export default StyleSheet.create({
     paddingVertical: 14,
     textAlignVertical: "top",
     marginTop: 8,
+    fontFamily: "Montserrat_400Regular",
+    fontSize: 14,
+    color: "#000",
   },
   textareaLight: {
     backgroundColor: "#DDE1E8",
@@ -86,7 +93,7 @@ export default StyleSheet.create({
   },
   submitText: {
     color: "#FFFFFF",
-    fontWeight: "700",
+    fontFamily: "Montserrat_700Bold",
     fontSize: 18,
   },
 });

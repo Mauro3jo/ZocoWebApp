@@ -6,6 +6,7 @@ export default StyleSheet.create({
     alignItems: "flex-end",
     marginBottom: 8,
   },
+
   btnNuevaConsulta: {
     width: 250,
     height: 49,
@@ -16,8 +17,8 @@ export default StyleSheet.create({
   },
   btnNuevaConsultaText: {
     color: "#fff",
-    fontWeight: "700",
     fontSize: 18,
+    fontFamily: "Montserrat_700Bold",
   },
 
   center: {
@@ -52,14 +53,15 @@ export default StyleSheet.create({
     lineHeight: 22,
     color: "#292B2F",
     paddingHorizontal: 16,
+    fontFamily: "Montserrat_400Regular",
   },
   bold: {
-    fontWeight: "700",
+    fontFamily: "Montserrat_700Bold",
   },
 
   estado: {
     fontSize: 18,
-    fontWeight: "400",
+    fontFamily: "Montserrat_400Regular",
     marginBottom: 6,
   },
   estadoPendiente: {
@@ -71,5 +73,6 @@ export default StyleSheet.create({
   fecha: {
     fontSize: 12,
     color: "#b3b5bf",
+    fontFamily: "Montserrat_300Light",
   },
 });

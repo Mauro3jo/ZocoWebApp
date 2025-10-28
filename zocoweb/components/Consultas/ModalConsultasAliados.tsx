@@ -43,7 +43,6 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
   const [Telefono, setTelefono] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // selects
   const [showMotivoSelect, setShowMotivoSelect] = useState(false);
   const [showProvinciaSelect, setShowProvinciaSelect] = useState(false);
 
@@ -119,9 +118,9 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
             </Pressable>
           </View>
 
-          {/* Form */}
+          {/* Formulario */}
           <View style={styles.form}>
-            {/* Motivo (SELECT) */}
+            {/* Motivo */}
             <Text style={styles.label}>Motivo</Text>
             <Pressable style={styles.selectInput} onPress={() => setShowMotivoSelect(true)}>
               <Text style={Motivo ? styles.selectValue : styles.selectPlaceholder}>
@@ -138,9 +137,10 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
               placeholder="Ej: Necesitamos rollos hoy por favor"
               style={[styles.input, styles.textarea]}
               multiline
+              placeholderTextColor="#6B7280"
             />
 
-            {/* Dirección / Provincia (SELECT) / Teléfono */}
+            {/* Dirección / Provincia / Teléfono */}
             <View style={styles.row}>
               <View style={styles.col}>
                 <Text style={styles.label}>Dirección</Text>
@@ -149,6 +149,7 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
                   onChangeText={setDireccion}
                   placeholder="Dirección local"
                   style={styles.input}
+                  placeholderTextColor="#6B7280"
                 />
               </View>
 
@@ -172,14 +173,15 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
                   placeholder="0123456789"
                   keyboardType="numeric"
                   style={styles.input}
+                  placeholderTextColor="#6B7280"
                 />
               </View>
             </View>
 
-            {/* Footer buttons */}
+            {/* Botones */}
             <View style={styles.footerRow}>
               <Pressable onPress={onClose} style={[styles.btn, styles.btnCancel]}>
-                <Text style={styles.btnText}>Cancel</Text>
+                <Text style={styles.btnText}>Cancelar</Text>
               </Pressable>
 
               <Pressable
@@ -202,7 +204,7 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
         </View>
       </View>
 
-      {/* SELECT de Motivo */}
+      {/* SELECT Motivo */}
       <Modal
         visible={showMotivoSelect}
         transparent
@@ -215,36 +217,14 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
             <FlatList
               data={motivos}
               keyExtractor={(it) => it}
-              renderItem={({ item }) => renderOption(item, setMotivo, () => setShowMotivoSelect(false))}
+              renderItem={({ item }) =>
+                renderOption(item, setMotivo, () => setShowMotivoSelect(false))
+              }
             />
-            <Pressable style={[styles.btn, styles.btnCancel, { marginTop: 12 }]} onPress={() => setShowMotivoSelect(false)}>
+            <Pressable
+              style={[styles.btn, styles.btnCancel, { marginTop: 12 }]}
+              onPress={() => setShowMotivoSelect(false)}
+            >
               <Text style={styles.btnText}>Cerrar</Text>
             </Pressable>
           </View>
-        </View>
-      </Modal>
-
-      {/* SELECT de Provincia */}
-      <Modal
-        visible={showProvinciaSelect}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowProvinciaSelect(false)}
-      >
-        <View style={styles.selectBackdrop}>
-          <View style={styles.selectSheet}>
-            <Text style={styles.selectTitle}>Seleccioná una provincia</Text>
-            <FlatList
-              data={provincias}
-              keyExtractor={(it) => it}
-              renderItem={({ item }) => renderOption(item, setProvincia, () => setShowProvinciaSelect(false))}
-            />
-            <Pressable style={[styles.btn, styles.btnCancel, { marginTop: 12 }]} onPress={() => setShowProvinciaSelect(false)}>
-              <Text style={styles.btnText}>Cerrar</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-    </Modal>
-  );
-}
