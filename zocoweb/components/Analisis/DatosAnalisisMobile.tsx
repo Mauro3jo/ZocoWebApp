@@ -34,22 +34,18 @@ export default function DatosAnalisisMobile({ datosBack }: Props) {
       {
         title: "Cantidad de Operaciones",
         value: `${totalOperaciones}`,
-        money: false,
       },
       {
         title: "Débito",
         value: formatearAPeso(totalConDescuentoCuotas0),
-        money: true,
       },
       {
         title: "1 Pago",
         value: formatearAPeso(totalConDescuentoCuotas1),
-        money: true,
       },
       {
         title: "Cuotas",
         value: formatearAPeso(totalConDescuentoCuotas2),
-        money: true,
       },
     ],
     [
@@ -99,8 +95,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cardTitle: {
+    fontFamily: "Montserrat_400Regular",
     fontSize: 13,
-    fontWeight: "500",
     color: "#434751",
     textAlign: "center",
     marginBottom: 6,
@@ -112,8 +108,8 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   cardValue: {
-    fontSize: 20,
-    fontWeight: "800",
+    fontFamily: "Montserrat_700Bold",
+    fontSize: 17, // 🔹 más chico (antes 20)
     color: "#1E1E2D",
     textAlign: "center",
   },

@@ -14,7 +14,7 @@ type Props = {
 };
 
 const GREEN = "#B4C400";
-const BLACK = "#0D0D0D";
+const BLACK = "#B1B1B1"; // 🔹 reemplazo del negro por gris claro, mantiene el nombre
 const GRID = "#E9EDF3";
 
 // ===== helpers =====
@@ -119,6 +119,7 @@ function DualBarsCard({
             fontSize="14"
             fill="#5F6470"
             fontWeight="600"
+            fontFamily="Montserrat_700Bold"
           >
             {leftTitle}
           </SvgText>
@@ -128,6 +129,7 @@ function DualBarsCard({
             fontSize="14"
             fill="#5F6470"
             fontWeight="600"
+            fontFamily="Montserrat_700Bold"
           >
             {rightTitle}
           </SvgText>
@@ -143,9 +145,16 @@ function DualBarsCard({
           />
 
           {/* divisor vertical */}
-          <Line x1={midX} y1={PAD_T - 8} x2={midX} y2={PAD_T + chartH + 10} stroke={GRID} strokeWidth={2} />
+          <Line
+            x1={midX}
+            y1={PAD_T - 8}
+            x2={midX}
+            y2={PAD_T + chartH + 10}
+            stroke={GRID}
+            strokeWidth={2}
+          />
 
-          {/* barras: Débito negro / Crédito verde */}
+          {/* barras: Débito gris / Crédito verde */}
           {renderPair(leftValues, leftStart, vmaxL, [BLACK, GREEN])}
           {renderPair(rightValues, rightStart, vmaxR, [BLACK, GREEN])}
 
@@ -158,8 +167,9 @@ function DualBarsCard({
                 x={x}
                 y={height - 16}
                 fontSize="12"
-                fill="#30313A"
+                fill="#292B2F"
                 textAnchor="middle"
+                fontFamily="Montserrat_400Regular"
               >
                 {labels[i]}
               </SvgText>
@@ -173,8 +183,9 @@ function DualBarsCard({
                 x={x}
                 y={height - 16}
                 fontSize="12"
-                fill="#30313A"
+                fill="#292B2F"
                 textAnchor="middle"
+                fontFamily="Montserrat_400Regular"
               >
                 {labels[i]}
               </SvgText>
@@ -192,6 +203,7 @@ function DualBarsCard({
                 fill="#fff"
                 textAnchor="middle"
                 fontWeight="700"
+                fontFamily="Montserrat_700Bold"
               >
                 {tip.text}
               </SvgText>
@@ -293,6 +305,7 @@ function CuotasCard({ title, cuotas }: { title: string; cuotas: CuotaItem[] }) {
                 fontSize="11"
                 fill="#292B2F"
                 textAnchor="middle"
+                fontFamily="Montserrat_400Regular"
               >
                 {lbl}
               </SvgText>
@@ -308,6 +321,7 @@ function CuotasCard({ title, cuotas }: { title: string; cuotas: CuotaItem[] }) {
                 fill="#fff"
                 textAnchor="middle"
                 fontWeight="700"
+                fontFamily="Montserrat_700Bold"
               >
                 {tip.text}
               </SvgText>
@@ -361,8 +375,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
+    fontFamily: "Montserrat_700Bold",
     fontSize: 16,
-    fontWeight: "700",
     textAlign: "center",
     color: "#292B2F",
     marginBottom: 8,

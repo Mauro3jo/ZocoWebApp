@@ -73,70 +73,27 @@ const TablaContabilidadArchivos: React.FC = () => {
       showAlert("Aviso", `No hay documentos para ${tipo}`);
       return;
     }
-    // Para guardar/abrir PDF luego: usar expo-file-system o react-native-fs.
     showAlert("OK", `Descargados ${documentos.length} documentos de ${tipo}`);
   };
 
-  // ======== CONSULTA 2: descargar AFIP (POST REACT_APP_API_AFIP) ========
-  const handleDownloadAfip = async (mes: string) => {
+  // ======== CONSULTAS DE DESCARGA =========
+  const handleDownload = async (url: string, mes: string, tipo: string) => {
     const token = await AsyncStorage.getItem("token");
     if (!token) {
       showAlert("Error", "No hay token disponible");
       return;
     }
     try {
-      const response = await fetch(REACT_APP_API_AFIP, {
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, fecha: mes }),
       });
       if (!response.ok) throw new Error("Error en la respuesta de la API");
       const documentos = await response.json();
-      procesarDocumentos(documentos, "AFIP (IVA-Ganancia)");
+      procesarDocumentos(documentos, tipo);
     } catch {
-      showAlert("Error", "Error al descargar los PDFs de AFIP");
-    }
-  };
-
-  // ======== CONSULTA 3: descargar IIBB (POST REACT_APP_API_IIBB) ========
-  const handleDownloadIIBB = async (mes: string) => {
-    const token = await AsyncStorage.getItem("token");
-    if (!token) {
-      showAlert("Error", "No hay token disponible");
-      return;
-    }
-    try {
-      const response = await fetch(REACT_APP_API_IIBB, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, fecha: mes }),
-      });
-      if (!response.ok) throw new Error("Error en la respuesta de la API");
-      const documentos = await response.json();
-      procesarDocumentos(documentos, "IIBB");
-    } catch {
-      showAlert("Error", "Error al descargar los PDFs de IIBB");
-    }
-  };
-
-  // ======== CONSULTA 4: descargar Facturante (POST REACT_APP_API_FACTURANTE) ========
-  const handleDownloadFacturante = async (mes: string) => {
-    const token = await AsyncStorage.getItem("token");
-    if (!token) {
-      showAlert("Error", "No hay token disponible");
-      return;
-    }
-    try {
-      const response = await fetch(REACT_APP_API_FACTURANTE, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, fecha: mes }),
-      });
-      if (!response.ok) throw new Error("Error en la respuesta de la API");
-      const documentos = await response.json();
-      procesarDocumentos(documentos, "Facturante");
-    } catch {
-      showAlert("Error", "Error al descargar los PDFs de Facturante");
+      showAlert("Error", `Error al descargar los PDFs de ${tipo}`);
     }
   };
 
@@ -150,7 +107,6 @@ const TablaContabilidadArchivos: React.FC = () => {
         <Text style={styles.headerText}>Comprobantes de factura - Retención</Text>
       </View>
 
-      {/* Tabla sin scroll lateral (sólo vertical si hace falta) */}
       {loading ? (
         <ActivityIndicator size="large" color="#B1C20E" style={{ margin: 20 }} />
       ) : (
@@ -163,7 +119,7 @@ const TablaContabilidadArchivos: React.FC = () => {
             <Text style={[styles.cellHeader, styles.colAccion]}>IIBB</Text>
           </View>
 
-          {/* Filas con scroll vertical libre */}
+          {/* Filas */}
           <ScrollView nestedScrollEnabled contentContainerStyle={{ paddingBottom: 8 }}>
             {filas.length > 0 ? (
               filas.map((dato, idx) => (
@@ -176,10 +132,9 @@ const TablaContabilidadArchivos: React.FC = () => {
                   <View style={[styles.colAccion, styles.center]}>
                     {dato.tieneFacturante ? (
                       <TouchableOpacity
-                        style={styles.btn}
-                        onPress={() => handleDownloadFacturante(dato.mes)}
+                        onPress={() => handleDownload(REACT_APP_API_FACTURANTE, dato.mes, "Facturante")}
                       >
-                        <Text style={styles.btnText}>Descargar</Text>
+                        <Text style={styles.linkText}>Descargar</Text>
                       </TouchableOpacity>
                     ) : (
                       <Text style={styles.noFile}>No hay archivo para descargar</Text>
@@ -190,10 +145,9 @@ const TablaContabilidadArchivos: React.FC = () => {
                   <View style={[styles.colAccion, styles.center]}>
                     {dato.tieneAfip ? (
                       <TouchableOpacity
-                        style={styles.btn}
-                        onPress={() => handleDownloadAfip(dato.mes)}
+                        onPress={() => handleDownload(REACT_APP_API_AFIP, dato.mes, "AFIP (IVA-Ganancia)")}
                       >
-                        <Text style={styles.btnText}>Descargar</Text>
+                        <Text style={styles.linkText}>Descargar</Text>
                       </TouchableOpacity>
                     ) : (
                       <Text style={styles.noFile}>No hay archivo para descargar</Text>
@@ -204,10 +158,9 @@ const TablaContabilidadArchivos: React.FC = () => {
                   <View style={[styles.colAccion, styles.center]}>
                     {dato.tieneIibb ? (
                       <TouchableOpacity
-                        style={styles.btn}
-                        onPress={() => handleDownloadIIBB(dato.mes)}
+                        onPress={() => handleDownload(REACT_APP_API_IIBB, dato.mes, "IIBB")}
                       >
-                        <Text style={styles.btnText}>Descargar</Text>
+                        <Text style={styles.linkText}>Descargar</Text>
                       </TouchableOpacity>
                     ) : (
                       <Text style={styles.noFile}>No hay archivo para descargar</Text>
@@ -248,21 +201,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#F7F8FC",
     padding: 10,
   },
-header: {
-  paddingVertical: 14,
-  backgroundColor: "#B1C20E",
-  alignItems: "center",
-  marginBottom: 12,
-  borderRadius: 8,
-},
-headerText: {
-  fontSize: 16,
-  fontWeight: "bold",
-  color: "#FFFFFF",
-},
+  header: {
+    paddingVertical: 14,
+    backgroundColor: "#B1C20E",
+    alignItems: "center",
+    marginBottom: 12,
+    borderRadius: 8,
+  },
+  headerText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
 
-
-  /* cabecera y filas */
   rowHeader: {
     flexDirection: "row",
     backgroundColor: "#F2F4F7",
@@ -286,11 +237,9 @@ headerText: {
     borderColor: "#E1E4EA",
   },
 
-  /* columnas */
   colMes: { flex: 1.3, paddingHorizontal: 10 },
   colAccion: { flex: 1, paddingHorizontal: 6 },
 
-  /* celdas */
   cellHeader: {
     fontWeight: "600",
     color: "#222",
@@ -303,20 +252,13 @@ headerText: {
   },
   center: { alignItems: "center", justifyContent: "center" },
 
-  /* botón */
-  btn: {
-    backgroundColor: "#B1C20E",
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 6,
-    minWidth: 96,
-    alignItems: "center",
-  },
-  btnText: {
-    color: "#fff",
+  /* 🔹 solo texto verde */
+  linkText: {
+    color: "#B1C20E",
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: 13,
   },
+
   noFile: {
     color: "#777",
     fontSize: 12,
