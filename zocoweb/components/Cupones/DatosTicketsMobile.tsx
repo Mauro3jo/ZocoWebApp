@@ -1,4 +1,3 @@
-// src/components/Cupones/DatosTicketsMobile.tsx
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
@@ -43,7 +42,7 @@ const DatosTicketsMobile: React.FC<Props> = ({ datosCuponesContext }) => {
             key={idx}
             style={[
               styles.row,
-              idx === rows.length - 1 && { borderBottomWidth: 0 }, // 🔹 sin línea final
+              idx === rows.length - 1 && { borderBottomWidth: 0 },
             ]}
           >
             <Text style={styles.label}>{row.k}</Text>
@@ -78,17 +77,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#E3E5EA",
-    borderStyle: "dashed", // 🔹 línea punteada
+    borderStyle: "dashed",
   },
   label: {
     fontSize: 13,
     color: "#6B6E75",
-    fontWeight: "600",
+    fontFamily: "Montserrat_600SemiBold",
   },
   value: {
     fontSize: 15,
     color: "#1C1D21",
-    fontWeight: "700",
+    fontFamily: "Montserrat_700Bold",
   },
 });
 
