@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const formaPesos = (numero) => {
+const formaPesos = (numero?: number) => {
   if (!numero) return "$0,00";
   const monto = parseFloat(numero.toString());
   let partes = monto.toFixed(2).split(".");
@@ -10,15 +9,20 @@ const formaPesos = (numero) => {
   return `$${partes[0]},${partes[1]}`;
 };
 
-const DatosContabilidadMobile = ({ datosBack }) => {
+type Props = {
+  datosBack?: {
+    totalBrutoMes: number;
+    totalIvaMes: number;
+    totalNetoMes: number;
+    totalRetencionesMes: number;
+  };
+};
+
+const DatosContabilidadMobile: React.FC<Props> = ({ datosBack }) => {
   if (!datosBack) return null;
 
-  const {
-    totalBrutoMes,
-    totalIvaMes,
-    totalNetoMes,
-    totalRetencionesMes,
-  } = datosBack;
+  const { totalBrutoMes, totalIvaMes, totalNetoMes, totalRetencionesMes } =
+    datosBack;
 
   return (
     <View style={styles.container}>
@@ -78,8 +82,8 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontSize: 14,
-    fontWeight: "400",
     color: "#444",
+    fontFamily: "Montserrat_400Regular",
   },
   line: {
     height: 1,
@@ -91,8 +95,8 @@ const styles = StyleSheet.create({
   value: {
     textAlign: "center",
     fontSize: 18,
-    fontWeight: "bold",
     color: "#1E1E2D",
+    fontFamily: "Montserrat_700Bold",
   },
 });
 
