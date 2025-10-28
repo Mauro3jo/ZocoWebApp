@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 // 🔹 Helper interno
-const formatearAPeso = (valor) => {
+const formatearAPeso = (valor?: number) => {
   if (!valor) return "$0,00";
   const valorFormateado = new Intl.NumberFormat("es-AR", {
     style: "currency",
@@ -17,11 +17,24 @@ const formatearAPeso = (valor) => {
   return `$${partes.join(",")}`;
 };
 
-const formatearValores = (...valores) => {
+const formatearValores = (...valores: number[]) => {
   return valores.map((valor) => formatearAPeso(valor));
 };
 
-export default function ImpuestosCardsMobile({ datosBack }) {
+type Props = {
+  datosBack?: {
+    totalBrutoMes: number;
+    totaldebito: number;
+    arancel: number;
+    totalIva21Mes: number;
+    ingresobruto: number;
+    retencionganancia: number;
+    retecionIva: number;
+    totalOperaciones: string;
+  };
+};
+
+export default function ImpuestosCardsMobile({ datosBack }: Props) {
   if (!datosBack) return null;
 
   const {
@@ -121,10 +134,10 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: "700",
-    color: "#222",
     textAlign: "center",
     marginBottom: 12,
+    color: "#222",
+    fontFamily: "Montserrat_700Bold",
   },
   block: {
     marginBottom: 10,
@@ -140,25 +153,26 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     color: "#555",
+    fontFamily: "Montserrat_400Regular",
   },
   value: {
     fontSize: 14,
-    fontWeight: "600",
     color: "#1E1E2D",
+    fontFamily: "Montserrat_600SemiBold",
   },
   retencionText: {
     marginTop: 8,
     textAlign: "center",
     fontSize: 14,
-    fontWeight: "700",
     color: "#1E1E2D",
+    fontFamily: "Montserrat_700Bold",
   },
   rowSplitContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   halfCard: {
-    flexBasis: "48.5%", // ✅ asegura mismo tamaño en todos los dispositivos
+    flexBasis: "48.5%",
     backgroundColor: "#fff",
     borderRadius: 12,
     borderWidth: 1,
@@ -169,18 +183,20 @@ const styles = StyleSheet.create({
   },
   splitTitle: {
     fontSize: 15,
-    fontWeight: "600",
     color: "#222",
     marginBottom: 6,
+    fontFamily: "Montserrat_600SemiBold",
   },
   subLabel: {
     fontSize: 13,
     color: "#777",
     marginBottom: 4,
+    fontFamily: "Montserrat_400Regular",
   },
   splitValue: {
     fontSize: 16,
-    fontWeight: "700",
     color: "#1E1E2D",
+    fontFamily: "Montserrat_700Bold",
   },
 });
+
