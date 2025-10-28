@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,12 +21,11 @@ const fmtARS = (v: any) => {
   });
 };
 
-// para la API de orden por fecha suele ir dd/MM/yyyy
+// 🔹 Convierte fecha a dd/MM/yyyy
 const toSlashDMY = (input?: string) => {
   if (!input) return "";
   const d = new Date(input);
   if (isNaN(d.getTime())) {
-    // si ya viene dd-MM-yyyy -> dd/MM/yyyy
     return input.replaceAll("-", "/");
   }
   const dd = String(d.getDate()).padStart(2, "0");
@@ -30,8 +35,8 @@ const toSlashDMY = (input?: string) => {
 };
 
 type Props = {
-  fechaDisplay: string;      // dd-MM-yyyy (se muestra)
-  fechaApiRaw: string;       // crudo para convertir a dd/MM/yyyy (API aliado)
+  fechaDisplay: string;
+  fechaApiRaw: string;
   bruto: number | string;
   total: number | string;
   tieneDocumentos?: boolean;
@@ -53,7 +58,7 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
       const token = await AsyncStorage.getItem("token");
       if (!token) throw new Error("No hay token");
 
-      const fecha = toSlashDMY(fechaApiRaw); // dd/MM/yyyy
+      const fecha = toSlashDMY(fechaApiRaw);
       const url = REACT_APP_API_PDF_ALIADO;
       if (!url) throw new Error("Falta REACT_APP_API_PDF_ALIADO en .env");
 
@@ -64,20 +69,23 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
       });
       if (!resp.ok) throw new Error(`Error de red: ${resp.status}`);
 
-      const docs = await resp.json(); // array de { documentoPdfBase64, nombreDocumento }
+      const docs = await resp.json();
       if (!Array.isArray(docs) || docs.length === 0) {
         Alert.alert("Descarga", "No hay documentos para esa fecha.");
         return;
       }
 
-      // Guardar y compartir cada PDF
+      // 🔹 Guardar y compartir cada PDF
       for (let i = 0; i < docs.length; i++) {
         const doc = docs[i];
         const b64 = String(doc?.documentoPdfBase64 ?? "");
         if (!b64) continue;
 
         const nombre = String(doc?.nombreDocumento ?? `Orden-Pago-${i + 1}`);
-        const safeName = `${nombre}-${fechaDisplay}.pdf`.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+        const safeName = `${nombre}-${fechaDisplay}.pdf`.replace(
+          /[^a-zA-Z0-9.\-_]/g,
+          "_"
+        );
         const fileUri = FileSystem.cacheDirectory + safeName;
 
         await FileSystem.writeAsStringAsync(fileUri, b64, {
@@ -112,52 +120,82 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
 
       {/* Bruto */}
       <Cell style={{ flex: 1 }}>
-        <Text style={[cellText, rightNum]} numberOfLines={1} ellipsizeMode="clip">
+        <Text
+          style={[cellText, rightNum, { fontFamily: "Montserrat_600SemiBold" }]}
+          numberOfLines={1}
+          ellipsizeMode="clip"
+        >
           {fmtARS(bruto)}
         </Text>
       </Cell>
 
-      {/* TOTAL (solo header es verde; el número NO) */}
+      {/* Total */}
       <Cell style={{ flex: 1.2 }}>
-        <Text style={[cellText, rightNum, { fontWeight: "800" }]} numberOfLines={1} ellipsizeMode="clip">
+        <Text
+          style={[
+            cellText,
+            rightNum,
+            { fontFamily: "Montserrat_700Bold" },
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="clip"
+        >
           {fmtARS(total)}
         </Text>
       </Cell>
 
       {/* Orden de Pago */}
-    {/* Orden de Pago */}
-    <Cell style={{ flex: 1 }}>
-      {tieneDocumentos === false ? (
-        <Text style={{ fontSize: 11, color: "#8a8d96", textAlign: "center", fontWeight: "600" }}>
-          Sin docs
-        </Text>
-      ) : (
-        <TouchableOpacity
-          onPress={descargarOrdenesPorFecha}
-          disabled={downloading}
-          style={{ alignItems: "center", justifyContent: "center" }}
-        >
-          {downloading ? (
-            <ActivityIndicator color="#B1C20E" size="small" />
-          ) : (
-            <Text style={{ color: "#B1C20E", fontSize: 12, fontWeight: "800" }}>Descargar</Text>
-          )}
-        </TouchableOpacity>
-      )}
-    </Cell>
-
+      <Cell style={{ flex: 1 }}>
+        {tieneDocumentos === false ? (
+          <Text
+            style={{
+              fontSize: 11,
+              color: "#8a8d96",
+              textAlign: "center",
+              fontFamily: "Montserrat_600SemiBold",
+            }}
+          >
+            Sin docs
+          </Text>
+        ) : (
+          <TouchableOpacity
+            onPress={descargarOrdenesPorFecha}
+            disabled={downloading}
+            style={{ alignItems: "center", justifyContent: "center" }}
+          >
+            {downloading ? (
+              <ActivityIndicator color="#B1C20E" size="small" />
+            ) : (
+              <Text
+                style={{
+                  color: "#B1C20E",
+                  fontSize: 12,
+                  fontFamily: "Montserrat_700Bold",
+                }}
+              >
+                Descargar
+              </Text>
+            )}
+          </TouchableOpacity>
+        )}
+      </Cell>
     </View>
   );
 };
 
-const Cell = ({ children, style }: { children: React.ReactNode; style?: any }) => (
-  <View style={[{ paddingHorizontal: 8 }, style]}>{children}</View>
-);
+// 🔹 Subcomponente de celda
+const Cell = ({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style?: any;
+}) => <View style={[{ paddingHorizontal: 8 }, style]}>{children}</View>;
 
 const cellText = {
   fontSize: 12,
   color: "#111",
-  fontWeight: "700" as const,
+  fontFamily: "Montserrat_600SemiBold",
 };
 
 const rightNum = {
