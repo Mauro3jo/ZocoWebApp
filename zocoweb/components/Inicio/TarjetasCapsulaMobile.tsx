@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import React, { useMemo } from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
 
 type Item = { tarjeta: string; totalConDescuento?: number | string };
 type Props = {
@@ -7,9 +7,9 @@ type Props = {
 };
 
 const toNumber = (x: any) => {
-  if (typeof x === 'number') return x;
-  if (typeof x === 'string') {
-    const n = Number(x.replace(/[$\s.]/g, '').replace(',', '.'));
+  if (typeof x === "number") return x;
+  if (typeof x === "string") {
+    const n = Number(x.replace(/[$\s.]/g, "").replace(",", "."));
     return isNaN(n) ? 0 : n;
   }
   return 0;
@@ -17,22 +17,22 @@ const toNumber = (x: any) => {
 
 // 🔧 ajustá rutas si tus assets están en otro lado
 const logos: Record<string, any> = {
-  Visa: require('../../assets/img/visa.png'),
-  MasterCard: require('../../assets/img/mastercard.png'),
-  'Mastercard': require('../../assets/img/mastercard.png'),
-  Amex: require('../../assets/img/amex.png'),
-  'American Express': require('../../assets/img/amex.png'),
-  Cabal: require('../../assets/img/cabal.png'),
-  Diners: require('../../assets/img/diners.png'),
-  Argencard: require('../../assets/img/argencard.png'),
-  Naranjax: require('../../assets/img/naranjax.png'),
+  Visa: require("../../assets/img/visa.png"),
+  MasterCard: require("../../assets/img/mastercard.png"),
+  Mastercard: require("../../assets/img/mastercard.png"),
+  Amex: require("../../assets/img/amex.png"),
+  "American Express": require("../../assets/img/amex.png"),
+  Cabal: require("../../assets/img/cabal.png"),
+  Diners: require("../../assets/img/diners.png"),
+  Argencard: require("../../assets/img/argencard.png"),
+  Naranjax: require("../../assets/img/naranjax.png"),
 };
 
 const BAR_HEIGHT = 14;
 
 const TarjetasCapsulaMobile: React.FC<Props> = ({ datos }) => {
   const items = useMemo(() => {
-    const list = (datos?.descuentosPorTarjeta ?? []).map(it => ({
+    const list = (datos?.descuentosPorTarjeta ?? []).map((it) => ({
       nombre: it.tarjeta,
       valor: toNumber(it.totalConDescuento),
       logo: logos[it.tarjeta] ?? null,
@@ -40,15 +40,12 @@ const TarjetasCapsulaMobile: React.FC<Props> = ({ datos }) => {
     return list.sort((a, b) => b.valor - a.valor);
   }, [datos]);
 
-  const total = useMemo(
-    () => items.reduce((acc, i) => acc + i.valor, 0),
-    [items]
-  );
+  const total = useMemo(() => items.reduce((acc, i) => acc + i.valor, 0), [items]);
 
-  const bgCard = '#FFFFFF';
-  const labelColor = '#2B2F3A';
-  const fillColor = '#B4C400';          // verde ZOCO
-  const restColor = '#C9D1EC'; // “gris-lila” resto
+  const bgCard = "#FFFFFF";
+  const labelColor = "#2B2F3A";
+  const fillColor = "#B4C400"; // verde ZOCO
+  const restColor = "#C9D1EC"; // “gris-lila” resto
 
   if (!items.length) return null;
 
@@ -63,13 +60,20 @@ const TarjetasCapsulaMobile: React.FC<Props> = ({ datos }) => {
               {it.logo ? (
                 <Image source={it.logo} style={styles.logo} resizeMode="contain" />
               ) : (
-                <Text style={[styles.fallback, { color: labelColor }]}>{it.nombre}</Text>
+                <Text style={[styles.fallback, { color: labelColor }]}>
+                  {it.nombre}
+                </Text>
               )}
             </View>
 
             {/* barra tipo cápsula */}
             <View style={[styles.barTrack, { backgroundColor: restColor }]}>
-              <View style={[styles.barFill, { width: `${pct * 100}%`, backgroundColor: fillColor }]} />
+              <View
+                style={[
+                  styles.barFill,
+                  { width: `${pct * 100}%`, backgroundColor: fillColor },
+                ]}
+              />
             </View>
           </View>
         );
@@ -89,28 +93,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     gap: 12,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
-  left: { width: 88, alignItems: 'flex-start', justifyContent: 'center' },
+  left: { width: 88, alignItems: "flex-start", justifyContent: "center" },
   logo: { width: 72, height: 26 },
-  fallback: { fontSize: 12, fontWeight: '700' },
-
+  fallback: {
+    fontSize: 12,
+    fontFamily: "Montserrat_700Bold",
+    color: "#2B2F3A",
+  },
   barTrack: {
     flex: 1,
     height: BAR_HEIGHT,
     borderRadius: BAR_HEIGHT / 2,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   barFill: {
-    height: '100%',
+    height: "100%",
     borderRadius: BAR_HEIGHT / 2,
   },
 });

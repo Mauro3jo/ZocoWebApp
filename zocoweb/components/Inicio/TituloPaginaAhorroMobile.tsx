@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,18 +8,18 @@ import {
   Image,
   Dimensions,
   TouchableWithoutFeedback,
-} from 'react-native';
-import IconMC from 'react-native-vector-icons/MaterialCommunityIcons';
+} from "react-native";
+import IconMC from "react-native-vector-icons/MaterialCommunityIcons";
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const logozoco = require('../../assets/img/Logo-ZOCO-4.png');
-const logopayway = require('../../assets/img/payway-texto.png');
-const logomercadopago = require('../../assets/img/Logo-Mercado-Pago-4.png');
-const logonx = require('../../assets/img/Logo-Naranja-X-4.png');
-const logogetnet = require('../../assets/img/Logo-Getnet-4.png');
-const logoviumi = require('../../assets/img/Logo-viuMi-(Con-espacio-abajo).png');
-const logoNave = require('../../assets/img/Logo-Nave-(Con-espacio-abajo).png');
+const logozoco = require("../../assets/img/Logo-ZOCO-4.png");
+const logopayway = require("../../assets/img/payway-texto.png");
+const logomercadopago = require("../../assets/img/Logo-Mercado-Pago-4.png");
+const logonx = require("../../assets/img/Logo-Naranja-X-4.png");
+const logogetnet = require("../../assets/img/Logo-Getnet-4.png");
+const logoviumi = require("../../assets/img/Logo-viuMi-(Con-espacio-abajo).png");
+const logoNave = require("../../assets/img/Logo-Nave-(Con-espacio-abajo).png");
 
 type Props = {
   ahorroMercadoPago: number | string | null;
@@ -78,7 +78,7 @@ export default function TituloPaginaAhorroMobile(props: Props) {
   }, [rowWidth, paused]);
 
   const currency = (v: any) =>
-    v === null || v === undefined || v === '' ? '-' : `${v}`;
+    v === null || v === undefined || v === "" ? "-" : `${v}`;
 
   const Comparativa = ({ logo, ahorro, size }: { logo: any; ahorro: any; size: number }) => (
     <View style={styles.comparativa}>
@@ -106,7 +106,7 @@ export default function TituloPaginaAhorroMobile(props: Props) {
   );
 
   return (
-    <View style={[styles.wrap, { backgroundColor: '#ffffff' }]}>
+    <View style={[styles.wrap, { backgroundColor: "#ffffff" }]}>
       <TouchableWithoutFeedback
         onPressIn={() => setPaused(true)}
         onPressOut={() => setPaused(false)}
@@ -114,15 +114,12 @@ export default function TituloPaginaAhorroMobile(props: Props) {
         <View style={styles.scrollerContainer}>
           <Animated.View
             style={{
-              flexDirection: 'row',
+              flexDirection: "row",
               transform: [{ translateX }],
               width: rowWidth * 2,
             }}
           >
-            <View
-              style={styles.row}
-              onLayout={(e) => setRowWidth(e.nativeEvent.layout.width)}
-            >
+            <View style={styles.row} onLayout={(e) => setRowWidth(e.nativeEvent.layout.width)}>
               {items.map((it, idx) => (
                 <Comparativa key={`A-${idx}`} {...it} />
               ))}
@@ -141,63 +138,64 @@ export default function TituloPaginaAhorroMobile(props: Props) {
 }
 
 const styles = StyleSheet.create({
-wrap: {
-  borderRadius: 10,
-  marginHorizontal: 10,
-  marginTop: 10,
-  height: 72, // 🔹 antes 92 → más baja la barra
-  overflow: "hidden",
-  shadowColor: "#000",
-  shadowOpacity: 0.06,
-  shadowOffset: { width: 0, height: 3 },
-  shadowRadius: 6,
-  elevation: 2,
-},
-
+  wrap: {
+    borderRadius: 10,
+    marginHorizontal: 10,
+    marginTop: 10,
+    height: 72,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 2,
+  },
   scrollerContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 12,
   },
   comparativa: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginHorizontal: 10,
   },
   verticalDivider: {
     width: 1,
     height: 50,
-    backgroundColor: 'gray',
+    backgroundColor: "gray",
     marginHorizontal: 12,
     opacity: 0.5,
   },
   logoZoco: { height: 24, marginRight: 8 },
   logoComp: { height: 24, marginRight: 8 },
   ahorroBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 6,
   },
-  up: { color: '#26b803', marginRight: 4 },
-  down: { color: 'red', marginRight: 4 },
-  valorCol: { alignItems: 'center' },
+  up: { color: "#26b803", marginRight: 4 },
+  down: { color: "red", marginRight: 4 },
+  valorCol: { alignItems: "center" },
   valor: {
     fontSize: 14,
-    fontWeight: '700',
-    color: '#2a2a2a',
+    fontFamily: "Montserrat_700Bold",
+    color: "#2a2a2a",
   },
   recibis: {
     fontSize: 11,
-    color: 'gray',
+    fontFamily: "Montserrat_500Medium",
+    color: "gray",
     marginTop: -2,
   },
   vs: {
-    fontWeight: '700',
+    fontFamily: "Montserrat_700Bold",
+    fontSize: 13,
     marginHorizontal: 6,
-    color: '#40424A',
+    color: "#40424A",
   },
 });

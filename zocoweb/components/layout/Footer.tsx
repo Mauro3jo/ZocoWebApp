@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 interface Props {
   text?: string;
@@ -18,11 +18,12 @@ export default function Footer({ text }: Props) {
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   legal: {
-    color: '#666',
+    color: "#666",
     fontSize: 12,
-    textAlign: 'center',
+    textAlign: "center",
+    fontFamily: "Montserrat_400Regular",
   },
 });

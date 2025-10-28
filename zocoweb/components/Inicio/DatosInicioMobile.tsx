@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useMemo } from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 type DatosProps = {
   datos: {
@@ -12,23 +12,23 @@ type DatosProps = {
 
 const DatosInicioMobile: React.FC<DatosProps> = ({ datos }) => {
   const fmt = (v: number) => {
-    if (!v || isNaN(v)) return '$0,00';
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
+    if (!v || isNaN(v)) return "$0,00";
+    return new Intl.NumberFormat("es-AR", {
+      style: "currency",
+      currency: "ARS",
       minimumFractionDigits: 2,
     })
       .format(v)
-      .replace('ARS', '')
+      .replace("ARS", "")
       .trim();
   };
 
   const cards = useMemo(
     () => [
-      { title: 'Hoy se acredita', value: fmt(datos.totalNetoHoy) },
-      { title: 'Mañana se acredita', value: fmt(datos.totalNetoMañana) },
-      { title: 'Total bruto', value: fmt(datos.totalBrutoMes) },
-      { title: 'Total neto', value: fmt(datos.totalNetoMes) },
+      { title: "Hoy se acredita", value: fmt(datos.totalNetoHoy) },
+      { title: "Mañana se acredita", value: fmt(datos.totalNetoMañana) },
+      { title: "Total bruto", value: fmt(datos.totalBrutoMes) },
+      { title: "Total neto", value: fmt(datos.totalNetoMes) },
     ],
     [datos]
   );
@@ -52,50 +52,50 @@ export default DatosInicioMobile;
 
 const styles = StyleSheet.create({
   section: {
-    backgroundColor: '#fff', // Fondo general blanco
+    backgroundColor: "#fff",
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 10,
     marginHorizontal: 10,
     marginTop: 10,
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.02,
     shadowRadius: 2,
   },
   wrapper: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   card: {
-    width: '48%',
+    width: "48%",
     borderRadius: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: '#e5e5e5',
+    borderColor: "#e5e5e5",
     paddingVertical: 14,
     paddingHorizontal: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 12,
   },
   title: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontFamily: "Montserrat_600SemiBold",
+    color: "#333",
     marginBottom: 6,
-    textAlign: 'center',
+    textAlign: "center",
   },
   separator: {
     height: 1,
-    backgroundColor: '#d9d9d9',
-    width: '70%',
+    backgroundColor: "#d9d9d9",
+    width: "70%",
     marginBottom: 8,
   },
   amount: {
     fontSize: 18,
-    fontWeight: '800',
-    color: '#000',
-    textAlign: 'center',
+    fontFamily: "Montserrat_800ExtraBold",
+    color: "#000",
+    textAlign: "center",
   },
 });

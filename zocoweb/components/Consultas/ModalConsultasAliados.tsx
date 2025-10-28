@@ -101,7 +101,7 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
       }}
       style={styles.optionRow}
     >
-      <Text style={styles.optionText}>{label}</Text>
+      <Text style={[styles.optionText, { fontFamily: "Montserrat_500Medium" }]}>{label}</Text>
     </Pressable>
   );
 
@@ -112,76 +112,100 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
           {/* Header */}
           <View style={styles.headerRow}>
             <View style={{ width: 28 }} />
-            <Text style={styles.headerTitle}>Nueva consulta</Text>
+            <Text style={[styles.headerTitle, { fontFamily: "Montserrat_700Bold" }]}>
+              Nueva consulta
+            </Text>
             <Pressable onPress={onClose} style={styles.closeBtn}>
-              <Text style={styles.closeBtnText}>✕</Text>
+              <Text style={[styles.closeBtnText, { fontFamily: "Montserrat_600SemiBold" }]}>
+                ✕
+              </Text>
             </Pressable>
           </View>
 
-          {/* Formulario */}
+          {/* Form */}
           <View style={styles.form}>
             {/* Motivo */}
-            <Text style={styles.label}>Motivo</Text>
+            <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>Motivo</Text>
             <Pressable style={styles.selectInput} onPress={() => setShowMotivoSelect(true)}>
-              <Text style={Motivo ? styles.selectValue : styles.selectPlaceholder}>
+              <Text
+                style={[
+                  Motivo ? styles.selectValue : styles.selectPlaceholder,
+                  { fontFamily: "Montserrat_500Medium" },
+                ]}
+              >
                 {Motivo || "Seleccioná un motivo"}
               </Text>
             </Pressable>
-            <Text style={styles.hint}>Opciones: {motivos.join(" • ")}</Text>
+            <Text style={[styles.hint, { fontFamily: "Montserrat_400Regular" }]}>
+              Opciones: {motivos.join(" • ")}
+            </Text>
 
             {/* Comentario */}
-            <Text style={styles.label}>Comentario</Text>
+            <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>Comentario</Text>
             <TextInput
               value={Observacion}
               onChangeText={setObservacion}
               placeholder="Ej: Necesitamos rollos hoy por favor"
-              style={[styles.input, styles.textarea]}
+              style={[styles.input, styles.textarea, { fontFamily: "Montserrat_400Regular" }]}
               multiline
-              placeholderTextColor="#6B7280"
             />
 
             {/* Dirección / Provincia / Teléfono */}
             <View style={styles.row}>
               <View style={styles.col}>
-                <Text style={styles.label}>Dirección</Text>
+                <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>
+                  Dirección
+                </Text>
                 <TextInput
                   value={Direccion}
                   onChangeText={setDireccion}
                   placeholder="Dirección local"
-                  style={styles.input}
-                  placeholderTextColor="#6B7280"
+                  style={[styles.input, { fontFamily: "Montserrat_400Regular" }]}
                 />
               </View>
 
               <View style={styles.col}>
-                <Text style={styles.label}>Provincia</Text>
-                <Pressable style={styles.selectInput} onPress={() => setShowProvinciaSelect(true)}>
-                  <Text style={Provincia ? styles.selectValue : styles.selectPlaceholder}>
+                <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>
+                  Provincia
+                </Text>
+                <Pressable
+                  style={styles.selectInput}
+                  onPress={() => setShowProvinciaSelect(true)}
+                >
+                  <Text
+                    style={[
+                      Provincia ? styles.selectValue : styles.selectPlaceholder,
+                      { fontFamily: "Montserrat_500Medium" },
+                    ]}
+                  >
                     {Provincia || "Provincia"}
                   </Text>
                 </Pressable>
-                <Text style={styles.hintSmall}>
+                <Text style={[styles.hintSmall, { fontFamily: "Montserrat_400Regular" }]}>
                   Ej: {provincias.slice(0, 5).join(", ")}...
                 </Text>
               </View>
 
               <View style={styles.col}>
-                <Text style={styles.label}>N° Teléfono</Text>
+                <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>
+                  N° Teléfono
+                </Text>
                 <TextInput
                   value={Telefono}
                   onChangeText={setTelefono}
                   placeholder="0123456789"
                   keyboardType="numeric"
-                  style={styles.input}
-                  placeholderTextColor="#6B7280"
+                  style={[styles.input, { fontFamily: "Montserrat_400Regular" }]}
                 />
               </View>
             </View>
 
-            {/* Botones */}
+            {/* Footer */}
             <View style={styles.footerRow}>
               <Pressable onPress={onClose} style={[styles.btn, styles.btnCancel]}>
-                <Text style={styles.btnText}>Cancelar</Text>
+                <Text style={[styles.btnText, { fontFamily: "Montserrat_600SemiBold" }]}>
+                  Cancelar
+                </Text>
               </Pressable>
 
               <Pressable
@@ -196,7 +220,9 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
                 {isSubmitting ? (
                   <ActivityIndicator color="#fff" />
                 ) : (
-                  <Text style={styles.btnText}>Guardar</Text>
+                  <Text style={[styles.btnText, { fontFamily: "Montserrat_700Bold" }]}>
+                    Guardar
+                  </Text>
                 )}
               </Pressable>
             </View>
@@ -213,7 +239,9 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
       >
         <View style={styles.selectBackdrop}>
           <View style={styles.selectSheet}>
-            <Text style={styles.selectTitle}>Seleccioná un motivo</Text>
+            <Text style={[styles.selectTitle, { fontFamily: "Montserrat_700Bold" }]}>
+              Seleccioná un motivo
+            </Text>
             <FlatList
               data={motivos}
               keyExtractor={(it) => it}
@@ -225,6 +253,44 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
               style={[styles.btn, styles.btnCancel, { marginTop: 12 }]}
               onPress={() => setShowMotivoSelect(false)}
             >
-              <Text style={styles.btnText}>Cerrar</Text>
+              <Text style={[styles.btnText, { fontFamily: "Montserrat_600SemiBold" }]}>
+                Cerrar
+              </Text>
             </Pressable>
           </View>
+        </View>
+      </Modal>
+
+      {/* SELECT Provincia */}
+      <Modal
+        visible={showProvinciaSelect}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowProvinciaSelect(false)}
+      >
+        <View style={styles.selectBackdrop}>
+          <View style={styles.selectSheet}>
+            <Text style={[styles.selectTitle, { fontFamily: "Montserrat_700Bold" }]}>
+              Seleccioná una provincia
+            </Text>
+            <FlatList
+              data={provincias}
+              keyExtractor={(it) => it}
+              renderItem={({ item }) =>
+                renderOption(item, setProvincia, () => setShowProvinciaSelect(false))
+              }
+            />
+            <Pressable
+              style={[styles.btn, styles.btnCancel, { marginTop: 12 }]}
+              onPress={() => setShowProvinciaSelect(false)}
+            >
+              <Text style={[styles.btnText, { fontFamily: "Montserrat_600SemiBold" }]}>
+                Cerrar
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+    </Modal>
+  );
+}
