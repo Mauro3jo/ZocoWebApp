@@ -1,4 +1,3 @@
-// src/components/Tickets/TablaTicketsMobile.tsx
 import React, { ReactNode, useMemo, useState } from "react";
 import {
   View,
@@ -12,8 +11,12 @@ import {
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { REACT_APP_API_EXCEL, REACT_APP_API_EXCEL_ANUAL, REACT_APP_API_PDF } from "@env";
-import { Feather } from "@expo/vector-icons"; // 🔹 para el icono de descarga
+import {
+  REACT_APP_API_EXCEL,
+  REACT_APP_API_EXCEL_ANUAL,
+  REACT_APP_API_PDF,
+} from "@env";
+import { Feather } from "@expo/vector-icons";
 import ItemsTablaTicketMobile from "./ItemsTablaTicketMobile";
 
 /* ===================== Tipos ===================== */
@@ -41,10 +44,9 @@ const fmtDMY = (input?: string) => {
   if (!input) return "";
   const d = new Date(input);
   if (isNaN(d.getTime())) return input.replaceAll("/", "-");
-  return `${String(d.getDate()).padStart(2, "0")}-${String(d.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${d.getFullYear()}`;
+  return `${String(d.getDate()).padStart(2, "0")}-${String(
+    d.getMonth() + 1
+  ).padStart(2, "0")}-${d.getFullYear()}`;
 };
 
 const normFecha = (s?: string) => (s ?? "").replaceAll("/", "-").toLowerCase();
@@ -73,7 +75,9 @@ const TablaTicketsMobile: React.FC<Props> = ({
   bottomPadding = 0,
 }) => {
   const [busqueda, setBusqueda] = useState("");
-  const [downloading, setDownloading] = useState<"pdf" | "mes" | "anual" | null>(null);
+  const [downloading, setDownloading] = useState<"pdf" | "mes" | "anual" | null>(
+    null
+  );
 
   const lista = useMemo(() => (Array.isArray(listaMes) ? listaMes : []), [listaMes]);
   const listaFiltrada = useMemo(() => {
@@ -81,7 +85,12 @@ const TablaTicketsMobile: React.FC<Props> = ({
     if (!b) return lista;
     const needle = b.replaceAll("/", "-");
     return lista.filter((it) => {
-      const f = it.fecha ?? it.fechaPago ?? it.fechaDePago ?? it.fechaOperacion ?? "";
+      const f =
+        it.fecha ??
+        it.fechaPago ??
+        it.fechaDePago ??
+        it.fechaOperacion ??
+        "";
       return normFecha(f).includes(needle);
     });
   }, [lista, busqueda]);
@@ -105,13 +114,15 @@ const TablaTicketsMobile: React.FC<Props> = ({
 
     const buf = await resp.arrayBuffer();
     const base64 = arrayBufferToBase64(buf);
-    const fileUri = FileSystem.cacheDirectory + nombreArchivo.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+    const fileUri =
+      FileSystem.cacheDirectory + nombreArchivo.replace(/[^a-zA-Z0-9.\-_]/g, "_");
 
     await FileSystem.writeAsStringAsync(fileUri, base64, {
       encoding: FileSystem.EncodingType.Base64,
     });
 
-    if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(fileUri, { mimeType });
+    if (await Sharing.isAvailableAsync())
+      await Sharing.shareAsync(fileUri, { mimeType });
     else Alert.alert("Descarga", `Archivo guardado en cache: ${fileUri}`);
   };
 
@@ -236,7 +247,15 @@ const TablaTicketsMobile: React.FC<Props> = ({
 
           {/* Buscador */}
           <View style={{ gap: 6 }}>
-            <Text style={{ fontSize: 16, fontWeight: "700" }}>Buscar por fecha:</Text>
+            <Text
+              style={{
+                fontSize: 16,
+                color: "#111",
+                fontFamily: "Montserrat_700Bold",
+              }}
+            >
+              Buscar por fecha:
+            </Text>
             <TextInput
               value={busqueda}
               onChangeText={setBusqueda}
@@ -251,6 +270,7 @@ const TablaTicketsMobile: React.FC<Props> = ({
                 backgroundColor: "#fff",
                 fontSize: 15,
                 color: "#101114",
+                fontFamily: "Montserrat_400Regular",
               }}
               placeholderTextColor="#9aa0a6"
             />
@@ -265,7 +285,11 @@ const TablaTicketsMobile: React.FC<Props> = ({
       }
       renderItem={({ item }) => {
         const fechaRaw =
-          item.fecha ?? item.fechaPago ?? item.fechaDePago ?? item.fechaOperacion ?? "";
+          item.fecha ??
+          item.fechaPago ??
+          item.fechaDePago ??
+          item.fechaOperacion ??
+          "";
         const bruto = item.totalBruto ?? item.bruto ?? 0;
         const total = item.totalOP ?? item.totalConDescuentos ?? 0;
 
@@ -292,7 +316,7 @@ const CellHeader = ({ text }: { text: string }) => (
   <View
     style={{
       flex: 1,
-      backgroundColor: "#F5F6FA", // ✅ todos los headers del mismo color
+      backgroundColor: "#F5F6FA",
       paddingVertical: 8,
       alignItems: "center",
       borderRightWidth: 1,
@@ -302,9 +326,9 @@ const CellHeader = ({ text }: { text: string }) => (
     <Text
       style={{
         color: "#1C1C1C",
-        fontWeight: "700",
         fontSize: 12,
         textAlign: "center",
+        fontFamily: "Montserrat_700Bold",
       }}
     >
       {text}
@@ -340,7 +364,15 @@ const DownloadButton = ({
     ) : (
       <>
         <Feather name="download" size={18} color="#111" />
-        <Text style={{ fontWeight: "700", fontSize: 13, color: "#111" }}>{label}</Text>
+        <Text
+          style={{
+            fontSize: 13,
+            color: "#111",
+            fontFamily: "Montserrat_700Bold",
+          }}
+        >
+          {label}
+        </Text>
       </>
     )}
   </TouchableOpacity>
