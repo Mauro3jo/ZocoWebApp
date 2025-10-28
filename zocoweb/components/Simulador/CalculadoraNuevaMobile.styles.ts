@@ -9,7 +9,7 @@ export default StyleSheet.create({
 
   label: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: "Montserrat_600SemiBold",
     marginVertical: 8,
     color: "#1C1C1C",
   },
@@ -23,6 +23,7 @@ export default StyleSheet.create({
     marginBottom: 16,
     fontSize: 16,
     color: "#000",
+    fontFamily: "Montserrat_400Regular",
   },
 
   // ===== PICKER IGUAL AL INPUT =====
@@ -38,6 +39,7 @@ export default StyleSheet.create({
     color: "#000",
     fontSize: 16,
     width: "100%",
+    fontFamily: "Montserrat_400Regular",
   },
 
   // ===== SWITCH COBRAR / RECIBIR =====
@@ -54,7 +56,7 @@ export default StyleSheet.create({
   },
   switchLabel: {
     fontSize: 15,
-    fontWeight: "500",
+    fontFamily: "Montserrat_500Medium",
     marginRight: 6,
     color: "#2A2A2A",
   },
@@ -69,7 +71,7 @@ export default StyleSheet.create({
   },
   btnText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "Montserrat_700Bold",
     fontSize: 18,
   },
 
@@ -87,7 +89,7 @@ export default StyleSheet.create({
   },
   resultLabel: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Montserrat_700Bold",
     textAlign: "center",
     marginBottom: 12,
   },
@@ -99,15 +101,16 @@ export default StyleSheet.create({
   textLeft: {
     fontSize: 14,
     color: "#333",
+    fontFamily: "Montserrat_400Regular",
   },
   textRight: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Montserrat_600SemiBold",
     color: "#000",
   },
   textRightBig: {
     fontSize: 20,
-    fontWeight: "700",
+    fontFamily: "Montserrat_700Bold",
     color: "#000",
   },
   separator: {
@@ -117,12 +120,12 @@ export default StyleSheet.create({
   },
   greenLeft: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Montserrat_600SemiBold",
     color: "#b4c400",
   },
   greenRight: {
     fontSize: 20,
-    fontWeight: "700",
+    fontFamily: "Montserrat_700Bold",
     color: "#b4c400",
   },
 });
