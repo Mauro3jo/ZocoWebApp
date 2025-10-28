@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 export default function TituloPaginaContabilidad() {
   return (
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#30313A',
+    color: "#30313A",
+    fontFamily: "Montserrat_700Bold",
   },
 });
