@@ -28,7 +28,8 @@ type RespuestaLista = {
 };
 
 const TablaContabilidadArchivos: React.FC = () => {
-  const [datosContabilidadArchivo, setDatosContabilidadArchivo] = useState<RespuestaLista>({});
+  const [datosContabilidadArchivo, setDatosContabilidadArchivo] =
+    useState<RespuestaLista>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [alertConfig, setAlertConfig] = useState({
     show: false,
@@ -38,9 +39,10 @@ const TablaContabilidadArchivos: React.FC = () => {
 
   const showAlert = (title: string, message: string) =>
     setAlertConfig({ show: true, title, message });
-  const closeAlert = () => setAlertConfig({ show: false, title: "", message: "" });
+  const closeAlert = () =>
+    setAlertConfig({ show: false, title: "", message: "" });
 
-  // ======== CONSULTA 1: lista de meses (POST REACT_APP_API_LISTA_AFIP) =========
+  // ======== CONSULTA 1: lista de meses =========
   useEffect(() => {
     const fetchData = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -55,7 +57,8 @@ const TablaContabilidadArchivos: React.FC = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),
         });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
         const data: RespuestaLista = await response.json();
         setDatosContabilidadArchivo(data);
       } catch {
@@ -67,7 +70,7 @@ const TablaContabilidadArchivos: React.FC = () => {
     fetchData();
   }, []);
 
-  // ======== Helpers (en RN no se descarga con <a>, solo feedback) =========
+  // ======== Helpers =========
   const procesarDocumentos = (documentos: any[], tipo: string) => {
     if (!Array.isArray(documentos) || documentos.length === 0) {
       showAlert("Aviso", `No hay documentos para ${tipo}`);
@@ -76,7 +79,7 @@ const TablaContabilidadArchivos: React.FC = () => {
     showAlert("OK", `Descargados ${documentos.length} documentos de ${tipo}`);
   };
 
-  // ======== CONSULTAS DE DESCARGA =========
+  // ======== Descarga =========
   const handleDownload = async (url: string, mes: string, tipo: string) => {
     const token = await AsyncStorage.getItem("token");
     if (!token) {
@@ -97,25 +100,30 @@ const TablaContabilidadArchivos: React.FC = () => {
     }
   };
 
-  // ======== UI ========
-  const filas: FilaMes[] = [...(datosContabilidadArchivo?.fechasDisponibles ?? [])].reverse();
+  const filas: FilaMes[] = [
+    ...(datosContabilidadArchivo?.fechasDisponibles ?? []),
+  ].reverse();
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>Comprobantes de factura - Retención</Text>
+        <Text style={styles.headerText}>
+          Comprobantes de factura - Retención
+        </Text>
       </View>
 
       {loading ? (
         <ActivityIndicator size="large" color="#B1C20E" style={{ margin: 20 }} />
       ) : (
         <View>
-          {/* Cabecera (4 columnas) */}
+          {/* Cabecera */}
           <View style={styles.rowHeader}>
             <Text style={[styles.cellHeader, styles.colMes]}>MES</Text>
             <Text style={[styles.cellHeader, styles.colAccion]}>Factura</Text>
-            <Text style={[styles.cellHeader, styles.colAccion]}>IVA-Ganancia</Text>
+            <Text style={[styles.cellHeader, styles.colAccion]}>
+              IVA-Ganancia
+            </Text>
             <Text style={[styles.cellHeader, styles.colAccion]}>IIBB</Text>
           </View>
 
@@ -124,7 +132,10 @@ const TablaContabilidadArchivos: React.FC = () => {
             {filas.length > 0 ? (
               filas.map((dato, idx) => (
                 <View key={`${dato.mes}-${idx}`} style={styles.row}>
-                  <Text style={[styles.cellText, styles.colMes]} numberOfLines={1}>
+                  <Text
+                    style={[styles.cellText, styles.colMes]}
+                    numberOfLines={1}
+                  >
                     {dato.mes}
                   </Text>
 
@@ -132,12 +143,20 @@ const TablaContabilidadArchivos: React.FC = () => {
                   <View style={[styles.colAccion, styles.center]}>
                     {dato.tieneFacturante ? (
                       <TouchableOpacity
-                        onPress={() => handleDownload(REACT_APP_API_FACTURANTE, dato.mes, "Facturante")}
+                        onPress={() =>
+                          handleDownload(
+                            REACT_APP_API_FACTURANTE,
+                            dato.mes,
+                            "Facturante"
+                          )
+                        }
                       >
                         <Text style={styles.linkText}>Descargar</Text>
                       </TouchableOpacity>
                     ) : (
-                      <Text style={styles.noFile}>No hay archivo para descargar</Text>
+                      <Text style={styles.noFile}>
+                        No hay archivo para descargar
+                      </Text>
                     )}
                   </View>
 
@@ -145,12 +164,20 @@ const TablaContabilidadArchivos: React.FC = () => {
                   <View style={[styles.colAccion, styles.center]}>
                     {dato.tieneAfip ? (
                       <TouchableOpacity
-                        onPress={() => handleDownload(REACT_APP_API_AFIP, dato.mes, "AFIP (IVA-Ganancia)")}
+                        onPress={() =>
+                          handleDownload(
+                            REACT_APP_API_AFIP,
+                            dato.mes,
+                            "AFIP (IVA-Ganancia)"
+                          )
+                        }
                       >
                         <Text style={styles.linkText}>Descargar</Text>
                       </TouchableOpacity>
                     ) : (
-                      <Text style={styles.noFile}>No hay archivo para descargar</Text>
+                      <Text style={styles.noFile}>
+                        No hay archivo para descargar
+                      </Text>
                     )}
                   </View>
 
@@ -158,12 +185,20 @@ const TablaContabilidadArchivos: React.FC = () => {
                   <View style={[styles.colAccion, styles.center]}>
                     {dato.tieneIibb ? (
                       <TouchableOpacity
-                        onPress={() => handleDownload(REACT_APP_API_IIBB, dato.mes, "IIBB")}
+                        onPress={() =>
+                          handleDownload(
+                            REACT_APP_API_IIBB,
+                            dato.mes,
+                            "IIBB"
+                          )
+                        }
                       >
                         <Text style={styles.linkText}>Descargar</Text>
                       </TouchableOpacity>
                     ) : (
-                      <Text style={styles.noFile}>No hay archivo para descargar</Text>
+                      <Text style={styles.noFile}>
+                        No hay archivo para descargar
+                      </Text>
                     )}
                   </View>
                 </View>
@@ -210,8 +245,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 16,
-    fontWeight: "bold",
     color: "#FFFFFF",
+    fontFamily: "Montserrat_700Bold",
   },
 
   rowHeader: {
@@ -241,27 +276,28 @@ const styles = StyleSheet.create({
   colAccion: { flex: 1, paddingHorizontal: 6 },
 
   cellHeader: {
-    fontWeight: "600",
     color: "#222",
     textAlign: "center",
     fontSize: 13,
+    fontFamily: "Montserrat_600SemiBold",
   },
   cellText: {
     color: "#30313A",
     fontSize: 13,
+    fontFamily: "Montserrat_400Regular",
   },
   center: { alignItems: "center", justifyContent: "center" },
 
-  /* 🔹 solo texto verde */
   linkText: {
     color: "#B1C20E",
-    fontWeight: "600",
     fontSize: 13,
+    fontFamily: "Montserrat_600SemiBold",
   },
 
   noFile: {
     color: "#777",
     fontSize: 12,
     textAlign: "center",
+    fontFamily: "Montserrat_300Light",
   },
 });
