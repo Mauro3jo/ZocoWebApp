@@ -5,12 +5,16 @@ const TABBAR_HEIGHT = 64;
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF", // 🔥 blanco total
+    backgroundColor: "#F4F6FA", // 🔹 mantiene la parte gris del encabezado
   },
 
   scroll: {
     flex: 1,
-    backgroundColor: "#FFFFFF", // 🔥 también blanco
+  },
+
+  separatorTop: {
+    backgroundColor: "#F4F6FA", // misma tonalidad gris clara
+    height: 16, // 🔹 altura del separador entre filtros y bloque blanco
   },
 
   tabbarContainer: {

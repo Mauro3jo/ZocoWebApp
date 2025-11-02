@@ -22,12 +22,10 @@ export default function Calificar() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
 
-  // 👉 medimos altura real del tabbar (minHeight + safe area + padding)
   const [tabbarHeight, setTabbarHeight] = useState(0);
   const onTabbarLayout = (e: LayoutChangeEvent) =>
     setTabbarHeight(e.nativeEvent.layout.height);
 
-  // ✅ Validación de token (mismo flujo que web)
   useEffect(() => {
     const verificarToken = async () => {
       try {
@@ -49,10 +47,8 @@ export default function Calificar() {
         }
 
         const data = await resp.json();
-        // En tu web: si data !== 0 => acceso denegado
         if (data !== 0) manejarAccesoDenegado();
-      } catch (err) {
-        // Si falla la validación por red, mantener coherencia con web
+      } catch {
         manejarNoAutorizado();
       }
     };
@@ -81,19 +77,22 @@ export default function Calificar() {
       <HeaderPrincipal />
       <FiltrosBar />
 
-      {/* CONTENIDO SCROLLEABLE */}
+      {/* BLOQUE BLANCO CON FORMULARIO */}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{
           flexGrow: 1,
-          backgroundColor: "#FFFFFF", // 🔥 asegura fondo blanco hasta el final
+          backgroundColor: "#FFFFFF",
           paddingBottom: tabbarHeight,
         }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {/* 🔹 separador gris para mantener el contraste visual */}
+        <View style={styles.separatorTop} />
+
+        {/* 🔸 contenido principal blanco */}
         <View style={{ padding: 20, backgroundColor: "#FFFFFF" }}>
-          {/* ⭐ Calificar (estrellas + comentario) */}
           <FormComentarioCalificarMobile />
         </View>
       </ScrollView>
