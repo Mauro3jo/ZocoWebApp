@@ -1,4 +1,3 @@
-// src/screens/Calificar.tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -53,8 +52,7 @@ export default function Calificar() {
         // En tu web: si data !== 0 => acceso denegado
         if (data !== 0) manejarAccesoDenegado();
       } catch (err) {
-        // Si falla la validación por red, opcionalmente podés permitir ver la pantalla
-        // o mandar a inicio. Mantengo consistente con web: tratar como no autorizado.
+        // Si falla la validación por red, mantener coherencia con web
         manejarNoAutorizado();
       }
     };
@@ -86,11 +84,15 @@ export default function Calificar() {
       {/* CONTENIDO SCROLLEABLE */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: tabbarHeight }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#FFFFFF", // 🔥 asegura fondo blanco hasta el final
+          paddingBottom: tabbarHeight,
+        }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={{ padding: 20 }}>
+        <View style={{ padding: 20, backgroundColor: "#FFFFFF" }}>
           {/* ⭐ Calificar (estrellas + comentario) */}
           <FormComentarioCalificarMobile />
         </View>
@@ -106,7 +108,12 @@ export default function Calificar() {
           edges={["bottom"]}
           style={[
             styles.tabbar,
-            { paddingBottom: Math.max(insets.bottom, Platform.OS === "ios" ? 8 : 10) },
+            {
+              paddingBottom: Math.max(
+                insets.bottom,
+                Platform.OS === "ios" ? 8 : 10
+              ),
+            },
           ]}
         >
           <MainView />
