@@ -109,7 +109,6 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
     <Modal visible={visible} animationType="slide" onRequestClose={onClose} transparent>
       <View style={styles.backdrop}>
         <View style={styles.modalContent}>
-          {/* Header */}
           <View style={styles.headerRow}>
             <View style={{ width: 28 }} />
             <Text style={[styles.headerTitle, { fontFamily: "Montserrat_700Bold" }]}>
@@ -122,9 +121,7 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
             </Pressable>
           </View>
 
-          {/* Form */}
           <View style={styles.form}>
-            {/* Motivo */}
             <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>Motivo</Text>
             <Pressable style={styles.selectInput} onPress={() => setShowMotivoSelect(true)}>
               <Text
@@ -136,11 +133,7 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
                 {Motivo || "Seleccioná un motivo"}
               </Text>
             </Pressable>
-            <Text style={[styles.hint, { fontFamily: "Montserrat_400Regular" }]}>
-              Opciones: {motivos.join(" • ")}
-            </Text>
 
-            {/* Comentario */}
             <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>Comentario</Text>
             <TextInput
               value={Observacion}
@@ -150,70 +143,41 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
               multiline
             />
 
-            {/* Dirección / Provincia / Teléfono */}
-            <View style={styles.row}>
-              <View style={styles.col}>
-                <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>
-                  Dirección
-                </Text>
-                <TextInput
-                  value={Direccion}
-                  onChangeText={setDireccion}
-                  placeholder="Dirección local"
-                  style={[styles.input, { fontFamily: "Montserrat_400Regular" }]}
-                />
-              </View>
+            <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>Dirección</Text>
+            <TextInput
+              value={Direccion}
+              onChangeText={setDireccion}
+              placeholder="Dirección local"
+              style={[styles.input, { fontFamily: "Montserrat_400Regular" }]}
+            />
 
-              <View style={styles.col}>
-                <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>
-                  Provincia
-                </Text>
-                <Pressable
-                  style={styles.selectInput}
-                  onPress={() => setShowProvinciaSelect(true)}
-                >
-                  <Text
-                    style={[
-                      Provincia ? styles.selectValue : styles.selectPlaceholder,
-                      { fontFamily: "Montserrat_500Medium" },
-                    ]}
-                  >
-                    {Provincia || "Provincia"}
-                  </Text>
-                </Pressable>
-                <Text style={[styles.hintSmall, { fontFamily: "Montserrat_400Regular" }]}>
-                  Ej: {provincias.slice(0, 5).join(", ")}...
-                </Text>
-              </View>
+            <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>Provincia</Text>
+            <Pressable style={styles.selectInput} onPress={() => setShowProvinciaSelect(true)}>
+              <Text
+                style={[
+                  Provincia ? styles.selectValue : styles.selectPlaceholder,
+                  { fontFamily: "Montserrat_500Medium" },
+                ]}
+              >
+                {Provincia || "Seleccioná una provincia"}
+              </Text>
+            </Pressable>
 
-              <View style={styles.col}>
-                <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>
-                  N° Teléfono
-                </Text>
-                <TextInput
-                  value={Telefono}
-                  onChangeText={setTelefono}
-                  placeholder="0123456789"
-                  keyboardType="numeric"
-                  style={[styles.input, { fontFamily: "Montserrat_400Regular" }]}
-                />
-              </View>
-            </View>
+            <Text style={[styles.label, { fontFamily: "Montserrat_600SemiBold" }]}>N° teléfono</Text>
+            <TextInput
+              value={Telefono}
+              onChangeText={setTelefono}
+              placeholder="0123456789"
+              keyboardType="numeric"
+              style={[styles.input, { fontFamily: "Montserrat_400Regular" }]}
+            />
 
-            {/* Footer */}
             <View style={styles.footerRow}>
-              <Pressable onPress={onClose} style={[styles.btn, styles.btnCancel]}>
-                <Text style={[styles.btnText, { fontFamily: "Montserrat_600SemiBold" }]}>
-                  Cancelar
-                </Text>
-              </Pressable>
-
               <Pressable
                 onPress={onSubmit}
                 disabled={isSubmitting || !Motivo || !Provincia}
                 style={[
                   styles.btn,
-                  styles.btnSave,
                   (isSubmitting || !Motivo || !Provincia) && { opacity: 0.6 },
                 ]}
               >
@@ -230,7 +194,6 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
         </View>
       </View>
 
-      {/* SELECT Motivo */}
       <Modal
         visible={showMotivoSelect}
         transparent
@@ -249,19 +212,10 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
                 renderOption(item, setMotivo, () => setShowMotivoSelect(false))
               }
             />
-            <Pressable
-              style={[styles.btn, styles.btnCancel, { marginTop: 12 }]}
-              onPress={() => setShowMotivoSelect(false)}
-            >
-              <Text style={[styles.btnText, { fontFamily: "Montserrat_600SemiBold" }]}>
-                Cerrar
-              </Text>
-            </Pressable>
           </View>
         </View>
       </Modal>
 
-      {/* SELECT Provincia */}
       <Modal
         visible={showProvinciaSelect}
         transparent
@@ -280,14 +234,6 @@ export default function ModalConsultasAliados({ visible, onClose, onSaved }: Pro
                 renderOption(item, setProvincia, () => setShowProvinciaSelect(false))
               }
             />
-            <Pressable
-              style={[styles.btn, styles.btnCancel, { marginTop: 12 }]}
-              onPress={() => setShowProvinciaSelect(false)}
-            >
-              <Text style={[styles.btnText, { fontFamily: "Montserrat_600SemiBold" }]}>
-                Cerrar
-              </Text>
-            </Pressable>
           </View>
         </View>
       </Modal>

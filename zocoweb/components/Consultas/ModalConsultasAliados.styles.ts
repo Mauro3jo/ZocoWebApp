@@ -10,9 +10,9 @@ export default StyleSheet.create({
 
   modalContent: {
     backgroundColor: "#fff",
-    borderRadius: 30,
+    borderRadius: 20,
     paddingVertical: 16,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
 
   headerRow: {
@@ -26,6 +26,7 @@ export default StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontFamily: "Montserrat_700Bold",
+    color: "#141517",
   },
 
   closeBtn: {
@@ -56,91 +57,34 @@ export default StyleSheet.create({
     color: "#141517",
   },
 
+  // 🔹 Inputs y selects con fondo gris, bordes redondeados y sin línea de borde
   input: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#d0d7e2",
-    borderRadius: 15,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    backgroundColor: "#F4F6FA",
+    borderWidth: 0,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     fontFamily: "Montserrat_400Regular",
     fontSize: 14,
     color: "#141517",
+    marginBottom: 14,
   },
 
   textarea: {
-    minHeight: 100,
+    minHeight: 90,
     textAlignVertical: "top",
   },
 
-  selectBox: {
-    marginBottom: 12,
-  },
-
-  hint: {
-    fontSize: 12,
-    color: "#6B7280",
-    marginTop: 6,
-    marginLeft: 4,
-    fontFamily: "Montserrat_300Light",
-  },
-
-  hintSmall: {
-    fontSize: 11,
-    color: "#6B7280",
-    marginTop: 6,
-    marginLeft: 4,
-    fontFamily: "Montserrat_300Light",
-  },
-
-  row: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-
-  col: {
-    flex: 1,
-  },
-
-  footerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 22,
-  },
-
-  btn: {
-    minWidth: 130,
-    height: 44,
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 18,
-  },
-
-  btnCancel: {
-    backgroundColor: "#141517",
-  },
-
-  btnSave: {
-    backgroundColor: "#B4C400",
-  },
-
-  btnText: {
-    color: "#fff",
-    fontFamily: "Montserrat_700Bold",
-    fontSize: 16,
-  },
-
-  /* -------- Select estilo modal -------- */
   selectInput: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#d0d7e2",
-    borderRadius: 15,
-    paddingHorizontal: 12,
+    backgroundColor: "#F4F6FA",
+    borderWidth: 0,
+    borderRadius: 12,
+    paddingHorizontal: 14,
     paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
   },
 
   selectPlaceholder: {
@@ -155,6 +99,40 @@ export default StyleSheet.create({
     fontFamily: "Montserrat_600SemiBold",
   },
 
+  row: {
+    flexDirection: "column",
+    gap: 10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  col: {
+    flex: 1,
+  },
+
+  footerRow: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+
+  // 🔹 Botón “Guardar” verde con bordes redondeados
+  btn: {
+    width: "100%",
+    height: 46,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#B4C400",
+    borderRadius: 12,
+  },
+
+  btnText: {
+    color: "#fff",
+    fontFamily: "Montserrat_700Bold",
+    fontSize: 16,
+  },
+
+  // 🔹 Select modal
   selectBackdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.35)",
@@ -164,7 +142,7 @@ export default StyleSheet.create({
 
   selectSheet: {
     backgroundColor: "#fff",
-    borderRadius: 20,
+    borderRadius: 15,
     padding: 16,
     maxHeight: "70%",
   },
