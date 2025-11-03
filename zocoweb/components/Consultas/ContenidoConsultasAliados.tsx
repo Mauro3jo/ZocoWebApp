@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { REACT_APP_API_COMANDA_LISTAR_USUARIO } from "@env";
+import { Ionicons } from "@expo/vector-icons";
 
 import styles from "./ContenidoConsultasAliados.styles";
 import ModalConsultasAliados from "./ModalConsultasAliados";
@@ -73,20 +74,31 @@ const ContenidoConsultasAliados: React.FC<Props> = ({
 
   const renderItem = ({ item }: { item: Consulta }) => (
     <View style={styles.cardContainer}>
-      <View style={styles.cardRow}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.cardText}>
-            <Text style={styles.bold}>{item.motivo}</Text>
-            {"\n"}
-            {item.direccion}, {item.provincia}
-            {"\n"}
-            {item.observacionAliado || ""}
-          </Text>
-        </View>
-        <View style={styles.cardRight}>
+      <View style={styles.cardLeft}>
+        <Text style={styles.cardMotivo}>{item.motivo}</Text>
+        <Text style={styles.cardDireccion}>
+          {item.direccion}{"\n"}
+          {item.provincia}
+        </Text>
+      </View>
+
+      <View style={styles.separatorVertical} />
+
+      <View style={styles.cardRight}>
+        <View style={styles.estadoRow}>
+          <Ionicons
+            name={
+              item.estado === "pendiente"
+                ? "alert-circle-outline"
+                : "checkmark-circle-outline"
+            }
+            size={14}
+            color={item.estado === "pendiente" ? "#E53935" : "#B1C20E"}
+            style={{ marginRight: 4 }}
+          />
           <Text
             style={[
-              styles.estado,
+              styles.cardEstado,
               item.estado === "pendiente"
                 ? styles.estadoPendiente
                 : styles.estadoCompletado,
@@ -94,37 +106,37 @@ const ContenidoConsultasAliados: React.FC<Props> = ({
           >
             {item.estado === "pendiente" ? "Pendiente" : "Completado"}
           </Text>
-          <Text style={styles.fecha}>
-            {new Date(item.fechaApertura).toLocaleDateString()}
-          </Text>
         </View>
+        <Text style={styles.cardFecha}>
+          {new Date(item.fechaApertura).toLocaleDateString()}
+        </Text>
       </View>
     </View>
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.wrapper}>
+      {/* Franja gris superior */}
+      <View style={styles.separatorTop} />
+
+      {/* Título */}
+      <Text style={styles.titulo}>CONSULTAS</Text>
+
+      {/* Botón Nueva */}
       <View style={styles.newBtnRow}>
         <Pressable
           style={styles.btnNuevaConsulta}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.btnNuevaConsultaText}>Nueva</Text>
+          <Ionicons name="add-circle-outline" size={16} color="#fff" />
+          <Text style={styles.btnNuevaConsultaText}> Nueva</Text>
         </Pressable>
       </View>
 
       {isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#b4c400" />
-          <Text
-            style={{
-              marginTop: 8,
-              fontFamily: "Montserrat_400Regular",
-              color: "#292B2F",
-            }}
-          >
-            Esperando datos...
-          </Text>
+          <Text style={styles.loadingText}>Esperando datos...</Text>
         </View>
       ) : (
         <FlatList

@@ -1,24 +1,51 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  newBtnRow: {
-    width: "100%",
-    alignItems: "flex-end",
-    marginBottom: 8,
+  wrapper: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
   },
 
-  btnNuevaConsulta: {
-    width: 250,
-    height: 49,
-    backgroundColor: "#B4C400",
-    borderRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
+  separatorTop: {
+    height: 12,
+    backgroundColor: "#F4F6FA",
+    width: "100%",
   },
-  btnNuevaConsultaText: {
-    color: "#fff",
-    fontSize: 18,
+
+  titulo: {
+    textAlign: "center",
     fontFamily: "Montserrat_700Bold",
+    fontSize: 17,
+    color: "#292B2F",
+    marginTop: 14,
+    marginBottom: 8, // más cerca del botón
+  },
+
+  newBtnRow: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 14,
+  },
+
+  // 🔹 BOTÓN NUEVA — recto, más chico, sin bordes ni redondeos
+btnNuevaConsulta: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "#B1C20E",
+  width: 120,       // más angosto
+  height: 34,       // más fino
+  borderRadius: 10, // 🔥 redondeado (antes estaba en 0)
+  borderWidth: 0,   // sin borde visible
+  paddingHorizontal: 4,
+},
+
+
+  btnNuevaConsultaText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontFamily: "Montserrat_700Bold",
+    marginLeft: 4, // espacio entre el ícono y el texto
   },
 
   center: {
@@ -27,52 +54,83 @@ export default StyleSheet.create({
     paddingVertical: 20,
   },
 
-  cardContainer: {
-    marginVertical: 8,
-    paddingVertical: 16,
-    borderRadius: 50,
-    backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
-  },
-  cardRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-  },
-  cardRight: {
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    paddingLeft: 8,
-  },
-  cardText: {
-    fontSize: 16,
-    lineHeight: 22,
-    color: "#292B2F",
-    paddingHorizontal: 16,
+  loadingText: {
+    marginTop: 8,
     fontFamily: "Montserrat_400Regular",
-  },
-  bold: {
-    fontFamily: "Montserrat_700Bold",
+    color: "#292B2F",
   },
 
-  estado: {
-    fontSize: 18,
+  cardContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 0,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginBottom: 12,
+  },
+
+  cardLeft: {
+    flex: 1,
+    paddingRight: 8,
+    justifyContent: "center",
+  },
+
+  separatorVertical: {
+    width: 1,
+    height: "80%",
+    borderRightWidth: 1,
+    borderStyle: "dashed",
+    borderColor: "#E5E7EB",
+    alignSelf: "center",
+  },
+
+  cardRight: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  cardMotivo: {
+    fontFamily: "Montserrat_700Bold",
+    fontSize: 13,
+    color: "#292B2F",
+    marginBottom: 2,
+  },
+
+  cardDireccion: {
     fontFamily: "Montserrat_400Regular",
-    marginBottom: 6,
-  },
-  estadoPendiente: {
-    color: "#E89F2F",
-  },
-  estadoCompletado: {
-    color: "#B4C400",
-  },
-  fecha: {
     fontSize: 12,
-    color: "#b3b5bf",
-    fontFamily: "Montserrat_300Light",
+    lineHeight: 16,
+    color: "#292B2F",
+    textTransform: "capitalize",
+  },
+
+  estadoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 2,
+  },
+
+  cardEstado: {
+    fontFamily: "Montserrat_700Bold",
+    fontSize: 12,
+  },
+
+  estadoPendiente: {
+    color: "#E53935",
+  },
+
+  estadoCompletado: {
+    color: "#B1C20E",
+  },
+
+  cardFecha: {
+    fontFamily: "Montserrat_400Regular",
+    fontSize: 11,
+    color: "#9CA3AF",
   },
 });
