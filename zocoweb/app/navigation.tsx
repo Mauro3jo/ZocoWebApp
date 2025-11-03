@@ -1,7 +1,6 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, ActivityIndicator } from "react-native";
 
 import Welcome from "../screens/Welcome";
 import Login from "../screens/Login";
@@ -14,6 +13,7 @@ import Cupones from "../screens/Cupones";
 import Consultas from "../screens/Consultas";
 import Calificar from "../screens/Calificar";
 import Simulador from "../screens/Simulador";
+import Notificaciones from "../screens/Notificaciones";
 
 export type RootStackParamList = {
   IntroZoco: undefined;
@@ -27,6 +27,7 @@ export type RootStackParamList = {
   Consultas: undefined;
   Calificar: undefined;
   Simulador: undefined;
+  Notificaciones: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -34,7 +35,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function AppNavigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="IntroZoco" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        initialRouteName="IntroZoco"
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="IntroZoco" component={IntroZoco} />
         <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="Login" component={Login} />
@@ -46,6 +50,7 @@ export default function AppNavigation() {
         <Stack.Screen name="Consultas" component={Consultas} />
         <Stack.Screen name="Calificar" component={Calificar} />
         <Stack.Screen name="Simulador" component={Simulador} />
+        <Stack.Screen name="Notificaciones" component={Notificaciones} />
       </Stack.Navigator>
     </NavigationContainer>
   );
