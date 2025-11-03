@@ -4,45 +4,50 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#F4F6FA",
+    backgroundColor: "#FFFFFF", // 🔹 Fondo blanco general
   },
 
+  // 🔹 Label más fino
   label: {
-    fontSize: 16,
-    fontFamily: "Montserrat_600SemiBold",
-    marginVertical: 8,
-    color: "#1C1C1C",
+    fontSize: 13,
+    fontFamily: "Montserrat_500Medium",
+    marginBottom: 6,
+    color: "#141517",
   },
 
-  // ===== INPUT =====
+  // 🔹 Input rectangular con bordes suaves
   input: {
-    backgroundColor: "#dde1e8",
-    borderRadius: 25,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    fontSize: 16,
-    color: "#000",
+    backgroundColor: "#F5F6FA",
+    borderWidth: 1,
+    borderColor: "#E3E6EE",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    height: 42,
+    marginBottom: 14,
+    fontSize: 14,
     fontFamily: "Montserrat_400Regular",
+    color: "#000",
   },
 
-  // ===== PICKER IGUAL AL INPUT =====
+  // 🔹 Picker igual al input
   pickerWrapper: {
-    backgroundColor: "#dde1e8",
-    borderRadius: 25,
-    marginBottom: 16,
+    backgroundColor: "#F5F6FA",
+    borderWidth: 1,
+    borderColor: "#E3E6EE",
+    borderRadius: 10,
+    marginBottom: 14,
+    height: 42,
     justifyContent: "center",
-    height: 50,
-    paddingHorizontal: 12,
+    overflow: "hidden",
   },
   picker: {
     color: "#000",
-    fontSize: 16,
+    fontSize: 14,
     width: "100%",
     fontFamily: "Montserrat_400Regular",
   },
 
-  // ===== SWITCH COBRAR / RECIBIR =====
+  // 🔹 Switch cobrar/recibir
   switchRow: {
     flexDirection: "row",
     justifyContent: "center",
@@ -55,56 +60,55 @@ export default StyleSheet.create({
     marginHorizontal: 15,
   },
   switchLabel: {
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: "Montserrat_500Medium",
     marginRight: 6,
     color: "#2A2A2A",
   },
 
-  // ===== BOTÓN =====
+  // 🔹 Botón calcular
   btn: {
-    backgroundColor: "#b4c400",
-    paddingVertical: 14,
-    borderRadius: 25,
+    backgroundColor: "#B4C400",
+    borderRadius: 10,
+    height: 44,
     alignItems: "center",
-    marginVertical: 16,
+    justifyContent: "center",
+    marginVertical: 12,
   },
   btnText: {
     color: "#fff",
     fontFamily: "Montserrat_700Bold",
-    fontSize: 18,
+    fontSize: 15,
   },
 
-  // ===== RESULTADOS =====
+  // 🔹 Resultados sin sombra
   resultCard: {
     marginTop: 20,
     padding: 16,
-    borderRadius: 20,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 4,
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#F0F0F0", // 🔹 leve borde gris claro, sin sombra
   },
   resultLabel: {
-    fontSize: 18,
-    fontFamily: "Montserrat_700Bold",
+    fontSize: 15,
+    fontFamily: "Montserrat_600SemiBold",
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: 10,
+    color: "#000",
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 6,
+    paddingVertical: 4,
   },
   textLeft: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#333",
     fontFamily: "Montserrat_400Regular",
   },
   textRight: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: "Montserrat_600SemiBold",
     color: "#000",
   },
@@ -115,17 +119,17 @@ export default StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: "#ddd",
+    backgroundColor: "#E6E6E6",
     marginVertical: 4,
   },
   greenLeft: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: "Montserrat_600SemiBold",
-    color: "#b4c400",
+    color: "#B4C400",
   },
   greenRight: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "Montserrat_700Bold",
-    color: "#b4c400",
+    color: "#B4C400",
   },
 });
