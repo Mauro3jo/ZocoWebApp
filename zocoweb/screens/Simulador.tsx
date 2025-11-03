@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, LayoutChangeEvent } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  LayoutChangeEvent,
+} from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import HeaderPrincipal from "../components/HeaderPrincipal";
@@ -15,8 +21,6 @@ import styles from "./Simulador.styles";
 export default function Simulador() {
   const insets = useSafeAreaInsets();
   const [tabbarHeight, setTabbarHeight] = useState(0);
-
-  // toggle entre Plazos y Monto
   const [modo, setModo] = useState<"plazo" | "monto">("plazo");
 
   const onTabbarLayout = (e: LayoutChangeEvent) =>
@@ -24,30 +28,55 @@ export default function Simulador() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right", "bottom"]}>
-      {/* HEADER + FILTROS */}
       <HeaderPrincipal />
       <FiltrosBar />
 
-      {/* CONTENIDO */}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: tabbarHeight }}
         showsVerticalScrollIndicator={false}
       >
-        {/* 🔹 Toggle */}
+        {/* 🔹 Encabezado del simulador */}
         <View style={styles.toggleContainer}>
-          <TouchableOpacity
-            style={[styles.toggleButton, modo === "plazo" ? styles.toggleActive : styles.toggleInactive]}
-            onPress={() => setModo("plazo")}
-          >
-            <Text style={styles.toggleText}>Plazos</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.toggleButton, modo === "monto" ? styles.toggleActive : styles.toggleInactive]}
-            onPress={() => setModo("monto")}
-          >
-            <Text style={styles.toggleText}>Monto</Text>
-          </TouchableOpacity>
+          <Text style={styles.title}>Simulador</Text>
+
+          <View style={styles.toggleButtonsRow}>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                modo === "plazo" ? styles.toggleActive : styles.toggleInactive,
+              ]}
+              onPress={() => setModo("plazo")}
+            >
+              <Text
+                style={
+                  modo === "plazo"
+                    ? styles.toggleTextActive
+                    : styles.toggleTextInactive
+                }
+              >
+                Plazos
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                modo === "monto" ? styles.toggleActive : styles.toggleInactive,
+              ]}
+              onPress={() => setModo("monto")}
+            >
+              <Text
+                style={
+                  modo === "monto"
+                    ? styles.toggleTextActive
+                    : styles.toggleTextInactive
+                }
+              >
+                Monto
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* 🔹 Render dinámico */}
@@ -61,7 +90,7 @@ export default function Simulador() {
         )}
       </ScrollView>
 
-      {/* MENÚ INFERIOR */}
+      {/* 🔹 MENÚ INFERIOR */}
       <View
         style={styles.tabbarContainer}
         pointerEvents="box-none"
