@@ -32,9 +32,10 @@ const menuItems = [
   { key: 'contabilidad', label: 'Contabilidad', icon: <DolarIcon width={24} height={24} color={COLOR_NEGRO} /> },
   { key: 'analisis', label: 'Análisis', icon: <LupaIcon width={24} height={24} color={COLOR_NEGRO} /> },
   { key: 'cupones', label: 'Cupones', icon: <ArchivoIcon width={24} height={24} color={COLOR_NEGRO} /> },
-  { key: 'calificar', label: 'Calificar', icon: <CorazonIcon width={24} height={24} color={COLOR_NEGRO} /> },
+    { key: 'simulador', label: 'Simulador', icon: <CalculadoraIcon width={24} height={24} color={COLOR_NEGRO} /> },
   { key: 'consultas', label: 'Consultas', icon: <ChatBotIcon width={24} height={24} color={COLOR_NEGRO} /> },
-  { key: 'simulador', label: 'Simulador', icon: <CalculadoraIcon width={24} height={24} color={COLOR_NEGRO} /> },
+
+  { key: 'calificar', label: 'Calificar', icon: <CorazonIcon width={24} height={24} color={COLOR_NEGRO} /> },
   { key: 'postventa', label: 'Postventa', icon: <WhatsAppIcon width={24} height={24} color={COLOR_NEGRO} /> },
 ];
 
@@ -52,9 +53,9 @@ export default function MenuPrincipal({ navigation }) {
       case 'contabilidad': navigation.navigate('Contabilidad'); break;
       case 'analisis': navigation.navigate('Analisis'); break;
       case 'cupones': navigation.navigate('Cupones'); break;
-      case 'calificar': navigation.navigate('Calificar'); break;
-      case 'consultas': navigation.navigate('Consultas'); break;
       case 'simulador': navigation.navigate('Simulador'); break;
+      case 'consultas': navigation.navigate('Consultas'); break;
+      case 'calificar': navigation.navigate('Calificar'); break;
       case 'postventa': navigation.navigate('Postventa'); break;
       default: console.log('Ruta no definida:', key);
     }

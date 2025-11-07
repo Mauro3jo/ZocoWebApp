@@ -83,7 +83,7 @@ export default function Simulador() {
         {modo === "plazo" ? (
           <>
             <CalculadoraPlazosMobile />
-            <PaymentTableMobile />
+        {/*     <PaymentTableMobile /> */}
           </>
         ) : (
           <CalculadoraNuevaMobile />
