@@ -12,7 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import IconMC from "react-native-vector-icons/MaterialCommunityIcons";
 import Z from "../assets/svg/Z.svg";
-import UsuarioIcon from "../assets/svgs/usuario 1.svg"; // 🟢 Nuevo import SVG
+import UsuarioIcon from "../assets/svg/usuario 1.svg"; // 🟢 Nuevo import SVG
 import styles from "./HeaderPrincipal.styles";
 
 export default function HeaderPrincipal() {
