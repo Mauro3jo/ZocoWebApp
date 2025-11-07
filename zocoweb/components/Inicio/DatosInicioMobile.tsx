@@ -52,16 +52,14 @@ export default DatosInicioMobile;
 
 const styles = StyleSheet.create({
   section: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     paddingVertical: 10,
     paddingHorizontal: 14,
-    borderRadius: 10,
+    borderRadius: 12,
     marginHorizontal: 10,
     marginTop: 10,
-    elevation: 1,
-    shadowColor: "#000",
-    shadowOpacity: 0.02,
-    shadowRadius: 2,
+    borderWidth: 1,
+    borderColor: "#E3E6EE",
   },
   wrapper: {
     flexDirection: "row",
@@ -71,9 +69,9 @@ const styles = StyleSheet.create({
   card: {
     width: "48%",
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#e5e5e5",
+    borderColor: "#E3E6EE",
     paddingVertical: 14,
     paddingHorizontal: 10,
     alignItems: "center",
@@ -82,20 +80,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontFamily: "Montserrat_600SemiBold",
-    color: "#333",
+    color: "#141517",
     marginBottom: 6,
     textAlign: "center",
   },
   separator: {
     height: 1,
-    backgroundColor: "#d9d9d9",
+    backgroundColor: "#E3E6EE",
     width: "70%",
     marginBottom: 8,
   },
   amount: {
     fontSize: 18,
-    fontFamily: "Montserrat_800ExtraBold",
-    color: "#000",
+    fontFamily: "Montserrat_700Bold",
+    color: "#000000",
     textAlign: "center",
   },
 });
