@@ -7,7 +7,7 @@ import {
   ScrollView,
   Switch,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import RNPickerSelect from "react-native-picker-select";
 import { useForm, Controller } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -137,9 +137,20 @@ export default function CalculadoraNuevaMobile() {
     costoAnticipo,
   } = formData || {};
 
+  // 🎨 Estilo común para todos los selects
+  const pickerStyle = {
+    inputIOS: styles.pickerBase,
+    inputAndroid: styles.pickerBase,
+    placeholder: {
+      fontFamily: "Montserrat_400Regular",
+      color: "#A9A9A9",
+      fontSize: 14,
+    },
+  };
+
   return (
     <ScrollView style={styles.container}>
-      {/* switches Neto/Bruto → tipo toggle */}
+      {/* switches Neto/Bruto */}
       <View style={styles.switchRow}>
         <View style={styles.switchGroup}>
           <Text style={styles.switchLabel}>Cobrar</Text>
@@ -178,6 +189,7 @@ export default function CalculadoraNuevaMobile() {
             style={styles.input}
             keyboardType="numeric"
             placeholder="Ingresa el monto"
+            placeholderTextColor="#999"
             value={value}
             onChangeText={onChange}
           />
@@ -190,20 +202,19 @@ export default function CalculadoraNuevaMobile() {
         control={control}
         name="radio"
         render={({ field: { onChange, value } }) => (
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={value}
-              style={styles.picker}
-              dropdownIconColor="#000"
-              onValueChange={(val) => {
-                onChange(val);
-                handleTipoTarjetaChange(val);
-              }}
-            >
-              <Picker.Item label="Débito" value="Debito" />
-              <Picker.Item label="Crédito" value="Credito" />
-            </Picker>
-          </View>
+          <RNPickerSelect
+            onValueChange={(val) => {
+              onChange(val);
+              handleTipoTarjetaChange(val);
+            }}
+            items={[
+              { label: "Débito", value: "Debito" },
+              { label: "Crédito", value: "Credito" },
+            ]}
+            placeholder={{ label: "Seleccionar tipo...", value: null }}
+            value={value}
+            style={pickerStyle}
+          />
         )}
       />
 
@@ -217,22 +228,21 @@ export default function CalculadoraNuevaMobile() {
         control={control}
         name="tarjeta"
         render={({ field: { onChange, value } }) => (
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={value?.value}
-              style={styles.picker}
-              dropdownIconColor="#000"
-              onValueChange={(val, index) => {
-                const tarjeta = optionsTarjeta[index];
-                onChange(tarjeta);
-                handleTarjetaChange(tarjeta);
-              }}
-            >
-              {optionsTarjeta.map((opt, idx) => (
-                <Picker.Item key={idx} label={opt.label} value={opt.value} />
-              ))}
-            </Picker>
-          </View>
+          <RNPickerSelect
+            onValueChange={(val, index) => {
+              const tarjeta = optionsTarjeta[index];
+              onChange(tarjeta);
+              handleTarjetaChange(tarjeta);
+            }}
+            items={optionsTarjeta.map((opt) => ({
+              label: opt.label,
+              value: opt.value,
+              key: opt.value,
+            }))}
+            placeholder={{ label: "Seleccionar tarjeta...", value: null }}
+            value={value?.value}
+            style={pickerStyle}
+          />
         )}
       />
 
@@ -242,23 +252,22 @@ export default function CalculadoraNuevaMobile() {
         control={control}
         name="cuota"
         render={({ field: { onChange, value } }) => (
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={value?.value}
-              enabled={!isActiveDebito}
-              style={styles.picker}
-              dropdownIconColor="#000"
-              onValueChange={(val, index) => {
-                const cuota = optionsCuotas[index];
-                onChange(cuota);
-                setSelectedCuota(cuota);
-              }}
-            >
-              {optionsCuotas.map((opt, idx) => (
-                <Picker.Item key={idx} label={opt.label} value={opt.value} />
-              ))}
-            </Picker>
-          </View>
+          <RNPickerSelect
+            onValueChange={(val, index) => {
+              const cuota = optionsCuotas[index];
+              onChange(cuota);
+              setSelectedCuota(cuota);
+            }}
+            items={optionsCuotas.map((opt) => ({
+              label: opt.label,
+              value: opt.value,
+              key: opt.value,
+            }))}
+            placeholder={{ label: "Seleccionar cuota...", value: null }}
+            disabled={isActiveDebito}
+            value={value?.value}
+            style={pickerStyle}
+          />
         )}
       />
 

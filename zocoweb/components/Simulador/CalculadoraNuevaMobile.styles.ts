@@ -4,18 +4,14 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#FFFFFF", // 🔹 Fondo blanco general
+    backgroundColor: "#FFFFFF",
   },
-
-  // 🔹 Label más fino
   label: {
     fontSize: 13,
     fontFamily: "Montserrat_500Medium",
     marginBottom: 6,
     color: "#141517",
   },
-
-  // 🔹 Input rectangular con bordes suaves
   input: {
     backgroundColor: "#F5F6FA",
     borderWidth: 1,
@@ -28,26 +24,17 @@ export default StyleSheet.create({
     fontFamily: "Montserrat_400Regular",
     color: "#000",
   },
-
-  // 🔹 Picker igual al input
-  pickerWrapper: {
+  pickerBase: {
     backgroundColor: "#F5F6FA",
     borderWidth: 1,
     borderColor: "#E3E6EE",
     borderRadius: 10,
-    marginBottom: 14,
     height: 42,
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  picker: {
-    color: "#000",
-    fontSize: 14,
-    width: "100%",
+    paddingHorizontal: 12,
     fontFamily: "Montserrat_400Regular",
+    fontSize: 14,
+    color: "#000",
   },
-
-  // 🔹 Switch cobrar/recibir
   switchRow: {
     flexDirection: "row",
     justifyContent: "center",
@@ -65,8 +52,6 @@ export default StyleSheet.create({
     marginRight: 6,
     color: "#2A2A2A",
   },
-
-  // 🔹 Botón calcular
   btn: {
     backgroundColor: "#B4C400",
     borderRadius: 10,
@@ -80,15 +65,13 @@ export default StyleSheet.create({
     fontFamily: "Montserrat_700Bold",
     fontSize: 15,
   },
-
-  // 🔹 Resultados sin sombra
   resultCard: {
     marginTop: 20,
     padding: 16,
     borderRadius: 10,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#F0F0F0", // 🔹 leve borde gris claro, sin sombra
+    borderColor: "#F0F0F0",
   },
   resultLabel: {
     fontSize: 15,
