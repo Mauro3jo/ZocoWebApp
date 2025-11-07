@@ -19,15 +19,31 @@ export default StyleSheet.create({
     elevation: 3,
     zIndex: 10,
   },
-  left: { flexDirection: "row", alignItems: "center" },
+  left: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexShrink: 1, // 🔹 permite que el texto se contraiga si es largo
+    flex: 1,       // ocupa el espacio restante sin empujar el ícono
+  },
   text: {
     marginLeft: 6,
     fontSize: 14,
     fontWeight: "500",
     color: "#000",
+    flexShrink: 1, // 🔹 evita overflow horizontal
+    maxWidth: "80%", // 🔹 evita superposición con el ícono
   },
-  rightButton: { padding: 5 },
-  userIcon: { width: 24, height: 24, tintColor: "#000" },
+  rightButton: {
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    flexShrink: 0,
+  },
+  userIcon: {
+    width: 28,
+    height: 28,
+    tintColor: "#000",
+  },
 
   // Fondo transparente del modal
   overlay: {
@@ -35,7 +51,6 @@ export default StyleSheet.create({
     backgroundColor: "transparent",
   },
 
-  // 🔹 Modal dinámico que aparece justo debajo del header
   modalContainer: {
     position: "absolute",
     alignSelf: "center",
@@ -80,7 +95,6 @@ export default StyleSheet.create({
     color: "#000",
   },
 
-  // Formulario
   passwordForm: {
     alignItems: "center",
     justifyContent: "flex-start",

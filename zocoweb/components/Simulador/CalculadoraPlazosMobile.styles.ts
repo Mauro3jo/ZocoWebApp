@@ -4,19 +4,18 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#FFFFFF",
   },
 
-  // 🔹 Tarjeta principal sin sombra
   card: {
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 16,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#F0F0F0", // 🔹 leve borde gris muy claro
+    borderColor: "#F0F0F0",
   },
 
-  // 🔹 Label más fino
   label: {
     fontSize: 13,
     fontFamily: "Montserrat_500Medium",
@@ -24,7 +23,6 @@ export default StyleSheet.create({
     color: "#141517",
   },
 
-  // 🔹 Input rectangular con bordes suaves
   input: {
     backgroundColor: "#F5F6FA",
     borderWidth: 1,
@@ -38,7 +36,6 @@ export default StyleSheet.create({
     color: "#000",
   },
 
-  // 🔹 Picker igual que los input, con flecha
   pickerWrapper: {
     backgroundColor: "#F5F6FA",
     borderWidth: 1,
@@ -50,7 +47,18 @@ export default StyleSheet.create({
     overflow: "hidden",
   },
 
-  // 🔹 Botón Calcular
+  picker: {
+    color: "#000", // 🔹 asegura texto visible en modo oscuro
+    fontFamily: "Montserrat_400Regular",
+    fontSize: 14,
+  },
+
+  pickerItem: {
+    color: "#000",
+    fontSize: 14,
+    fontFamily: "Montserrat_400Regular",
+  },
+
   btn: {
     backgroundColor: "#B4C400",
     borderRadius: 10,
@@ -65,7 +73,6 @@ export default StyleSheet.create({
     fontFamily: "Montserrat_700Bold",
   },
 
-  // 🔹 Hint
   hint: {
     fontSize: 11,
     color: "#555",
@@ -73,13 +80,12 @@ export default StyleSheet.create({
     fontFamily: "Montserrat_400Regular",
   },
 
-  // 🔹 Resultado sin sombra
   resultCard: {
     backgroundColor: "#F9FAFB",
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#F0F0F0", // 🔹 mismo borde claro que la card superior
+    borderColor: "#F0F0F0",
   },
 
   resultTitle: {
@@ -114,6 +120,11 @@ export default StyleSheet.create({
     fontSize: 13,
     fontFamily: "Montserrat_700Bold",
     color: "#000",
+  },
+  normalText: {
+    fontSize: 13,
+    color: "#333",
+    fontFamily: "Montserrat_400Regular",
   },
   green: {
     color: "#B4C400",

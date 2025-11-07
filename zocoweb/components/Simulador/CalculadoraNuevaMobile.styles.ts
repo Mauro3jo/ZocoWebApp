@@ -24,17 +24,19 @@ export default StyleSheet.create({
     fontFamily: "Montserrat_400Regular",
     color: "#000",
   },
-  pickerBase: {
+
+  // 🔹 Wrapper para cada RNPickerSelect (evita errores visuales)
+  pickerWrapper: {
     backgroundColor: "#F5F6FA",
     borderWidth: 1,
     borderColor: "#E3E6EE",
     borderRadius: 10,
+    marginBottom: 14,
     height: 42,
-    paddingHorizontal: 12,
-    fontFamily: "Montserrat_400Regular",
-    fontSize: 14,
-    color: "#000",
+    justifyContent: "center",
+    overflow: "hidden",
   },
+
   switchRow: {
     flexDirection: "row",
     justifyContent: "center",

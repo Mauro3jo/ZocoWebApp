@@ -75,7 +75,6 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
         return;
       }
 
-      // 🔹 Guardar y compartir cada PDF
       for (let i = 0; i < docs.length; i++) {
         const doc = docs[i];
         const b64 = String(doc?.documentoPdfBase64 ?? "");
@@ -154,6 +153,7 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
               textAlign: "center",
               fontFamily: "Montserrat_600SemiBold",
             }}
+            allowFontScaling={false}
           >
             Sin docs
           </Text>
@@ -161,7 +161,13 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
           <TouchableOpacity
             onPress={descargarOrdenesPorFecha}
             disabled={downloading}
-            style={{ alignItems: "center", justifyContent: "center" }}
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: 80, // 🔹 evita deformaciones
+              height: 32,
+            }}
+            activeOpacity={0.7}
           >
             {downloading ? (
               <ActivityIndicator color="#B1C20E" size="small" />
@@ -171,7 +177,10 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
                   color: "#B1C20E",
                   fontSize: 12,
                   fontFamily: "Montserrat_700Bold",
+                  textAlign: "center",
+                  includeFontPadding: false,
                 }}
+                allowFontScaling={false} // 🔹 evita que el sistema cambie el tamaño
               >
                 Descargar
               </Text>

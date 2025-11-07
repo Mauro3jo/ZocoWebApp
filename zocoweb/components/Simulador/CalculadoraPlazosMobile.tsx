@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { FontAwesome } from "@expo/vector-icons";
@@ -17,7 +18,6 @@ export default function CalculadoraPlazosMobile() {
   const [tarjeta, setTarjeta] = useState("");
   const [plazoData, setPlazoData] = useState<any | null>(null);
 
-  // Opciones de tipo y tarjeta (idéntico al web)
   const tipoOptions = [
     { value: "Debito", label: "Débito" },
     { value: "Alimentar", label: "Alimentar" },
@@ -48,7 +48,6 @@ export default function CalculadoraPlazosMobile() {
     Naranja: [{ value: "Naranja", label: "Naranja" }],
   };
 
-  // 🔹 Igual que el web, sin token ni headers raros
   const handleSubmit = async () => {
     const finalData = { fecha, tipo, tarjeta };
 
@@ -70,9 +69,8 @@ export default function CalculadoraPlazosMobile() {
     }
   };
 
-  // 🔹 Campo de fecha con formato DD/MM/YYYY y solo números
   const handleFechaChange = (text: string) => {
-    let clean = text.replace(/\D/g, ""); // solo números
+    let clean = text.replace(/\D/g, "");
     if (clean.length > 2 && clean.length <= 4)
       clean = `${clean.slice(0, 2)}/${clean.slice(2)}`;
     else if (clean.length > 4)
@@ -82,12 +80,12 @@ export default function CalculadoraPlazosMobile() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Formulario */}
       <View style={styles.card}>
         <Text style={styles.label}>Fecha</Text>
         <TextInput
           style={styles.input}
           placeholder="DD/MM/YYYY"
+          placeholderTextColor="#777"
           value={fecha}
           onChangeText={handleFechaChange}
           keyboardType="numeric"
@@ -96,20 +94,42 @@ export default function CalculadoraPlazosMobile() {
 
         <Text style={styles.label}>Tipo</Text>
         <View style={styles.pickerWrapper}>
-          <Picker selectedValue={tipo} onValueChange={setTipo}>
-            <Picker.Item label="Seleccionar tipo" value="" />
+          <Picker
+            selectedValue={tipo}
+            onValueChange={setTipo}
+            dropdownIconColor="#000"
+            style={styles.picker}
+            itemStyle={styles.pickerItem}
+          >
+            <Picker.Item label="Seleccionar tipo" value="" color="#777" />
             {tipoOptions.map((opt) => (
-              <Picker.Item key={opt.value} label={opt.label} value={opt.value} />
+              <Picker.Item
+                key={opt.value}
+                label={opt.label}
+                value={opt.value}
+                color="#000"
+              />
             ))}
           </Picker>
         </View>
 
         <Text style={styles.label}>Tarjeta</Text>
         <View style={styles.pickerWrapper}>
-          <Picker selectedValue={tarjeta} onValueChange={setTarjeta}>
-            <Picker.Item label="Seleccionar tarjeta" value="" />
+          <Picker
+            selectedValue={tarjeta}
+            onValueChange={setTarjeta}
+            dropdownIconColor="#000"
+            style={styles.picker}
+            itemStyle={styles.pickerItem}
+          >
+            <Picker.Item label="Seleccionar tarjeta" value="" color="#777" />
             {tarjetasPorTipo[tipo]?.map((opt) => (
-              <Picker.Item key={opt.value} label={opt.label} value={opt.value} />
+              <Picker.Item
+                key={opt.value}
+                label={opt.label}
+                value={opt.value}
+                color="#000"
+              />
             ))}
           </Picker>
         </View>
@@ -156,7 +176,7 @@ export default function CalculadoraPlazosMobile() {
                         <Text style={styles.bold}>
                           {plazoData.resultado.tarjeta}
                         </Text>
-                        <Text>
+                        <Text style={styles.normalText}>
                           {plazoData.resultado[`detalles${timeFrame}`]}
                         </Text>
                       </View>
