@@ -7,12 +7,14 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./FormComentarioCalificarMobile.styles";
 import { REACT_APP_API_CALIFICAR_COM } from "@env";
+
+// 🟢 Importamos el SVG como componente
+import CalificarIcon from "../../assets/svg/calificar.svg";
 
 const STAR_COLOR_ACTIVE = "#B1C20E";
 const STAR_COLOR_INACTIVE = "#343A40";
@@ -63,10 +65,9 @@ const FormComentarioCalificarMobile: React.FC = () => {
       <View style={styles.container}>
         {/* Caja principal */}
         <View style={styles.starsCard}>
-          <Image
-            source={require("../../assets/img/calificar.png")}
-            style={styles.icon}
-          />
+          {/* 🟢 SVG reemplazando el PNG */}
+          <CalificarIcon width={70} height={70} style={styles.icon} />
+
           <Text style={styles.title}>
             Queremos conocer tu opinión sobre el servicio de postventa brindado
             por ZOCO.{"\n"}
