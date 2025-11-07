@@ -64,7 +64,8 @@ export default function Inicio() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: tabbarHeight }} // ✅ adaptativo
+        // 🔽 agregado: +16px de espacio adicional para que el contenido no se pegue al menú inferior
+        contentContainerStyle={{ paddingBottom: tabbarHeight + 16 }}
         showsVerticalScrollIndicator={false}
       >
         <TituloPaginaAhorroMobile
