@@ -10,7 +10,7 @@ type Props = {
   } | null;
 };
 
-// 🔹 Formatear a moneda ARS
+// 🔹 Formatear a moneda ARS con precisión y coherencia visual
 const formatARS = (v: any) => {
   const n = Number(v);
   if (!isFinite(n)) return "$ 0,00";
@@ -54,20 +54,24 @@ const DatosTicketsMobile: React.FC<Props> = ({ datosCuponesContext }) => {
   );
 };
 
+export default DatosTicketsMobile;
+
 const styles = StyleSheet.create({
   container: {
     gap: 12,
+    paddingHorizontal: 10,
   },
   card: {
     backgroundColor: "#FFFFFF",
     borderRadius: 14,
-    padding: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: "#ECECF1",
+    borderColor: "#E3E6EE",
     shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
   row: {
@@ -76,19 +80,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#E3E5EA",
+    borderBottomColor: "#E3E6EE",
     borderStyle: "dashed",
   },
   label: {
     fontSize: 13,
-    color: "#6B6E75",
-    fontFamily: "Montserrat_600SemiBold",
+    color: "#141517",
+    fontFamily: "Montserrat_500Medium",
   },
   value: {
     fontSize: 15,
-    color: "#1C1D21",
+    color: "#000000",
     fontFamily: "Montserrat_700Bold",
   },
 });
-
-export default DatosTicketsMobile;
