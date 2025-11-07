@@ -124,25 +124,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 20,
   },
+  // 🔹 Tarjeta IVA principal
   cardFlat: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#ececec",
+    borderColor: "#E3E6EE",
   },
   cardTitle: {
     fontSize: 16,
     textAlign: "center",
     marginBottom: 12,
-    color: "#222",
+    color: "#141517",
     fontFamily: "Montserrat_700Bold",
   },
   block: {
     marginBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
+    borderBottomColor: "#E6E6E6",
     paddingBottom: 6,
   },
   row: {
@@ -167,36 +168,40 @@ const styles = StyleSheet.create({
     color: "#1E1E2D",
     fontFamily: "Montserrat_700Bold",
   },
+
+  // 🔹 Bloque inferior doble
   rowSplitContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   halfCard: {
     flexBasis: "48.5%",
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ececec",
+    borderColor: "#E3E6EE",
     paddingVertical: 14,
     alignItems: "center",
     justifyContent: "center",
   },
   splitTitle: {
     fontSize: 15,
-    color: "#222",
+    color: "#141517",
     marginBottom: 6,
-    fontFamily: "Montserrat_600SemiBold",
+    fontFamily: "Montserrat_700Bold",
+    textAlign: "center",
   },
   subLabel: {
     fontSize: 13,
     color: "#777",
     marginBottom: 4,
     fontFamily: "Montserrat_400Regular",
+    textAlign: "center",
   },
   splitValue: {
     fontSize: 16,
     color: "#1E1E2D",
     fontFamily: "Montserrat_700Bold",
+    textAlign: "center",
   },
 });
-
