@@ -60,17 +60,20 @@ btnNuevaConsulta: {
     color: "#292B2F",
   },
 
-  cardContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 0,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    marginBottom: 12,
-  },
+   cardContainer: {
+     flexDirection: "row",
+     justifyContent: "space-between",
+     backgroundColor: "#FFFFFF",
+     borderRadius: 0,
+     paddingVertical: 10,
+     paddingHorizontal: 14,
+     marginBottom: 12,
+
+     // 🔹 Se quita el borde gris
+     borderWidth: 0,
+     borderColor: "transparent",
+   },
+
 
   cardLeft: {
     flex: 1,
