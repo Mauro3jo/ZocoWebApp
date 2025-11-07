@@ -32,7 +32,7 @@ export default function DatosAnalisisMobile({ datosBack }: Props) {
   const cards = useMemo(
     () => [
       {
-        title: "Cantidad de Operaciones",
+        title: "Cant. de Operaciones",
         value: `${totalOperaciones}`,
       },
       {
