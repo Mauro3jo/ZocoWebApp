@@ -6,9 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
-  Platform,
 } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
+import { Picker } from "@react-native-picker/picker";
 import { useForm, Controller } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -55,26 +54,43 @@ export default function CalculadoraNuevaMobile() {
 
   // 🔹 manejar cambio de tarjeta
   const handleTarjetaChange = (tarjeta: any) => {
+    if (!tarjeta || !tarjeta.label) {
+      setOptionsCuotas([]);
+      setSelectedCuota(null);
+      setValue("cuota", null);
+      return;
+    }
+
     setSelectedTarjeta(tarjeta);
 
-    const cuotasOptions =
-      datosTarjeta[tarjeta.label]?.map((item: any) => {
-        let label;
-        if (tarjeta.label.toLowerCase() === "naranja" && item.cuota === 3) {
-          label = "PlanZ";
-        } else if (item.cuota === 13) {
-          label = "Cuota simple 3";
-        } else if (item.cuota === 16) {
-          label = "Cuota simple 6";
-        } else {
-          label = `Cuota ${item.cuota}`;
-        }
-        return { value: item.cuota.toString(), label };
-      }) || [];
+    let cuotas = datosTarjeta[tarjeta.label] || [];
+
+    // Si es crédito, excluimos cuota 0
+    if (!isActiveDebito) {
+      cuotas = cuotas.filter((item: any) => item.cuota !== 0);
+    }
+
+    const cuotasOptions = cuotas.map((item: any) => {
+      let label;
+      if (tarjeta.label.toLowerCase() === "naranja" && item.cuota === 3) {
+        label = "PlanZ";
+      } else if (item.cuota === 13) {
+        label = "Cuota simple 3";
+      } else if (item.cuota === 16) {
+        label = "Cuota simple 6";
+      } else {
+        label = `Cuota ${item.cuota}`;
+      }
+      return { value: item.cuota.toString(), label };
+    });
 
     setOptionsCuotas(cuotasOptions);
 
-    const defaultCuota = cuotasOptions.find((c) => c.value === "1");
+    const defaultCuota =
+      isActiveDebito
+        ? { value: "0", label: "Cuota 0" }
+        : cuotasOptions.find((c) => c.value === "1");
+
     if (defaultCuota) {
       setValue("cuota", defaultCuota);
       setSelectedCuota(defaultCuota);
@@ -83,7 +99,7 @@ export default function CalculadoraNuevaMobile() {
 
   const toggleActive = (value: string) => {
     setIsActive(value);
-    if (value === "Bruto") {
+    if (value === "Bruto" && isActiveDebito) {
       const cuota0 = { value: "0", label: "Cuota 0" };
       setOptionsCuotas([cuota0]);
       setValue("cuota", cuota0);
@@ -91,14 +107,50 @@ export default function CalculadoraNuevaMobile() {
     }
   };
 
+  // 🔹 manejo tipo de tarjeta
   const handleTipoTarjetaChange = (tipo: string) => {
-    setIsActiveDebito(tipo === "Debito");
+    const esDebito = tipo === "Debito";
+    setIsActiveDebito(esDebito);
     setValue("radio", tipo);
 
-    if (tipo === "Debito") {
+    if (esDebito) {
+      // Solo Cuota 0
       const cuota0 = { value: "0", label: "Cuota 0" };
       setOptionsCuotas([cuota0]);
       setSelectedCuota(cuota0);
+      setValue("cuota", cuota0);
+    } else {
+      // Crédito: quitar cuota 0
+      if (selectedTarjeta && datosTarjeta[selectedTarjeta.label]) {
+        const cuotasFiltradas = datosTarjeta[selectedTarjeta.label].filter(
+          (c: any) => c.cuota !== 0
+        );
+        const opciones = cuotasFiltradas.map((item: any) => {
+          let label;
+          if (
+            selectedTarjeta.label.toLowerCase() === "naranja" &&
+            item.cuota === 3
+          ) {
+            label = "PlanZ";
+          } else if (item.cuota === 13) {
+            label = "Cuota simple 3";
+          } else if (item.cuota === 16) {
+            label = "Cuota simple 6";
+          } else {
+            label = `Cuota ${item.cuota}`;
+          }
+          return { value: item.cuota.toString(), label };
+        });
+        setOptionsCuotas(opciones);
+        const defaultCuota = opciones.find((c) => c.value === "1");
+        if (defaultCuota) {
+          setValue("cuota", defaultCuota);
+          setSelectedCuota(defaultCuota);
+        }
+      } else {
+        setOptionsCuotas([]);
+        setSelectedCuota(null);
+      }
     }
   };
 
@@ -108,11 +160,11 @@ export default function CalculadoraNuevaMobile() {
     const finalData = {
       Token: token,
       Monto: data.netoBuscar.toString(),
-      Cuota: data.cuota.value,
+      Cuota: data.cuota?.value ?? "0",
       TipoNetoBruto: isActive,
       TipoDebCred: data.radio,
-      TipoTarjeta: data.tarjeta.value,
-      Tarjeta: data.tarjeta.label,
+      TipoTarjeta: data.tarjeta?.value ?? "",
+      Tarjeta: data.tarjeta?.label ?? "",
     };
 
     try {
@@ -137,28 +189,6 @@ export default function CalculadoraNuevaMobile() {
     montoinicial,
     costoAnticipo,
   } = formData || {};
-
-  // 🔹 Estilo seguro para todos los selects
-  const pickerStyle = {
-    inputIOS: {
-      fontFamily: "Montserrat_400Regular",
-      fontSize: 14,
-      color: "#000",
-      paddingHorizontal: 10,
-    },
-    inputAndroid: {
-      fontFamily: "Montserrat_400Regular",
-      fontSize: 14,
-      color: "#000",
-      paddingHorizontal: 10,
-      paddingVertical: 0,
-    },
-    placeholder: {
-      fontFamily: "Montserrat_400Regular",
-      color: "#A9A9A9",
-      fontSize: 14,
-    },
-  };
 
   return (
     <ScrollView style={styles.container}>
@@ -201,7 +231,6 @@ export default function CalculadoraNuevaMobile() {
             style={styles.input}
             keyboardType="numeric"
             placeholder="Ingresa el monto"
-            placeholderTextColor="#999"
             value={value}
             onChangeText={onChange}
           />
@@ -210,27 +239,27 @@ export default function CalculadoraNuevaMobile() {
 
       {/* Picker tipo tarjeta */}
       <Text style={styles.label}>Tipo de tarjeta</Text>
-      <View style={styles.pickerWrapper}>
-        <Controller
-          control={control}
-          name="radio"
-          render={({ field: { onChange, value } }) => (
-            <RNPickerSelect
+      <Controller
+        control={control}
+        name="radio"
+        render={({ field: { onChange, value } }) => (
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={value}
+              style={styles.picker}
+              dropdownIconColor="#000"
               onValueChange={(val) => {
                 onChange(val);
                 handleTipoTarjetaChange(val);
               }}
-              items={[
-                { label: "Débito", value: "Debito" },
-                { label: "Crédito", value: "Credito" },
-              ]}
-              placeholder={{ label: "Seleccionar tipo...", value: null }}
-              value={value?.toString() ?? null}
-              style={pickerStyle}
-            />
-          )}
-        />
-      </View>
+            >
+              <Picker.Item label="Seleccionar tipo..." value={null} />
+              <Picker.Item label="Débito" value="Debito" />
+              <Picker.Item label="Crédito" value="Credito" />
+            </Picker>
+          </View>
+        )}
+      />
 
       {/* Picker tarjeta */}
       <Text style={styles.label}>
@@ -238,48 +267,60 @@ export default function CalculadoraNuevaMobile() {
           ? "¿Con qué tarjeta te pagan?"
           : "¿Con qué tarjeta querés cobrar?"}
       </Text>
-      <View style={styles.pickerWrapper}>
-        <Controller
-          control={control}
-          name="tarjeta"
-          render={({ field: { onChange, value } }) => (
-            <RNPickerSelect
+      <Controller
+        control={control}
+        name="tarjeta"
+        render={({ field: { onChange, value } }) => (
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={value?.value}
+              style={styles.picker}
+              dropdownIconColor="#000"
               onValueChange={(val, index) => {
                 const tarjeta = optionsTarjeta[index];
-                onChange(tarjeta);
-                handleTarjetaChange(tarjeta);
+                if (tarjeta) {
+                  onChange(tarjeta);
+                  handleTarjetaChange(tarjeta);
+                }
               }}
-              items={Array.isArray(optionsTarjeta) ? optionsTarjeta : []}
-              placeholder={{ label: "Seleccionar tarjeta...", value: null }}
-              value={value?.value ?? null}
-              style={pickerStyle}
-            />
-          )}
-        />
-      </View>
+            >
+              <Picker.Item label="Seleccionar tarjeta..." value={null} />
+              {optionsTarjeta.map((opt, idx) => (
+                <Picker.Item key={idx} label={opt.label} value={opt.value} />
+              ))}
+            </Picker>
+          </View>
+        )}
+      />
 
       {/* Picker cuotas */}
       <Text style={styles.label}>¿En cuántas cuotas?</Text>
-      <View style={styles.pickerWrapper}>
-        <Controller
-          control={control}
-          name="cuota"
-          render={({ field: { onChange, value } }) => (
-            <RNPickerSelect
+      <Controller
+        control={control}
+        name="cuota"
+        render={({ field: { onChange, value } }) => (
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={value?.value}
+              enabled={!isActiveDebito}
+              style={styles.picker}
+              dropdownIconColor="#000"
               onValueChange={(val, index) => {
                 const cuota = optionsCuotas[index];
-                onChange(cuota);
-                setSelectedCuota(cuota);
+                if (cuota) {
+                  onChange(cuota);
+                  setSelectedCuota(cuota);
+                }
               }}
-              items={Array.isArray(optionsCuotas) ? optionsCuotas : []}
-              placeholder={{ label: "Seleccionar cuota...", value: null }}
-              disabled={isActiveDebito}
-              value={value?.value ?? null}
-              style={pickerStyle}
-            />
-          )}
-        />
-      </View>
+            >
+              <Picker.Item label="Seleccionar cuota..." value={null} />
+              {optionsCuotas.map((opt, idx) => (
+                <Picker.Item key={idx} label={opt.label} value={opt.value} />
+              ))}
+            </Picker>
+          </View>
+        )}
+      />
 
       {/* botón Calcular */}
       <TouchableOpacity style={styles.btn} onPress={handleSubmit(onSubmit)}>
