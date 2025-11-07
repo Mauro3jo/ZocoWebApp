@@ -1,6 +1,6 @@
 import React, { useRef, useState, useContext, useEffect } from "react";
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
-import { Video } from "expo-av";
+import { VideoView, useVideoPlayer } from "expo-video"; // ✅ reemplazo de expo-av
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as LocalAuthentication from "expo-local-authentication";
@@ -110,15 +110,22 @@ export default function Welcome() {
     }
   };
 
+  // ✅ Configuración del video con expo-video (sin controles ni interacción)
+  const player = useVideoPlayer(require("../assets/videos/fondo.mp4"), (player) => {
+    player.loop = true;
+    player.play();
+  });
+
   return (
     <View style={styles.container}>
-      <Video
-        ref={video}
-        source={require("../assets/videos/fondo.mp4")}
+      <VideoView
         style={styles.video}
-        shouldPlay
-        isLooping
-        resizeMode="cover"
+        player={player}
+        allowsFullscreen={false}
+        allowsPictureInPicture={false}
+        nativeControls={false}   // ❌ quita los controles del sistema
+        pointerEvents="none"     // ❌ evita toques o pausa
+        contentFit="cover"
       />
 
       <View style={styles.overlay}>
