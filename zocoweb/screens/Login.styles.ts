@@ -40,6 +40,7 @@ export default StyleSheet.create({
     paddingHorizontal: 30,
     justifyContent: "center",
     flexGrow: 1,
+    marginTop: 50,
   },
 
   holaContainer: {
