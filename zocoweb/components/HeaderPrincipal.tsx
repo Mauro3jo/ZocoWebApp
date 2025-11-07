@@ -12,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import IconMC from "react-native-vector-icons/MaterialCommunityIcons";
 import Z from "../assets/svg/Z.svg";
+import UsuarioIcon from "../assets/svgs/usuario 1.svg"; // 🟢 Nuevo import SVG
 import styles from "./HeaderPrincipal.styles";
 
 export default function HeaderPrincipal() {
@@ -47,7 +48,7 @@ export default function HeaderPrincipal() {
     setShowPasswordForm(false);
   };
 
-  // Medir posición real del header para posicionar el modal dinámicamente
+  // 📏 Medir posición del header para colocar modal dinámico
   const handleMeasure = () => {
     headerRef.current?.measureInWindow((x, y, width, height) => {
       setHeaderY(y + height);
@@ -75,11 +76,8 @@ export default function HeaderPrincipal() {
           activeOpacity={0.6}
           onPress={openModal}
         >
-          <Image
-            source={require("../assets/img/usuario.png")}
-            style={styles.userIcon}
-            resizeMode="contain"
-          />
+          {/* 🟢 SVG en lugar del PNG */}
+          <UsuarioIcon width={26} height={26} style={styles.userIcon} />
         </TouchableOpacity>
       </View>
 
@@ -93,7 +91,7 @@ export default function HeaderPrincipal() {
         {/* Fondo transparente */}
         <Pressable style={styles.overlay} onPress={closeModal} />
 
-        {/* Contenedor del modal (debajo del header, posición dinámica) */}
+        {/* Contenedor del modal debajo del header */}
         <View
           style={[
             styles.modalContainer,
@@ -122,7 +120,7 @@ export default function HeaderPrincipal() {
               </TouchableOpacity>
             </View>
           ) : (
-            // 🔹 Formulario
+            // 🔹 Formulario cambiar contraseña
             <View style={styles.passwordForm}>
               <TouchableOpacity
                 style={styles.arrowContainer}
