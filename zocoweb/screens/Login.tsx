@@ -18,6 +18,10 @@ import { API_LOGIN_URL } from "@env";
 import { InicioAhorroContext } from "../src/context/InicioAhorroContext";
 import { DatosInicioContext } from "../src/context/DatosInicioContext";
 
+// 🔹 SVG imports (como componentes React)
+import UsuarioIcon from "../assets/svg/usuario 1.svg";
+import CandadoIcon from "../assets/svg/candado 1.svg";
+
 type LoginResponse = {
   usuario?: { Nombre?: string; nombre?: string } | null;
   token: string;
@@ -120,21 +124,27 @@ export default function Login() {
         >
           <Icon name="arrow-left" size={22} style={styles.backArrow} />
         </TouchableOpacity>
-        <Image source={require("../assets/img/Logo-login.png")} style={styles.logo} />
+        <Image
+          source={require("../assets/img/Logo-login.png")}
+          style={styles.logo}
+        />
       </View>
 
       {/* CONTENIDO */}
       <View style={styles.content}>
         <View style={styles.holaContainer}>
           <Text style={styles.hola}>¡Hola!</Text>
-          <Image source={require("../assets/img/hola.png")} style={styles.holaImg} />
+          <Image
+            source={require("../assets/img/hola.png")}
+            style={styles.holaImg}
+          />
         </View>
 
         <Text style={styles.sub}>Ingresá tu CUIT para iniciar sesión.</Text>
 
         {/* CUIT */}
         <View style={styles.inputGroup}>
-          <Image source={require("../assets/img/usuario.png")} style={styles.iconImg} />
+          <UsuarioIcon width={22} height={22} style={styles.iconImg} />
           <TextInput
             style={styles.input}
             placeholder="CUIT"
@@ -148,7 +158,7 @@ export default function Login() {
 
         {/* CONTRASEÑA */}
         <View style={styles.inputGroup}>
-          <Image source={require("../assets/img/candado.png")} style={styles.iconImg} />
+          <CandadoIcon width={22} height={22} style={styles.iconImg} />
           <TextInput
             style={styles.input}
             placeholder="Contraseña"
@@ -168,7 +178,12 @@ export default function Login() {
         {/* ERRORES */}
         {error && (
           <View style={styles.errorBox}>
-            <Icon name="exclamation-circle" size={16} color="#e23d36" style={{ marginRight: 6 }} />
+            <Icon
+              name="exclamation-circle"
+              size={16}
+              color="#e23d36"
+              style={{ marginRight: 6 }}
+            />
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
