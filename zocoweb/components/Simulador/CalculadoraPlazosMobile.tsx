@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { REACT_APP_API_CALCULADORA_PLAZOS } from "@env";
 import styles from "./CalculadoraPlazosMobile.styles";
 
@@ -18,6 +17,7 @@ export default function CalculadoraPlazosMobile() {
   const [tarjeta, setTarjeta] = useState("");
   const [plazoData, setPlazoData] = useState<any | null>(null);
 
+  // Opciones de tipo y tarjeta (idéntico al web)
   const tipoOptions = [
     { value: "Debito", label: "Débito" },
     { value: "Alimentar", label: "Alimentar" },
@@ -32,7 +32,9 @@ export default function CalculadoraPlazosMobile() {
       { value: "Maestro/Electron Visa", label: "Bancarizada" },
       { value: "MC Debit/Visa Debit", label: "Billetera virtual" },
     ],
-    Alimentar: [{ value: "Banco Nación/Provinciales", label: "Banco Nación/Provinciales" }],
+    Alimentar: [
+      { value: "Banco Nación/Provinciales", label: "Banco Nación/Provinciales" },
+    ],
     Credito1Pago: [
       { value: "Bancarizadas", label: "Bancarizadas" },
       { value: "No bancarizadas", label: "No bancarizadas" },
@@ -46,23 +48,36 @@ export default function CalculadoraPlazosMobile() {
     Naranja: [{ value: "Naranja", label: "Naranja" }],
   };
 
+  // 🔹 Igual que el web, sin token ni headers raros
   const handleSubmit = async () => {
-    const token = await AsyncStorage.getItem("token");
-    const finalData = { fecha, tipo, tarjeta, Token: token };
+    const finalData = { fecha, tipo, tarjeta };
 
     try {
       const response = await fetch(REACT_APP_API_CALCULADORA_PLAZOS, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(finalData), // token va en body
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(finalData),
       });
 
       if (!response.ok) throw new Error("Error en la API");
-      const responseData = await response.json();
-      setPlazoData(responseData);
+      const data = await response.json();
+      setPlazoData(data);
     } catch (error) {
       console.error("Error al enviar datos:", error);
     }
+  };
+
+  // 🔹 Campo de fecha con formato DD/MM/YYYY y solo números
+  const handleFechaChange = (text: string) => {
+    let clean = text.replace(/\D/g, ""); // solo números
+    if (clean.length > 2 && clean.length <= 4)
+      clean = `${clean.slice(0, 2)}/${clean.slice(2)}`;
+    else if (clean.length > 4)
+      clean = `${clean.slice(0, 2)}/${clean.slice(2, 4)}/${clean.slice(4, 8)}`;
+    setFecha(clean);
   };
 
   return (
@@ -74,7 +89,8 @@ export default function CalculadoraPlazosMobile() {
           style={styles.input}
           placeholder="DD/MM/YYYY"
           value={fecha}
-          onChangeText={setFecha}
+          onChangeText={handleFechaChange}
+          keyboardType="numeric"
           maxLength={10}
         />
 
@@ -112,23 +128,48 @@ export default function CalculadoraPlazosMobile() {
       {/* Resultados */}
       <View style={styles.resultCard}>
         {plazoData ? (
-          <View>
-            <Text style={styles.resultTitle}>Voy a recibir el pago el</Text>
-            <Text style={styles.resultDate}>
-              {plazoData.resultado?.nuevaFecha ?? ""}
-            </Text>
+          <View style={{ paddingHorizontal: 10 }}>
+            {Object.entries(plazoData.resultado)
+              .filter(([key, value]) => key.startsWith("tieneDetalles") && value)
+              .map(([key]) => {
+                const match = key.match(/(\d+Hs|\d+Dias|Naranja)/);
+                const timeFrame = match ? match[0] : null;
 
-            <View style={styles.row}>
-              <View style={styles.col}>
-                <Text style={styles.subtitle}>Tipo de tarjeta</Text>
-                <Text style={styles.bold}>{plazoData.resultado?.tarjeta}</Text>
-                <Text>{plazoData.resultado?.detalles}</Text>
-              </View>
-              <View style={styles.col}>
-                <Text style={styles.subtitle}>Plazo</Text>
-                <Text style={styles.green}>{plazoData.resultado?.detalle}</Text>
-              </View>
-            </View>
+                if (
+                  !timeFrame ||
+                  plazoData.resultado[`nuevaFecha${timeFrame}`] === null
+                )
+                  return null;
+
+                return (
+                  <View key={key} style={{ marginBottom: 20 }}>
+                    <Text style={styles.resultTitle}>
+                      Voy a recibir el pago el
+                    </Text>
+                    <Text style={styles.resultDate}>
+                      {plazoData.resultado[`nuevaFecha${timeFrame}`]}
+                    </Text>
+
+                    <View style={styles.row}>
+                      <View style={styles.col}>
+                        <Text style={styles.subtitle}>Tipo de tarjeta</Text>
+                        <Text style={styles.bold}>
+                          {plazoData.resultado.tarjeta}
+                        </Text>
+                        <Text>
+                          {plazoData.resultado[`detalles${timeFrame}`]}
+                        </Text>
+                      </View>
+                      <View style={styles.col}>
+                        <Text style={styles.subtitle}>Plazo</Text>
+                        <Text style={styles.green}>
+                          {plazoData.resultado[`detalle${timeFrame}`]}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                );
+              })}
 
             <Text style={styles.alert}>
               <FontAwesome name="exclamation-circle" size={14} color="red" /> En
