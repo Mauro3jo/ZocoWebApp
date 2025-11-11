@@ -9,8 +9,8 @@ import {
 } from "@env";
 
 /**
- * Ejecuta el ciclo de notificaciones inteligentes de Zoco.
- * Se ejecuta cada 5 minutos después de las 9:00 AM.
+ * 🔔 Ejecuta el ciclo de notificaciones inteligentes de Zoco.
+ * Se ejecuta automáticamente cada 5 minutos (si la app está abierta o en segundo plano).
  */
 export async function ejecutarNotificacionesZoco() {
   const cuit = await AsyncStorage.getItem("Usuario");
@@ -18,10 +18,14 @@ export async function ejecutarNotificacionesZoco() {
 
   const ahora = new Date();
   const hora = ahora.getHours();
-  if (hora < 9) return; // solo después de las 9 AM
+
+  // ⏰ Solo después de las 9 AM
+  if (hora < 9) return;
 
   try {
-    // ✅ 1️⃣ NOTICIAS DEL DÍA (desde REACT_APP_API_NOTIFICACIONES)
+    // ============================================================
+    // 📰 1️⃣ NOTICIAS DEL DÍA (REACT_APP_API_NOTIFICACIONES)
+    // ============================================================
     const fechaHoy = ahora.toISOString().split("T")[0];
     const claveNoticias = `${fechaHoy}-noticias`;
 
@@ -30,8 +34,7 @@ export async function ejecutarNotificacionesZoco() {
       const noticias = await axios.get(REACT_APP_API_NOTIFICACIONES);
       const noticiasAliadosHoy = noticias.data?.filter?.(
         (n: any) =>
-          n.tipoUsuario?.trim()?.toLowerCase() === "aliado" &&
-          esHoy(n.fecha)
+          n.tipoUsuario?.trim()?.toLowerCase() === "aliado" && esHoy(n.fecha)
       );
 
       if (noticiasAliadosHoy?.length > 0) {
@@ -40,69 +43,87 @@ export async function ejecutarNotificacionesZoco() {
           "Tenés nuevas noticias o avisos del día."
         );
         await AsyncStorage.setItem(claveNoticias, "true");
-        console.log("✅ Noticias de hoy notificadas. Fin del ciclo.");
+        console.log("✅ Noticias de hoy notificadas.");
         return;
       } else {
-        console.log("🔄 No hay noticias nuevas para hoy. Continuando con pagos...");
+        console.log("🔄 No hay noticias nuevas para hoy. Verificando pagos...");
       }
     }
 
-    // ✅ 2️⃣ PAGOS COMUNES
+    // ============================================================
+    // 💰 2️⃣ PAGOS COMUNES
+    // ============================================================
     const fechaComunes = calcularFechaHabilSiguiente(ahora);
-    const fechaClaveComunes = `${fechaComunes.toISOString().split("T")[0]}-comunes`;
-    const yaMostradaComunes = await AsyncStorage.getItem(fechaClaveComunes);
+    const claveComunes = `${fechaComunes.toISOString().split("T")[0]}-comunes`;
 
-    if (!yaMostradaComunes) {
-      const comunes = await axios.get(`${REACT_APP_API_NOTIFICACIONES_COMUNES}?cuit=${cuit}`);
+    const yaMostroComunes = await AsyncStorage.getItem(claveComunes);
+    if (!yaMostroComunes) {
+      const comunes = await axios.get(
+        `${REACT_APP_API_NOTIFICACIONES_COMUNES}?cuit=${cuit}`
+      );
       if (comunes.data === true) {
         await notificar("💰 Zoco - Pagos Comunes", "Se acreditaron pagos comunes.");
-        await AsyncStorage.setItem(fechaClaveComunes, "true");
-        console.log("✅ Pagos comunes encontrados. Fin del ciclo.");
+        await AsyncStorage.setItem(claveComunes, "true");
+        console.log("✅ Pagos comunes encontrados.");
         return;
       } else {
         console.log("🔄 Sin pagos comunes. Intentando QR...");
       }
     }
 
-    // ✅ 3️⃣ PAGOS QR (solo día actual)
-    const fechaHoyClave = `${ahora.toISOString().split("T")[0]}-qr`;
-    const yaMostradaQR = await AsyncStorage.getItem(fechaHoyClave);
-    if (!yaMostradaQR) {
-      const qr = await axios.get(`${REACT_APP_API_NOTIFICACIONES_QR}?cuit=${cuit}`);
+    // ============================================================
+    // 💳 3️⃣ PAGOS QR (día actual)
+    // ============================================================
+    const claveQR = `${fechaHoy}-qr`;
+    const yaMostroQR = await AsyncStorage.getItem(claveQR);
+    if (!yaMostroQR) {
+      const qr = await axios.get(
+        `${REACT_APP_API_NOTIFICACIONES_QR}?cuit=${cuit}`
+      );
       if (qr.data === true) {
         await notificar("💳 Zoco - Pagos QR", "Pagos QR acreditados hoy.");
-        await AsyncStorage.setItem(fechaHoyClave, "true");
-        console.log("✅ Pagos QR encontrados. Fin del ciclo.");
+        await AsyncStorage.setItem(claveQR, "true");
+        console.log("✅ Pagos QR encontrados.");
         return;
       } else {
         console.log("🔄 Sin pagos QR. Verificando Naranja...");
       }
     }
 
-    // ✅ 4️⃣ PAGOS NARANJA (solo entre 12 y 14 o lunes siguiente)
+    // ============================================================
+    // 🟧 4️⃣ PAGOS NARANJA (entre 12 y 14 o lunes siguiente)
+    // ============================================================
     const dia = ahora.getDate();
     const mes = ahora.getMonth();
     const esFinde = ahora.getDay() === 0 || ahora.getDay() === 6;
-    const yaMostradaNaranja = await AsyncStorage.getItem(`naranja-${mes}`);
+    const claveNaranja = `naranja-${mes}`;
+    const yaMostroNaranja = await AsyncStorage.getItem(claveNaranja);
 
-    if (!yaMostradaNaranja && (dia >= 12 && (dia <= 14 || esFinde))) {
-      const naranja = await axios.get(`${REACT_APP_API_NOTIFICACIONES_NARANJA}?cuit=${cuit}`);
+    if (!yaMostroNaranja && (dia >= 12 && (dia <= 14 || esFinde))) {
+      const naranja = await axios.get(
+        `${REACT_APP_API_NOTIFICACIONES_NARANJA}?cuit=${cuit}`
+      );
       if (naranja.data === true) {
-        await notificar("🟧 Zoco - Tarjeta Naranja", "Pagos de Tarjeta Naranja acreditados.");
-        await AsyncStorage.setItem(`naranja-${mes}`, "true");
+        await notificar(
+          "🟧 Zoco - Tarjeta Naranja",
+          "Pagos de Tarjeta Naranja acreditados."
+        );
+        await AsyncStorage.setItem(claveNaranja, "true");
         console.log("✅ Pagos Naranja encontrados y guardados para este mes.");
         return;
+      } else {
+        console.log("🔄 Sin pagos Naranja este ciclo.");
       }
     }
 
-    console.log("🕒 Fin del ciclo de notificaciones. Próxima ejecución en 5 minutos.");
+    console.log("🕒 Fin del ciclo de notificaciones. Próxima ejecución en 5 min.");
   } catch (error) {
     console.warn("❌ Error verificando notificaciones:", error);
   }
 }
 
 /**
- * Notifica localmente en el celular.
+ * 📢 Envía una notificación local
  */
 async function notificar(titulo: string, cuerpo: string) {
   await Notifications.scheduleNotificationAsync({
@@ -117,7 +138,7 @@ async function notificar(titulo: string, cuerpo: string) {
 }
 
 /**
- * Calcula el próximo día hábil, saltando fines de semana.
+ * 📅 Calcula el siguiente día hábil (omite fines de semana)
  */
 function calcularFechaHabilSiguiente(fechaBase: Date): Date {
   let fecha = new Date(fechaBase);
@@ -128,7 +149,7 @@ function calcularFechaHabilSiguiente(fechaBase: Date): Date {
 }
 
 /**
- * Devuelve true si la fecha dada es hoy.
+ * ✅ Devuelve true si la fecha dada es hoy
  */
 function esHoy(fechaString: string) {
   const f = new Date(fechaString);

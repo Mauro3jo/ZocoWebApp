@@ -25,7 +25,11 @@
         "foregroundImage": "./assets/img/Z-icono.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.mauro3jo.zocoweb"
+      "package": "com.mauro3jo.zocoweb",
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "WAKE_LOCK"
+      ]
     },
 
     "androidStatusBar": {
@@ -48,6 +52,12 @@
           "barStyle": "light",
           "behavior": "inset-swipe",
           "position": "relative"
+        }
+      ],
+      [
+        "expo-background-fetch",
+        {
+          "alwaysShowPermissionDialog": true
         }
       ]
     ],
