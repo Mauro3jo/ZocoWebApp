@@ -14,6 +14,7 @@ import TarjetasCapsulaMobile from '../components/Inicio/TarjetasCapsulaMobile';
 
 import { InicioAhorroContext } from '../src/context/InicioAhorroContext';
 import { DatosInicioContext } from '../src/context/DatosInicioContext';
+import PopUpNotificacionMobile from "../components/Inicio/PopUpNotificacionMobile";
 
 import styles from './Inicio.styles';
 
@@ -77,6 +78,7 @@ export default function Inicio() {
           ahorroNave={ahorroNave}
           netoZoco={netoZoco}
         />
+<PopUpNotificacionMobile/>   {/* ← Popup en celular */}
 
         {datosBackContext && <DatosInicioMobile datos={datosBackContext} />}
         {tieneLinea && <ComportamientoLineaMobile datos={datosBackContext} />}
