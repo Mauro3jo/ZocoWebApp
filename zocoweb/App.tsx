@@ -3,10 +3,13 @@ import React, { useEffect } from "react";
 import { StatusBar, View, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as NavigationBar from "expo-navigation-bar";
+
+// 🔥 IMPORTACIÓN COMPLETA DE MONTSERRAT (CON SEMIBOLD)
 import {
   useFonts,
   Montserrat_300Light,
   Montserrat_400Regular,
+  Montserrat_600SemiBold,
   Montserrat_700Bold,
 } from "@expo-google-fonts/montserrat";
 
@@ -14,7 +17,7 @@ import AppNavigation from "./app/navigation";
 import { DatosInicioProvider } from "./src/context/DatosInicioContext";
 import { InicioAhorroProvider } from "./src/context/InicioAhorroContext";
 
-// 🔔 Nuevas importaciones para notificaciones inteligentes
+// 🔔 Notificaciones inteligentes
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { ejecutarNotificacionesZoco } from "./src/services/notificacionesInteligentes";
@@ -26,7 +29,7 @@ import * as TaskManager from "expo-task-manager";
 
 const TASK_NAME = "ZocoBackgroundNotifications";
 
-// 🔧 Definimos la tarea que se ejecuta en segundo plano
+// 📌 Tarea background
 TaskManager.defineTask(TASK_NAME, async () => {
   try {
     console.log("🔔 Ejecutando tarea de fondo de Zoco...");
@@ -50,13 +53,12 @@ async function iniciarBackgroundFetch() {
       return;
     }
 
-    // Verificamos si ya está registrada
     const isRegistered = await TaskManager.isTaskRegisteredAsync(TASK_NAME);
     if (!isRegistered) {
       await BackgroundFetch.registerTaskAsync(TASK_NAME, {
-        minimumInterval: 5 * 60, // cada 5 minutos
-        stopOnTerminate: false, // ✅ sigue si la app se cierra
-        startOnBoot: true, // ✅ se activa al reiniciar el teléfono
+        minimumInterval: 5 * 60,
+        stopOnTerminate: false,
+        startOnBoot: true,
       });
       console.log("✅ Background fetch de Zoco registrado correctamente.");
     } else {
@@ -68,15 +70,16 @@ async function iniciarBackgroundFetch() {
 }
 
 export default function App() {
+  // 🔥 AHORA SÍ: CARGA TODAS LAS FUENTES NECESARIAS
   const [fontsLoaded] = useFonts({
     Montserrat_300Light,
     Montserrat_400Regular,
+    Montserrat_600SemiBold, // ← ESTA ES LA CLAVE
     Montserrat_700Bold,
   });
 
   const navigationRef = useNavigationContainerRef();
 
-  // Configuración del comportamiento global de las notificaciones
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -86,13 +89,11 @@ export default function App() {
   });
 
   useEffect(() => {
-    // ✅ Config visual barra navegación Android
     NavigationBar.setPositionAsync("relative");
     NavigationBar.setBehaviorAsync("inset-swipe");
     NavigationBar.setBackgroundColorAsync("#000000");
     NavigationBar.setButtonStyleAsync("light");
 
-    // ✅ Pedir permisos de notificaciones
     const configurarPermisos = async () => {
       if (Device.isDevice) {
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -112,22 +113,18 @@ export default function App() {
 
     configurarPermisos();
 
-    // ✅ Listener: al tocar una notificación → abre la vista Notificaciones
     const listener = Notifications.addNotificationResponseReceivedListener(() => {
       if (navigationRef.isReady()) {
         navigationRef.navigate("Notificaciones");
       }
     });
 
-    // ✅ Llamada inicial a las notificaciones
     ejecutarNotificacionesZoco();
 
-    // ✅ Intervalo mientras la app está abierta/minimizada
     const intervalo = setInterval(async () => {
       await ejecutarNotificacionesZoco();
-    }, 5 * 60 * 1000); // cada 5 min
+    }, 5 * 60 * 1000);
 
-    // ✅ Activar background fetch
     iniciarBackgroundFetch();
 
     return () => {
@@ -136,7 +133,6 @@ export default function App() {
     };
   }, []);
 
-  // Loader mientras cargan las fuentes
   if (!fontsLoaded) {
     return (
       <View
@@ -154,10 +150,8 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      {/* ✅ Barra de estado superior */}
       <StatusBar translucent={false} barStyle="dark-content" backgroundColor="#F4F6FA" />
 
-      {/* ✅ SafeArea global */}
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right", "bottom"]}>
         <DatosInicioProvider>
           <InicioAhorroProvider>

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -28,27 +29,27 @@ export default function PopUpNotificacionMobile() {
   const hoy = new Date().toISOString().slice(0, 10);
   const storageKey = "popupMobileMostrado_" + hoy;
 
-  const cerrar = () => {
+  const cerrar = async () => {
     setVisible(false);
     setImg(null);
     try {
-      global.localStorage?.setItem(storageKey, "1");
+      await AsyncStorage.setItem(storageKey, "1");
     } catch { }
   };
 
   const cargarPopup = async () => {
     try {
-      const yaMostrado = global.localStorage?.getItem(storageKey);
+      // ❌ Si ya se mostró hoy → NO mostrar
+      const yaMostrado = await AsyncStorage.getItem(storageKey);
       if (yaMostrado) return;
 
-      const url = `${API_URL}?tipo=cel`;
-      const res = await fetch(url);
-
+      // 🔥 Llamada a la API
+      const res = await fetch(`${API_URL}?tipo=cel`);
       if (!res.ok) return;
 
       const data: PopupResponse = await res.json();
 
-      // Validar rango de fechas
+      // Verificar rango de fechas
       const inicio = new Date(data.fechaInicio);
       const fin = new Date(data.fechaFin);
       const hoyDate = new Date(hoy);
@@ -72,20 +73,16 @@ export default function PopUpNotificacionMobile() {
     <Modal visible transparent animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.container}>
-
-          {/* Botón de cerrar como el Web (arriba a la derecha) */}
           <TouchableOpacity style={styles.closeBtn} onPress={cerrar}>
             <Text style={styles.closeText}>×</Text>
           </TouchableOpacity>
 
-          {/* Imagen del popup (solo versión CELULAR) */}
           <Image
             source={{ uri: img }}
             style={styles.image}
             resizeMode="contain"
           />
 
-          {/* Botón cerrar igual al web */}
           <TouchableOpacity style={styles.btnCerrar} onPress={cerrar}>
             <Text style={styles.btnCerrarText}>Cerrar</Text>
           </TouchableOpacity>

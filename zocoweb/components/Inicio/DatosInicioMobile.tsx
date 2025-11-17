@@ -77,19 +77,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
+
+  // 🔥 Títulos sin cortar y con Montserrat real
   title: {
     fontSize: 14,
     fontFamily: "Montserrat_600SemiBold",
     color: "#141517",
-    marginBottom: 6,
     textAlign: "center",
+    width: "100%",              // evita cortes
+    lineHeight: 18,             // espacio correcto para Montserrat
+    includeFontPadding: false,  // mejora en Android
+    marginBottom: 6,
   },
+
   separator: {
     height: 1,
     backgroundColor: "#E3E6EE",
     width: "70%",
     marginBottom: 8,
   },
+
   amount: {
     fontSize: 18,
     fontFamily: "Montserrat_700Bold",
