@@ -18,7 +18,7 @@ export default StyleSheet.create({
 
   label: {
     fontSize: 13,
-    fontFamily: "Montserrat_500Medium",
+    fontFamily: "Montserrat_400Regular",   // ✔ corregido
     marginBottom: 6,
     color: "#141517",
   },
@@ -48,7 +48,7 @@ export default StyleSheet.create({
   },
 
   picker: {
-    color: "#000", // 🔹 asegura texto visible en modo oscuro
+    color: "#000",
     fontFamily: "Montserrat_400Regular",
     fontSize: 14,
   },
@@ -67,6 +67,7 @@ export default StyleSheet.create({
     justifyContent: "center",
     marginVertical: 12,
   },
+
   btnText: {
     color: "#fff",
     fontSize: 15,
@@ -95,6 +96,7 @@ export default StyleSheet.create({
     fontFamily: "Montserrat_600SemiBold",
     color: "#141517",
   },
+
   resultDate: {
     fontSize: 22,
     textAlign: "center",
@@ -102,34 +104,41 @@ export default StyleSheet.create({
     marginBottom: 14,
     fontFamily: "Montserrat_700Bold",
   },
+
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
+
   col: {
     flex: 1,
     paddingHorizontal: 8,
   },
+
   subtitle: {
     fontSize: 13,
     fontFamily: "Montserrat_600SemiBold",
     marginBottom: 3,
     color: "#000",
   },
+
   bold: {
     fontSize: 13,
     fontFamily: "Montserrat_700Bold",
     color: "#000",
   },
+
   normalText: {
     fontSize: 13,
     color: "#333",
     fontFamily: "Montserrat_400Regular",
   },
+
   green: {
     color: "#B4C400",
     fontFamily: "Montserrat_700Bold",
   },
+
   alert: {
     marginTop: 20,
     fontSize: 11,
@@ -137,6 +146,7 @@ export default StyleSheet.create({
     textAlign: "center",
     fontFamily: "Montserrat_400Regular",
   },
+
   noData: {
     fontSize: 13,
     textAlign: "center",

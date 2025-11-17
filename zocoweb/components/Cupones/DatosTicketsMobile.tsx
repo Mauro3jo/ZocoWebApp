@@ -10,7 +10,7 @@ type Props = {
   } | null;
 };
 
-// 🔹 Formatear a moneda ARS con precisión y coherencia visual
+// 🔹 Formatear a moneda ARS
 const formatARS = (v: any) => {
   const n = Number(v);
   if (!isFinite(n)) return "$ 0,00";
@@ -83,14 +83,25 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E3E6EE",
     borderStyle: "dashed",
   },
+
+  // 🔥 SOLO FUENTES PERMITIDAS
   label: {
     fontSize: 13,
     color: "#141517",
-    fontFamily: "Montserrat_500Medium",
+    fontFamily: "Montserrat_400Regular",
+    width: "60%",
+    textAlign: "left",
+    includeFontPadding: false,
+    lineHeight: 16,
   },
+
   value: {
     fontSize: 15,
     color: "#000000",
     fontFamily: "Montserrat_700Bold",
+    textAlign: "right",
+    width: "40%",
+    includeFontPadding: false,
+    lineHeight: 18,
   },
 });

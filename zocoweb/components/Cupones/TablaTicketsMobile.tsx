@@ -143,8 +143,8 @@ const TablaTicketsMobile: React.FC<Props> = ({
             }}
           />
 
+          {/* 🔥 FILA DE BOTONES RESPONSIVA */}
           <View style={{ flexDirection: "row", gap: 10 }}>
-            {/* Botón PDF: visible pero sin acción */}
             <DownloadButton label="Descargar PDF" onPress={() => {}} loading={false} />
 
             <DownloadButton
@@ -190,6 +190,8 @@ const DownloadButton = ({
     disabled={loading}
     style={{
       flex: 1,
+      minWidth: 90,               // ← 🔥 previene que se achique DEMASIADO
+      maxWidth: "33%",            // ← 🔥 evita que se desborde
       backgroundColor: "#B4C400",
       borderRadius: 10,
       paddingVertical: 10,
@@ -204,7 +206,19 @@ const DownloadButton = ({
     ) : (
       <>
         <Feather name="download" size={18} color="#fff" />
-        <Text style={{ fontSize: 13, color: "#fff", fontFamily: "Montserrat_700Bold" }}>
+
+        <Text
+          style={{
+            fontSize: 13,
+            color: "#fff",
+            fontFamily: "Montserrat_700Bold",
+            textAlign: "center",
+            width: "100%",
+          }}
+          adjustsFontSizeToFit          // ← 🔥 auto ajuste
+          numberOfLines={1}             // ← 🔥 evita salto
+          minimumFontScale={0.75}       // ← 🔥 nunca se rompe
+        >
           {label}
         </Text>
       </>
