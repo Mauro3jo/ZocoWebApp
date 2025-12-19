@@ -9,7 +9,7 @@ import {
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { REACT_APP_API_PDF_ALIADO } from "@env";
+import { REACT_APP_API_PDF_ANDROID_ORDENPAGO } from "@env";
 
 const fmtARS = (v: any) => {
   const n = Number(v);
@@ -21,21 +21,34 @@ const fmtARS = (v: any) => {
   });
 };
 
-// 🔹 Convierte fecha a dd/MM/yyyy
-const toSlashDMY = (input?: string) => {
-  if (!input) return "";
-  const d = new Date(input);
-  if (isNaN(d.getTime())) {
-    return input.replaceAll("-", "/");
+// 🔥 LÓGICA IDÉNTICA A TU VERSIÓN WEB PARA FORMATEAR FECHA
+const formatearFechaParaDisplay = (fecha: string) => {
+  if (!fecha) return "-";
+  // Intentamos crear objeto Date
+  const fechaObj = new Date(fecha);
+
+  // Si es inválida (pasa mucho con fechas string "dd-MM-yyyy" directas en JS)
+  if (isNaN(fechaObj.getTime())) {
+     // Si ya viene formateada tipo "20-05-2024", la devolvemos tal cual o parseamos manual
+     return fecha.split("T")[0]; // Quitamos hora si la tiene
   }
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yy = d.getFullYear();
-  return `${dd}/${mm}/${yy}`;
+
+  const dia = String(fechaObj.getDate()).padStart(2, "0");
+  const mes = String(fechaObj.getMonth() + 1).padStart(2, "0"); // Mes arranca en 0
+  const anio = fechaObj.getFullYear();
+
+  return `${dia}-${mes}-${anio}`;
+};
+
+// 🔥 PARA EL BACKEND SIEMPRE DD-MM-YYYY
+const parsearFechaParaBackend = (fecha: string) => {
+    // Reutilizamos la lógica de display pero asegurando guiones
+    const display = formatearFechaParaDisplay(fecha);
+    return display.replace(/\//g, "-"); // Aseguramos guiones por si acaso
 };
 
 type Props = {
-  fechaDisplay: string;
+  fechaDisplay: string; // Puede venir "2024-05-20T00:00:00"
   fechaApiRaw: string;
   bruto: number | string;
   total: number | string;
@@ -43,48 +56,61 @@ type Props = {
 };
 
 const ItemsTablaTicketMobile: React.FC<Props> = ({
-  fechaDisplay,
-  fechaApiRaw,
+  fechaDisplay, // En tu componente padre le pasas: item.fechaPago ?? item.fecha
   bruto,
   total,
   tieneDocumentos,
 }) => {
   const [downloading, setDownloading] = useState(false);
 
+  // Parseamos la fecha para mostrar en la fila (Igual que en la Web)
+  const fechaVisual = formatearFechaParaDisplay(fechaDisplay);
+
   const descargarOrdenesPorFecha = async () => {
     if (downloading) return;
+
     try {
       setDownloading(true);
       const token = await AsyncStorage.getItem("token");
       if (!token) throw new Error("No hay token");
 
-      const fecha = toSlashDMY(fechaApiRaw);
-      const url = REACT_APP_API_PDF_ALIADO;
-      if (!url) throw new Error("Falta REACT_APP_API_PDF_ALIADO en .env");
+      // Preparamos fecha para API (dd-MM-yyyy)
+      const fechaParaApi = parsearFechaParaBackend(fechaDisplay);
+
+      const url = REACT_APP_API_PDF_ANDROID_ORDENPAGO;
+      if (!url) throw new Error("Falta API en .env");
 
       const resp = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, fecha }),
+        body: JSON.stringify({
+            token,
+            FechaPago: fechaParaApi,
+            comercio: "Todos"
+        }),
       });
-      if (!resp.ok) throw new Error(`Error de red: ${resp.status}`);
+
+      if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(`Error ${resp.status}: ${text}`);
+      }
 
       const docs = await resp.json();
+
       if (!Array.isArray(docs) || docs.length === 0) {
-        Alert.alert("Descarga", "No hay documentos para esa fecha.");
+        Alert.alert("Aviso", "No hay documentos para esta fecha.");
         return;
       }
 
       for (let i = 0; i < docs.length; i++) {
         const doc = docs[i];
-        const b64 = String(doc?.documentoPdfBase64 ?? "");
+        const b64 = String(doc?.pdfBase64 ?? "");
+
         if (!b64) continue;
 
-        const nombre = String(doc?.nombreDocumento ?? `Orden-Pago-${i + 1}`);
-        const safeName = `${nombre}-${fechaDisplay}.pdf`.replace(
-          /[^a-zA-Z0-9.\-_]/g,
-          "_"
-        );
+        const nombre = String(doc?.archivo ?? `OrdenPago-${i + 1}.pdf`);
+        const safeName = nombre.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+
         const fileUri = FileSystem.cacheDirectory + safeName;
 
         await FileSystem.writeAsStringAsync(fileUri, b64, {
@@ -92,11 +118,15 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
         });
 
         if (await Sharing.isAvailableAsync()) {
-          await Sharing.shareAsync(fileUri, { mimeType: "application/pdf" });
+          await Sharing.shareAsync(fileUri, {
+              mimeType: "application/pdf",
+              dialogTitle: "Orden de Pago"
+          });
         }
       }
     } catch (e: any) {
-      Alert.alert("Orden de Pago", e?.message ?? "No se pudo descargar el PDF.");
+      console.error(e);
+      Alert.alert("Error", "No se pudo descargar.");
     } finally {
       setDownloading(false);
     }
@@ -112,9 +142,9 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
         paddingVertical: 10,
       }}
     >
-      {/* Fecha */}
+      {/* 🔹 FECHA PARSEADA VISUALMENTE */}
       <Cell style={{ flex: 1 }}>
-        <Text style={cellText}>{fechaDisplay}</Text>
+        <Text style={cellText}>{fechaVisual}</Text>
       </Cell>
 
       {/* Bruto */}
@@ -143,7 +173,7 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
         </Text>
       </Cell>
 
-      {/* Orden de Pago */}
+      {/* Botón */}
       <Cell style={{ flex: 1 }}>
         {tieneDocumentos === false ? (
           <Text
@@ -164,7 +194,7 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
             style={{
               alignItems: "center",
               justifyContent: "center",
-              minWidth: 80, // 🔹 evita deformaciones
+              minWidth: 80,
               height: 32,
             }}
             activeOpacity={0.7}
@@ -180,7 +210,7 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
                   textAlign: "center",
                   includeFontPadding: false,
                 }}
-                allowFontScaling={false} // 🔹 evita que el sistema cambie el tamaño
+                allowFontScaling={false}
               >
                 Descargar
               </Text>
@@ -192,14 +222,9 @@ const ItemsTablaTicketMobile: React.FC<Props> = ({
   );
 };
 
-// 🔹 Subcomponente de celda
-const Cell = ({
-  children,
-  style,
-}: {
-  children: React.ReactNode;
-  style?: any;
-}) => <View style={[{ paddingHorizontal: 8 }, style]}>{children}</View>;
+// Estilos y celdas...
+const Cell = ({ children, style }: { children: React.ReactNode; style?: any }) =>
+  <View style={[{ paddingHorizontal: 8 }, style]}>{children}</View>;
 
 const cellText = {
   fontSize: 12,

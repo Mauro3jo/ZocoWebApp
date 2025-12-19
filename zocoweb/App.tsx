@@ -4,7 +4,7 @@ import { StatusBar, View, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as NavigationBar from "expo-navigation-bar";
 
-// 🔥 IMPORTACIÓN COMPLETA DE MONTSERRAT (CON SEMIBOLD)
+// 🔥 Montserrat completa
 import {
   useFonts,
   Montserrat_300Light,
@@ -29,7 +29,9 @@ import * as TaskManager from "expo-task-manager";
 
 const TASK_NAME = "ZocoBackgroundNotifications";
 
-// 📌 Tarea background
+// =======================================================
+// 📌 DEFINICIÓN DE LA TAREA BACKGROUND (fuera del componente)
+// =======================================================
 TaskManager.defineTask(TASK_NAME, async () => {
   try {
     console.log("🔔 Ejecutando tarea de fondo de Zoco...");
@@ -41,6 +43,9 @@ TaskManager.defineTask(TASK_NAME, async () => {
   }
 });
 
+// =======================================================
+// 🔧 Registrar BackgroundFetch
+// =======================================================
 async function iniciarBackgroundFetch() {
   try {
     const status = await BackgroundFetch.getStatusAsync();
@@ -56,10 +61,11 @@ async function iniciarBackgroundFetch() {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(TASK_NAME);
     if (!isRegistered) {
       await BackgroundFetch.registerTaskAsync(TASK_NAME, {
-        minimumInterval: 5 * 60,
+        minimumInterval: 5 * 60, // 5 minutos
         stopOnTerminate: false,
         startOnBoot: true,
       });
+
       console.log("✅ Background fetch de Zoco registrado correctamente.");
     } else {
       console.log("ℹ️ Background fetch ya estaba registrado.");
@@ -70,16 +76,17 @@ async function iniciarBackgroundFetch() {
 }
 
 export default function App() {
-  // 🔥 AHORA SÍ: CARGA TODAS LAS FUENTES NECESARIAS
+  // 🔥 Carga de fuentes
   const [fontsLoaded] = useFonts({
     Montserrat_300Light,
     Montserrat_400Regular,
-    Montserrat_600SemiBold, // ← ESTA ES LA CLAVE
+    Montserrat_600SemiBold,
     Montserrat_700Bold,
   });
 
   const navigationRef = useNavigationContainerRef();
 
+  // 🔔 Manejo de notificaciones
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -88,12 +95,17 @@ export default function App() {
     }),
   });
 
+  // =======================================================
+  // 🧠 USE EFFECT PRINCIPAL
+  // =======================================================
   useEffect(() => {
+    // Config UI barra navegación
     NavigationBar.setPositionAsync("relative");
     NavigationBar.setBehaviorAsync("inset-swipe");
     NavigationBar.setBackgroundColorAsync("#000000");
     NavigationBar.setButtonStyleAsync("light");
 
+    // Permisos de notificaciones
     const configurarPermisos = async () => {
       if (Device.isDevice) {
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -113,26 +125,27 @@ export default function App() {
 
     configurarPermisos();
 
+    // Navegar al tocar la notificación
     const listener = Notifications.addNotificationResponseReceivedListener(() => {
       if (navigationRef.isReady()) {
         navigationRef.navigate("Notificaciones");
       }
     });
 
+    // 🔥 Ejecuta notificaciones al abrir la app
     ejecutarNotificacionesZoco();
 
-    const intervalo = setInterval(async () => {
-      await ejecutarNotificacionesZoco();
-    }, 5 * 60 * 1000);
-
+    // 🔥 Activa background fetch
     iniciarBackgroundFetch();
 
     return () => {
-      clearInterval(intervalo);
       listener.remove();
     };
   }, []);
 
+  // =======================================================
+  // ⏳ Splash mientras cargan fuentes
+  // =======================================================
   if (!fontsLoaded) {
     return (
       <View
@@ -148,6 +161,9 @@ export default function App() {
     );
   }
 
+  // =======================================================
+  // APP RENDER
+  // =======================================================
   return (
     <SafeAreaProvider>
       <StatusBar translucent={false} barStyle="dark-content" backgroundColor="#F4F6FA" />

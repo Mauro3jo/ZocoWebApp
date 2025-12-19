@@ -38,9 +38,20 @@ const DatosInicioMobile: React.FC<DatosProps> = ({ datos }) => {
       <View style={styles.wrapper}>
         {cards.map((c, i) => (
           <View key={i} style={styles.card}>
-            <Text style={styles.title}>{c.title}</Text>
+            <Text
+              style={styles.title}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              maxFontSizeMultiplier={1}   // 🔥 asegura mismo tamaño SIEMPRE
+            >
+              {c.title}
+            </Text>
+
             <View style={styles.separator} />
-            <Text style={styles.amount}>{c.value}</Text>
+
+            <Text style={styles.amount} maxFontSizeMultiplier={1}>
+              {c.value}
+            </Text>
           </View>
         ))}
       </View>
@@ -61,11 +72,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E3E6EE",
   },
+
   wrapper: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
   },
+
   card: {
     width: "48%",
     borderRadius: 10,
@@ -78,15 +91,17 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
 
-  // 🔥 Títulos sin cortar y con Montserrat real
+  // 🔥 Títulos con tamaño fijo en todos los celulares
   title: {
     fontSize: 14,
     fontFamily: "Montserrat_600SemiBold",
     color: "#141517",
     textAlign: "center",
-    width: "100%",              // evita cortes
-    lineHeight: 18,             // espacio correcto para Montserrat
-    includeFontPadding: false,  // mejora en Android
+    width: "100%",
+    includeFontPadding: false,
+    lineHeight: 18,
+
+    height: 26,     // 🔥 asegura MISMO tamaño en las 4 tarjetas
     marginBottom: 6,
   },
 

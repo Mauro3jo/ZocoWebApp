@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
+  Alert, // Agregué Alert por si hay errores
 } from "react-native";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
@@ -14,6 +15,7 @@ import { Feather } from "@expo/vector-icons";
 import {
   REACT_APP_API_EXCEL,
   REACT_APP_API_EXCEL_ANUAL,
+  REACT_APP_API_PDF_ANDROID_MENSUAL
 } from "@env";
 import ItemsTablaTicketMobile from "./ItemsTablaTicketMobile";
 
@@ -39,7 +41,7 @@ const TablaTicketsMobile: React.FC<Props> = ({
   bottomPadding = 0,
 }) => {
   const [busqueda, setBusqueda] = useState("");
-  const [descargando, setDescargando] = useState<"mes" | "anual" | null>(null);
+  const [descargando, setDescargando] = useState<"mes" | "anual" | "pdf" | null>(null);
 
   const lista = useMemo(() => (Array.isArray(listaMes) ? listaMes : []), [listaMes]);
   const listaFiltrada = useMemo(() => {
@@ -54,38 +56,46 @@ const TablaTicketsMobile: React.FC<Props> = ({
 
   const fmtNombre = (nombre: string) => nombre.replace(/[^a-zA-Z0-9]/g, "_");
 
+  // Función genérica para Excel (sigue usando Blob porque el endpoint de Excel no lo cambiamos)
   const manejarDescargaExcel = async (url: string, body: any, nombre: string) => {
     const token = await AsyncStorage.getItem("token");
     if (!token) return;
 
-    const respuesta = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, ...body }),
-    });
-
-    if (!respuesta.ok) return;
-
-    const blob = await respuesta.blob();
-    const reader = new FileReader();
-
-    reader.onloadend = async () => {
-      const base64data = (reader.result as string).split(",")[1];
-      const fileUri = FileSystem.cacheDirectory + nombre;
-
-      await FileSystem.writeAsStringAsync(fileUri, base64data, {
-        encoding: FileSystem.EncodingType.Base64,
+    try {
+      const respuesta = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, ...body }),
       });
 
-      if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(fileUri, {
-          mimeType:
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-      }
-    };
+      if (!respuesta.ok) throw new Error("Error al generar Excel");
 
-    reader.readAsDataURL(blob);
+      const blob = await respuesta.blob();
+      const reader = new FileReader();
+
+      reader.onloadend = async () => {
+        if (typeof reader.result === 'string') {
+          const base64data = reader.result.split(",")[1];
+          const fileUri = FileSystem.cacheDirectory + nombre;
+
+          await FileSystem.writeAsStringAsync(fileUri, base64data, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(fileUri, {
+              mimeType:
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
+          }
+        }
+      };
+
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "No se pudo descargar el archivo Excel.");
+    }
   };
 
   const onDescargarExcelMes = async () => {
@@ -119,6 +129,68 @@ const TablaTicketsMobile: React.FC<Props> = ({
     setDescargando(null);
   };
 
+  // 🔥 LÓGICA CORREGIDA PARA EL PDF DESDE BASE64
+  const onDescargarPDF = async () => {
+    if (descargando) return;
+    setDescargando("pdf");
+
+    const token = await AsyncStorage.getItem("token");
+    if (!token) {
+      setDescargando(null);
+      return;
+    }
+
+    const Year = datos?.anio ?? new Date().getFullYear();
+    const Month = datos?.mes ?? new Date().getMonth() + 1;
+    const comercio = datos?.comercio ?? "Todos";
+
+    try {
+      const respuesta = await fetch(REACT_APP_API_PDF_ANDROID_MENSUAL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token,
+          Year,
+          Month,
+          comercio,
+        }),
+      });
+
+      if (!respuesta.ok) throw new Error("Error en respuesta del servidor");
+
+      // 1. Recibimos JSON
+      const data = await respuesta.json();
+
+      // 2. Obtenemos el Base64 limpio
+      const base64Code = data.pdfBase64;
+      const fileName = data.archivo || `reporte_${Year}_${Month}.pdf`;
+
+      if (!base64Code) throw new Error("No se recibió el PDF");
+
+      // 3. Escribimos el archivo
+      const fileUri = FileSystem.cacheDirectory + fileName;
+
+      await FileSystem.writeAsStringAsync(fileUri, base64Code, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      // 4. Compartimos
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri, {
+          mimeType: "application/pdf",
+          UTI: "com.adobe.pdf",
+          dialogTitle: "Guardar PDF Mensual"
+        });
+      }
+
+    } catch (error) {
+      console.log("Error PDF:", error);
+      Alert.alert("Error", "Hubo un problema al generar el PDF.");
+    } finally {
+      setDescargando(null);
+    }
+  };
+
   return (
     <FlatList
       data={listaFiltrada}
@@ -145,7 +217,11 @@ const TablaTicketsMobile: React.FC<Props> = ({
 
           {/* 🔥 FILA DE BOTONES RESPONSIVA */}
           <View style={{ flexDirection: "row", gap: 10 }}>
-            <DownloadButton label="Descargar PDF" onPress={() => {}} loading={false} />
+            <DownloadButton
+              label="Descargar PDF"
+              onPress={onDescargarPDF}
+              loading={descargando === "pdf"}
+            />
 
             <DownloadButton
               label="Descargar Excel"
@@ -165,8 +241,8 @@ const TablaTicketsMobile: React.FC<Props> = ({
         <View style={{ paddingHorizontal: 20 }}>
           <ItemsTablaTicketMobile
             fechaDisplay={item.fechaPago ?? item.fecha ?? ""}
-            bruto={item.totalBruto ?? 0}
-            total={item.totalConDescuentos ?? 0}
+            bruto={Number(item.totalBruto ?? 0)}
+            total={Number(item.totalConDescuentos ?? 0)}
           />
         </View>
       )}
@@ -190,8 +266,8 @@ const DownloadButton = ({
     disabled={loading}
     style={{
       flex: 1,
-      minWidth: 90,               // ← 🔥 previene que se achique DEMASIADO
-      maxWidth: "33%",            // ← 🔥 evita que se desborde
+      minWidth: 90,
+      maxWidth: "33%",
       backgroundColor: "#B4C400",
       borderRadius: 10,
       paddingVertical: 10,
@@ -215,9 +291,9 @@ const DownloadButton = ({
             textAlign: "center",
             width: "100%",
           }}
-          adjustsFontSizeToFit          // ← 🔥 auto ajuste
-          numberOfLines={1}             // ← 🔥 evita salto
-          minimumFontScale={0.75}       // ← 🔥 nunca se rompe
+          adjustsFontSizeToFit
+          numberOfLines={1}
+          minimumFontScale={0.75}
         >
           {label}
         </Text>
