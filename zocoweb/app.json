@@ -4,7 +4,7 @@
     "slug": "zocoweb",
     "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/img/Z-icono.png",
+    "icon": "./assets/img/Z-icono2.png.jpg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
 
@@ -25,7 +25,7 @@
       "versionCode": 8,
 
       "adaptiveIcon": {
-        "foregroundImage": "./assets/img/Z-icono.png",
+        "foregroundImage": "./assets/img/Z-icono2.png.jpg",
         "backgroundColor": "#000000"
       },
 
@@ -67,7 +67,7 @@
     ],
 
     "web": {
-      "favicon": "./assets/img/Z-icono.png"
+      "favicon": "./assets/img/Z-icono2.png.jpg"
     },
 
     "extra": {

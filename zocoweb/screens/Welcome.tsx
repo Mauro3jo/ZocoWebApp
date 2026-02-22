@@ -1,6 +1,6 @@
 import React, { useRef, useState, useContext, useEffect } from "react";
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
-import { VideoView, useVideoPlayer } from "expo-video"; // ✅ reemplazo de expo-av
+import { VideoView, useVideoPlayer } from "expo-video";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as LocalAuthentication from "expo-local-authentication";
@@ -40,16 +40,30 @@ export default function Welcome() {
   const [loading, setLoading] = useState(false);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [hasSavedCredentials, setHasSavedCredentials] = useState(false);
 
-  useEffect(() => {
-    const checkBiometric = async () => {
+  const checkBiometricState = async () => {
+    try {
       const compatible = await LocalAuthentication.hasHardwareAsync();
       const enrolled = await LocalAuthentication.isEnrolledAsync();
       const enabled = await AsyncStorage.getItem("biometricEnabled");
+      const [[, savedUser], [, savedPass]] = await AsyncStorage.multiGet([
+        "Usuario",
+        "Password",
+      ]);
+
       setBiometricAvailable(compatible && enrolled);
       setBiometricEnabled(enabled === "true");
-    };
-    checkBiometric();
+      setHasSavedCredentials(Boolean(savedUser && savedPass));
+    } catch {
+      setBiometricAvailable(false);
+      setBiometricEnabled(false);
+      setHasSavedCredentials(false);
+    }
+  };
+
+  useEffect(() => {
+    checkBiometricState();
   }, []);
 
   const navigateToInicio = () => {
@@ -64,14 +78,26 @@ export default function Welcome() {
   };
 
   const handleBiometricLogin = async () => {
-    if (!biometricEnabled || loading) return;
+    if (loading) return;
+
+    if (!hasSavedCredentials) {
+      Alert.alert("Atención", "Primero iniciá sesión manualmente para guardar tus datos.");
+      return;
+    }
 
     const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Usá tu huella para ingresar",
+      promptMessage: biometricEnabled
+        ? "Usá tu huella para ingresar"
+        : "Confirmá para activar ingreso biométrico",
       fallbackLabel: "Ingresar manualmente",
     });
 
     if (!result.success) return;
+
+    if (!biometricEnabled) {
+      await AsyncStorage.setItem("biometricEnabled", "true");
+      setBiometricEnabled(true);
+    }
 
     try {
       setLoading(true);
@@ -110,7 +136,6 @@ export default function Welcome() {
     }
   };
 
-  // ✅ Configuración del video con expo-video (sin controles ni interacción)
   const player = useVideoPlayer(require("../assets/videos/fondo.mp4"), (player) => {
     player.loop = true;
     player.play();
@@ -123,35 +148,32 @@ export default function Welcome() {
         player={player}
         allowsFullscreen={false}
         allowsPictureInPicture={false}
-        nativeControls={false}   // ❌ quita los controles del sistema
-        pointerEvents="none"     // ❌ evita toques o pausa
+        nativeControls={false}
+        pointerEvents="none"
         contentFit="cover"
       />
 
       <View style={styles.overlay}>
-        {/* Z superior izquierda */}
         <View style={styles.logoZ}>
           <ZIcon width={45} height={45} />
         </View>
 
-        {/* Texto principal */}
         <View style={styles.textWrapper}>
           <Text style={styles.textLine1}>Bienvenido</Text>
           <Text style={styles.textLine2}>a la app de</Text>
           <Text style={styles.textLine3}>ZOCO</Text>
         </View>
 
-        {/* Área verde con botón y huella */}
         <View style={[styles.footerSection, { paddingBottom: insets.bottom + 90 }]}>
           <View style={styles.buttonWrapper}>
             <Boton text="Inicia sesión" onPress={handleContinue} />
           </View>
 
-          {biometricAvailable && biometricEnabled && (
+          {biometricAvailable && hasSavedCredentials && (
             <TouchableOpacity
               onPress={handleBiometricLogin}
               activeOpacity={0.8}
-              style={styles.huellaButton}
+              style={[styles.huellaButton, !biometricEnabled && { opacity: 0.95 }]}
             >
               {loading ? (
                 <ActivityIndicator size="small" color="#fff" />
@@ -162,7 +184,6 @@ export default function Welcome() {
           )}
         </View>
 
-        {/* Footer fijo al final */}
         <View style={[styles.footerWrapper, { paddingBottom: insets.bottom }]}>
           <Footer text="Condiciones de uso y política de privacidad" />
         </View>

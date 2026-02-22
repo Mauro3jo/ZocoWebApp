@@ -36,6 +36,16 @@ export default StyleSheet.create({
     justifyContent: "center",
     overflow: "hidden",
   },
+  picker: {
+    color: "#000",
+    fontSize: 14,
+    fontFamily: "Montserrat_600SemiBold",
+  },
+  pickerItem: {
+    color: "#000",
+    fontSize: 14,
+    fontFamily: "Montserrat_600SemiBold",
+  },
 
   switchRow: {
     flexDirection: "row",

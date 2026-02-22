@@ -11,7 +11,7 @@ export default StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 12,
     marginHorizontal: 12,
-    marginTop: 4,
+    marginTop: 0,
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowOffset: { width: 0, height: 4 },

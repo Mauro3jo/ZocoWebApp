@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
   Switch,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
@@ -191,7 +190,7 @@ export default function CalculadoraNuevaMobile() {
   } = formData || {};
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* switches Neto/Bruto */}
       <View style={styles.switchRow}>
         <View style={styles.switchGroup}>
@@ -247,15 +246,16 @@ export default function CalculadoraNuevaMobile() {
             <Picker
               selectedValue={value}
               style={styles.picker}
+              itemStyle={styles.pickerItem}
               dropdownIconColor="#000"
               onValueChange={(val) => {
                 onChange(val);
                 handleTipoTarjetaChange(val);
               }}
             >
-              <Picker.Item label="Seleccionar tipo..." value={null} />
-              <Picker.Item label="Débito" value="Debito" />
-              <Picker.Item label="Crédito" value="Credito" />
+              <Picker.Item label="Seleccionar tipo..." value={null} color="#777" />
+              <Picker.Item label="Débito" value="Debito" color="#000" />
+              <Picker.Item label="Crédito" value="Credito" color="#000" />
             </Picker>
           </View>
         )}
@@ -275,6 +275,7 @@ export default function CalculadoraNuevaMobile() {
             <Picker
               selectedValue={value?.value}
               style={styles.picker}
+              itemStyle={styles.pickerItem}
               dropdownIconColor="#000"
               onValueChange={(val, index) => {
                 const tarjeta = optionsTarjeta[index];
@@ -284,9 +285,9 @@ export default function CalculadoraNuevaMobile() {
                 }
               }}
             >
-              <Picker.Item label="Seleccionar tarjeta..." value={null} />
+              <Picker.Item label="Seleccionar tarjeta..." value={null} color="#777" />
               {optionsTarjeta.map((opt, idx) => (
-                <Picker.Item key={idx} label={opt.label} value={opt.value} />
+                <Picker.Item key={idx} label={opt.label} value={opt.value} color="#000" />
               ))}
             </Picker>
           </View>
@@ -304,6 +305,7 @@ export default function CalculadoraNuevaMobile() {
               selectedValue={value?.value}
               enabled={!isActiveDebito}
               style={styles.picker}
+              itemStyle={styles.pickerItem}
               dropdownIconColor="#000"
               onValueChange={(val, index) => {
                 const cuota = optionsCuotas[index];
@@ -313,9 +315,9 @@ export default function CalculadoraNuevaMobile() {
                 }
               }}
             >
-              <Picker.Item label="Seleccionar cuota..." value={null} />
+              <Picker.Item label="Seleccionar cuota..." value={null} color="#777" />
               {optionsCuotas.map((opt, idx) => (
-                <Picker.Item key={idx} label={opt.label} value={opt.value} />
+                <Picker.Item key={idx} label={opt.label} value={opt.value} color="#000" />
               ))}
             </Picker>
           </View>
@@ -384,6 +386,6 @@ export default function CalculadoraNuevaMobile() {
           </View>
         </View>
       )}
-    </ScrollView>
+    </View>
   );
 }

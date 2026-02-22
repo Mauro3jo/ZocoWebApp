@@ -6,7 +6,6 @@ import {
   Modal,
   TextInput,
   Pressable,
-  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
@@ -62,7 +61,7 @@ export default function HeaderPrincipal() {
   }, [modalVisible]);
 
   return (
-    <SafeAreaView>
+    <>
       <View ref={headerRef} style={styles.card}>
         {/* IZQUIERDA: Logo + Texto */}
         <View style={styles.left}>
@@ -149,6 +148,6 @@ export default function HeaderPrincipal() {
           )}
         </View>
       </Modal>
-    </SafeAreaView>
+    </>
   );
 }

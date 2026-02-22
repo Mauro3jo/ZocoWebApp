@@ -49,14 +49,14 @@ export default StyleSheet.create({
 
   picker: {
     color: "#000",
-    fontFamily: "Montserrat_400Regular",
+    fontFamily: "Montserrat_600SemiBold",
     fontSize: 14,
   },
 
   pickerItem: {
     color: "#000",
     fontSize: 14,
-    fontFamily: "Montserrat_400Regular",
+    fontFamily: "Montserrat_600SemiBold",
   },
 
   btn: {

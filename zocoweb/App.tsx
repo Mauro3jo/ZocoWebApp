@@ -61,7 +61,7 @@ async function iniciarBackgroundFetch() {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(TASK_NAME);
     if (!isRegistered) {
       await BackgroundFetch.registerTaskAsync(TASK_NAME, {
-        minimumInterval: 5 * 60, // 5 minutos
+        minimumInterval: 30 * 60, // 30 minutos (mínimo sugerido al SO)
         stopOnTerminate: false,
         startOnBoot: true,
       });
@@ -168,7 +168,7 @@ export default function App() {
     <SafeAreaProvider>
       <StatusBar translucent={false} barStyle="dark-content" backgroundColor="#F4F6FA" />
 
-      <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right", "bottom"]}>
+      <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
         <DatosInicioProvider>
           <InicioAhorroProvider>
             <AppNavigation ref={navigationRef} />

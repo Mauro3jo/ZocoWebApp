@@ -4,8 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { FontAwesome } from "@expo/vector-icons";
@@ -79,7 +77,7 @@ export default function CalculadoraPlazosMobile() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.label}>Fecha</Text>
         <TextInput
@@ -203,6 +201,6 @@ export default function CalculadoraPlazosMobile() {
           </Text>
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 }

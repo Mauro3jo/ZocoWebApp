@@ -8,9 +8,12 @@ import {
   REACT_APP_API_NOTIFICACIONES,
 } from "@env";
 
+const NOTIF_MIN_INTERVAL_MS = 30 * 60 * 1000; // 30 min
+const LAST_NOTIF_RUN_KEY = "zoco_notif_last_run_ts";
+
 /**
  * 🔔 Ejecuta el ciclo de notificaciones inteligentes de Zoco.
- * Se ejecuta automáticamente cada 5 minutos (si la app está abierta o en segundo plano).
+ * Se ejecuta automáticamente cada ~30 minutos (si la app está abierta o en segundo plano).
  */
 export async function ejecutarNotificacionesZoco() {
   const cuit = await AsyncStorage.getItem("Usuario");
@@ -21,6 +24,23 @@ export async function ejecutarNotificacionesZoco() {
 
   // ⏰ Solo después de las 9 AM
   if (hora < 9) return;
+
+  // Evita ejecuciones repetidas (reabrir la app / resume / task de fondo)
+  const lastRunRaw = await AsyncStorage.getItem(LAST_NOTIF_RUN_KEY);
+  const lastRun = Number(lastRunRaw || "0");
+  const nowTs = ahora.getTime();
+
+  if (Number.isFinite(lastRun) && nowTs - lastRun < NOTIF_MIN_INTERVAL_MS) {
+    const faltanMin = Math.ceil(
+      (NOTIF_MIN_INTERVAL_MS - (nowTs - lastRun)) / 60000
+    );
+    console.log(
+      `[Notificaciones] Throttle activo. Próximo chequeo en ~${faltanMin} min.`
+    );
+    return;
+  }
+
+  await AsyncStorage.setItem(LAST_NOTIF_RUN_KEY, String(nowTs));
 
   try {
     // ============================================================
@@ -116,7 +136,7 @@ export async function ejecutarNotificacionesZoco() {
       }
     }
 
-    console.log("🕒 Fin del ciclo de notificaciones. Próxima ejecución en 5 min.");
+    console.log("🕒 Fin del ciclo de notificaciones. Próximo chequeo aprox. en 30 min.");
   } catch (error) {
     console.warn("❌ Error verificando notificaciones:", error);
   }

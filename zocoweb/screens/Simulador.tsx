@@ -34,6 +34,7 @@ export default function Simulador() {
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: tabbarHeight }}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         {/* 🔹 Encabezado del simulador */}

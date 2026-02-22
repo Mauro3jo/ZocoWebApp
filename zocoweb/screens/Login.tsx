@@ -18,7 +18,7 @@ import { API_LOGIN_URL } from "@env";
 import { InicioAhorroContext } from "../src/context/InicioAhorroContext";
 import { DatosInicioContext } from "../src/context/DatosInicioContext";
 
-// 🔹 SVG imports (como componentes React)
+// SVG imports (como componentes React)
 import UsuarioIcon from "../assets/svg/usuario 1.svg";
 import CandadoIcon from "../assets/svg/candado 1.svg";
 
